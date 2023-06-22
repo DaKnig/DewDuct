@@ -1,0 +1,19 @@
+[package]
+name = "dewduct"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+adw = { version = "0.4", package = "libadwaita", features = ["v1_2"] }
+gtk = { version = "0.6", package = "gtk4" }
+futures = "0.3"
+anyhow = "1.0"
+thiserror = "1.0"
+isahc = "1.7.2"
+
+[dependencies.invidious]
+version = "0.5"
+features = ["async", "isahc_async"]
+
+[build-dependencies]
+glib-build-tools = "0.17"
