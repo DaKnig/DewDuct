@@ -18,8 +18,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-// use futures::executor::block_on;
 use std::cell::RefCell;
+use std::path::PathBuf;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
@@ -28,8 +28,8 @@ use gtk::{gio, glib, StringList};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious;
-
+use crate::cache::DewCache;
+use crate::config;
 use crate::video_row::DewVideoRow;
 
 mod imp {
@@ -48,6 +48,7 @@ mod imp {
 
         new_vids_store: StringList,
         invidious_client: RefCell<invidious::ClientAsync>,
+        cache: RefCell<DewCache>,
     }
 
     #[glib::object_subclass]
@@ -72,6 +73,11 @@ mod imp {
             self.new_vids.set_model(Some(&gtk::NoSelection::new(Some(
                 self.new_vids_store.clone(),
             ))));
+
+            let cache_dir =
+                PathBuf::new().join(glib::tmp_dir()).join(config::PKGNAME);
+
+            self.cache.borrow_mut().change_dir(&cache_dir);
         }
     }
     impl WidgetImpl for DewUpdatePage {}
@@ -83,7 +89,6 @@ mod imp {
         fn update_vids(&self) {
             let main_context = MainContext::default();
             // The main loop executes the asynchronous block
-
             main_context.spawn_local(
                 clone!(@weak self as page => async move {
                         let invidious = page.invidious_client.borrow();
@@ -120,6 +125,7 @@ mod imp {
         }
 
         async fn fetch_vid_info(&self, vid: DewVideoRow, vid_id: GString) {
+            let cache = self.cache.borrow().clone();
             let vid_data =
                 self.invidious_client.borrow().video(&vid_id, None).await;
 
@@ -130,12 +136,10 @@ mod imp {
 
             let vid_data = vid_data.unwrap();
 
-            vid.set_from_video_data(vid_data)
+            vid.set_from_video_data(vid_data, cache)
                 .await
                 .unwrap_or_else(|err| {
                     println!("error loading video info: {}", err);
-                    // panic!();
-                    // std::process::exit(123);
                 })
         }
 

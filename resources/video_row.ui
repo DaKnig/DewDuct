@@ -29,6 +29,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="channel">
+            <property name="ellipsize">end</property>
             <property name="halign">start</property>
             <property name="label">this subtitle should be the channel</property>
             <property name="sensitive">False</property>

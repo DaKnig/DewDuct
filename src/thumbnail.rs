@@ -31,7 +31,7 @@ use isahc::AsyncReadResponseExt;
 use std::fs::File;
 use std::io::Write;
 
-use crate::config;
+use crate::cache::DewCache;
 
 mod imp {
     use super::*;
@@ -86,13 +86,20 @@ impl DewThumbnail {
     pub fn set_length(&self, length: u32) {
         let (hrs, mins, secs) =
             (length / 3600, (length / 60) % 60, length % 60);
+
+        let hrs_str = match hrs {
+            0 => "".into(),
+            hrs => format!("{hrs}:"),
+        };
+
         self.imp()
             .length
-            .set_text(&format!("{}:{:02}:{:02}", hrs, mins, secs));
+            .set_text(&format!("{}{:02}:{:02}", hrs_str, mins, secs));
     }
 
     pub async fn update_from_vid_data(
         &self,
+        cache: DewCache,
         vid_data: Video,
     ) -> anyhow::Result<()> {
         let thumb = vid_data
@@ -100,62 +107,46 @@ impl DewThumbnail {
             .into_iter()
             .filter(|thumb| thumb.width >= 320)
             .min_by_key(|thumb| thumb.width)
-            .ok_or(Err::NoThumbnails)?;
+            .ok_or(Err::NoThumbnails {
+                id: vid_data.id.clone(),
+            })?;
 
-        // g_get_tmp_dir ###@@
-        let mut thumbnail_fname = glib::tmp_dir();
-        thumbnail_fname.push(config::PKGNAME);
+        // thumbnail_fname.push();
+        let mut thumbnail_fname = cache.dir();
         thumbnail_fname.push(vid_data.id);
         thumbnail_fname.push(&thumb.quality);
         thumbnail_fname.set_extension("jpg");
-        // dbg!(&thumbnail_fname);
 
-        // download the preview file
+        let fetcher = async {
+            let mut dest: File = {
+                // can safely unwrap since I crafted the directory right
+                let parent = thumbnail_fname.parent().unwrap();
+                std::fs::create_dir_all(parent)?;
+                File::create(&thumbnail_fname)
+                    .with_context(|| {
+                        format!("{}", thumbnail_fname.display())
+                    })
+                    .unwrap()
+                //?
+            };
 
-        // error_chain! {
-        //      foreign_links {
-        //          Io(std::io::Error);
-        //          HttpRequest(reqwest::Error);
-        //      }
-        // }
+            let target = thumb.url;
+            let mut response = isahc::get_async(target).await?;
 
-        let target = thumb.url;
-        let mut response = isahc::get_async(target).await?;
+            let content: &[u8] = &response.bytes().await?;
+            dest.write(content).with_context(|| {
+                format!("error writing to {}", thumbnail_fname.display())
+            })?;
 
-        let mut dest: File = {
-            // let fname = response
-            //     .url()
-            //     .path_segments()
-            //     .and_then(|segments| segments.last())
-            //     .and_then(|name| {
-            //         if name.is_empty() {
-            //             None
-            //         } else {
-            //             Some(name)
-            //         }
-            //     })
-            //     .unwrap_or("tmp.bin");
+            // now it is time to load that jpg into the thumbnail
 
-            // println!("file to download: '{}'", fname);
-
-            // can safely unwrap since I crafted the directory right
-            let parent = thumbnail_fname.parent().unwrap();
-            std::fs::create_dir_all(parent)?;
-            File::create(&thumbnail_fname)
-                .with_context(|| format!("{}", thumbnail_fname.display()))
-                .unwrap()
-            //?
+            anyhow::Ok(())
         };
-        let content: &[u8] = &response.bytes().await?;
-        dest.write(content).with_context(|| {
-            format!("error writing to {}", thumbnail_fname.display())
-        })?;
 
-        // now it is time to load that jpg into the thumbnail
+        DewCache::fetch_file(cache, &thumbnail_fname, fetcher).await?;
         self.imp()
             .thumbnail
             .set_filename(Some(thumbnail_fname.as_path()));
-
         Ok(())
     }
 }
@@ -169,6 +160,6 @@ impl Default for DewThumbnail {
 use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum Err {
-    #[error("no thumbnails found for this video")]
-    NoThumbnails,
+    #[error("no thumbnails found for vid ID {id} video")]
+    NoThumbnails { id: String },
 }

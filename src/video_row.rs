@@ -26,6 +26,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use invidious::video::Video;
 
+use crate::cache::DewCache;
 use crate::thumbnail::DewThumbnail;
 
 mod imp {
@@ -87,6 +88,7 @@ impl DewVideoRow {
     pub async fn set_from_video_data(
         &self,
         vid_data: Video,
+        cache: DewCache,
     ) -> anyhow::Result<()> {
         self.imp().title.set_text(&vid_data.title);
         self.imp().channel.set_text(&vid_data.author);
@@ -94,7 +96,7 @@ impl DewVideoRow {
         self.set_published(vid_data.published);
         self.imp().thumbnail.set_length(vid_data.length);
 
-        self.imp().thumbnail.update_from_vid_data(vid_data).await
+        self.imp().thumbnail.update_from_vid_data(cache, vid_data).await
     }
 
     pub fn set_published(&self, published: u64) {
