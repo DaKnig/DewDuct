@@ -39,7 +39,7 @@
           <object class="GtkBox">
             <child>
               <object class="GtkLabel" id="views">
-                <property name="ellipsize">start</property>
+                <property name="ellipsize">end</property>
                 <property name="label">100k</property>
                 <property name="sensitive">False</property>
               </object>

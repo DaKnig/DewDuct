@@ -7,6 +7,7 @@
   <template class="DewDuctWindow" parent="AdwApplicationWindow">
     <property name="default-height">360</property>
     <property name="default-width">294</property>
+    <property name="title">DewDuct</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>

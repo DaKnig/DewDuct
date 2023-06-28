@@ -19,6 +19,7 @@
             <!-- Custom fragments -->
             <attributes>
               <attribute name="background" value="black"/>
+              <attribute name="background-alpha" value="0x8000"/>
             </attributes>
             <layout>
               <property name="measure">True</property>
