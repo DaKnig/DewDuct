@@ -63,7 +63,13 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewThumbnail {}
+    impl ObjectImpl for DewThumbnail {
+        fn constructed(&self) {
+            self.thumbnail.get().set_resource(Some(
+                "/null/daknig/DewDuct/dummi_thumbnail.svg",
+            ));
+        }
+    }
     impl WidgetImpl for DewThumbnail {}
     impl BoxImpl for DewThumbnail {}
 }

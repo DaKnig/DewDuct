@@ -16,6 +16,10 @@
             <property name="halign">end</property>
             <property name="label">0:00</property>
             <property name="valign">end</property>
+            <!-- Custom fragments -->
+            <attributes>
+              <attribute name="background" value="black"/>
+            </attributes>
             <layout>
               <property name="measure">True</property>
             </layout>
