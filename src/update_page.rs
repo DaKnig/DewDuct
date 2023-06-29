@@ -28,6 +28,8 @@ use gtk::{gio, glib, StringList};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use invidious::ClientAsyncTrait;
+
 use crate::cache::DewCache;
 use crate::config;
 use crate::video_row::DewVideoRow;
@@ -91,8 +93,8 @@ mod imp {
             // The main loop executes the asynchronous block
             main_context.spawn_local(
                 clone!(@weak self as page => async move {
-                        let invidious = 
-                            page.invidious_client.borrow().clowne();
+                        let invidious =
+                            page.invidious_client.borrow().clone();
 
                         let popular_items = invidious.popular(None).await;
                         match popular_items {
@@ -181,18 +183,5 @@ impl DewUpdatePage {
 impl Default for DewUpdatePage {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-trait Clowne {
-    fn clowne(&self) -> Self;
-}
-
-impl Clowne for invidious::ClientAsync {
-    fn clowne(&self) -> Self {
-        Self {
-            instance: self.instance.clone(),
-            method: self.method,
-        }
     }
 }
