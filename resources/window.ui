@@ -27,8 +27,12 @@
               <object class="GtkStackSidebar">
                 <property name="stack">screen-stack</property>
                 <property name="vexpand">True</property>
+                <style>
+                  <class name="background"/>
+                </style>
               </object>
             </property>
+            <property name="fold-threshold-policy">natural</property>
             <property name="reveal-flap">False</property>
             <child type="content">
               <object class="GtkStack" id="screen-stack">
@@ -66,6 +70,7 @@
                     <property name="icon-name">audio-x-generic</property>
                     <property name="name">player</property>
                     <property name="title">Player</property>
+                    <property name="visible">False</property>
                   </object>
                 </child>
               </object>

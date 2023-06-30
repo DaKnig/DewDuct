@@ -78,6 +78,7 @@
 	(3,4,"GtkButton","icon-name","open-menu-symbolic",None,None,None,None,None,None,None,None,None),
 	(3,4,"GtkToggleButton","active",None,None,None,None,None,None,5,"AdwFlap","reveal-flap","bidirectional | sync-create"),
 	(3,5,"AdwFlap","flap",None,None,None,None,None,6,None,None,None,None),
+	(3,5,"AdwFlap","fold-threshold-policy","natural",None,None,None,None,None,None,None,None,None),
 	(3,5,"AdwFlap","reveal-flap","False",None,None,None,None,None,None,None,None,None),
 	(3,6,"GtkStackSidebar","stack","7",None,None,None,None,None,None,None,None,None),
 	(3,6,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
@@ -85,6 +86,7 @@
 	(3,13,"GtkStackPage","icon-name","audio-x-generic",None,None,None,None,None,None,None,None,None),
 	(3,13,"GtkStackPage","name","player",None,None,None,None,None,None,None,None,None),
 	(3,13,"GtkStackPage","title","Player",None,None,None,None,None,None,None,None,None),
+	(3,13,"GtkStackPage","visible","False",None,None,None,None,None,None,None,None,None),
 	(3,20,"GtkStackPage","child",None,None,None,None,None,21,None,None,None,None),
 	(3,20,"GtkStackPage","name","normal-view",None,None,None,None,None,None,None,None,None),
 	(3,20,"GtkStackPage","title","Home",None,None,None,None,None,None,None,None,None),
@@ -94,7 +96,6 @@
 	(4,5,"GtkLabel","label","0:00",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkWidget","halign","end",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkWidget","valign","end",None,None,None,None,None,None,None,None,None),
-	(4,6,"GtkPicture","file","/null/daknig/DewDuct/dummi_thumbnail.svg",None,None,None,None,None,None,None,None,None),
 	(5,1,"GtkWidget","height-request","80",None,None,None,None,None,None,None,None,None),
 	(5,1,"GtkWidget","hexpand","True",None,None,None,None,None,None,None,None,None),
 	(5,3,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
@@ -153,6 +154,12 @@
 	(7,2,11,"GtkSignalListItemFactory","bind","bind_vid_widget",None,None,"yes",None,None)
   </object_signal>
   <object_data>
-	(5,5,"GtkWidget",2,2,None,1,None)
+	(5,5,"GtkWidget",2,2,None,1,None),
+	(3,6,"GtkWidget",1,1,None,None,None),
+	(3,6,"GtkWidget",2,2,None,1,None),
+	(2,10,"GtkWidget",2,2,None,1,None)
   </object_data>
+  <object_data_arg>
+	(3,6,"GtkWidget",2,2,"name","background")
+  </object_data_arg>
 </cambalache-project>
