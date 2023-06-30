@@ -30,10 +30,11 @@ use self::window::DewDuctWindow;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
+mod cache;
 mod thumbnail;
 mod update_page;
+mod video_page;
 mod video_row;
-mod cache;
 
 fn main() -> glib::ExitCode {
     // Load resources

@@ -8,7 +8,7 @@
       <object class="GtkOverlay">
         <child>
           <object class="GtkPicture" id="thumbnail">
-            <property name="file">dummi_thumbnail.svg</property>
+            <property name="file">/null/daknig/DewDuct/dummi_thumbnail.svg</property>
           </object>
         </child>
         <child type="overlay">

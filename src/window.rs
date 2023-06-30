@@ -25,6 +25,7 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, subclass::prelude::*};
 
 use crate::update_page::DewUpdatePage;
+use crate::video_page::DewVideoPage;
 
 mod imp {
     use super::*;
@@ -47,6 +48,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             DewUpdatePage::ensure_type();
+            DewVideoPage::ensure_type();
             klass.bind_template();
             // klass.bind_template_callbacks();
         }

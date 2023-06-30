@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.12.1 -->
+<interface>
+  <!-- interface-name video_page.ui -->
+  <requires lib="gtk" version="4.8"/>
+  <requires lib="libadwaita" version="1.3"/>
+  <template class="DewVideoPage" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="DewThumbnail" id="vid_thumbnail"/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <child>
+          <object class="GtkImage" id="author_thumb">
+            <property name="pixel-size">20</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="author_name">
+                <property name="ellipsize">end</property>
+                <property name="halign">start</property>
+                <property name="label">cool channel</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="sub_count">
+                <property name="ellipsize">end</property>
+                <property name="halign">start</property>
+                <property name="label">100k subscribers</property>
+                <property name="sensitive">False</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="views">
+                <property name="halign">start</property>
+                <property name="label">10k views</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="likes">
+                <property name="halign">start</property>
+                <property name="label">1k likes</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwViewStack" id="bottom_stack">
+        <property name="vexpand">True</property>
+        <child>
+          <object class="AdwViewStackPage">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="description">
+                    <property name="halign">start</property>
+                    <property name="label">This video is amazing!</property>
+                    <property name="vexpand">True</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">description</property>
+            <property name="title">Description</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwViewSwitcherBar" id="bottom_switcher">
+        <property name="reveal">True</property>
+      </object>
+    </child>
+  </template>
+</interface>

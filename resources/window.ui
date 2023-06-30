@@ -15,7 +15,7 @@
           <object class="AdwHeaderBar">
             <child>
               <object class="GtkToggleButton">
-                <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="sync-create|bidirectional"/>
+                <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="bidirectional | sync-create"/>
                 <property name="icon-name">open-menu-symbolic</property>
               </object>
             </child>
@@ -23,33 +23,49 @@
         </child>
         <child>
           <object class="AdwFlap" id="flap">
-            <child type="flap">
-              <object class="GtkStackSidebar" id="flap-flap">
+            <property name="flap">
+              <object class="GtkStackSidebar">
                 <property name="stack">screen-stack</property>
                 <property name="vexpand">True</property>
               </object>
-            </child>
+            </property>
+            <property name="reveal-flap">False</property>
             <child type="content">
               <object class="GtkStack" id="screen-stack">
-                <property name="transition-type">0</property>
                 <child>
-                  <object class="GtkBox" id="normal-view">
-                    <property name="orientation">1</property>
-                    <child>
-                      <object class="AdwViewSwitcherBar">
-                        <property name="reveal">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwViewStack" id="view-stack">
+                  <object class="GtkStackPage" id="normal-view">
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
                         <child>
-                          <object class="DewUpdatePage"/>
+                          <object class="AdwViewSwitcherBar">
+                            <property name="reveal">true</property>
+                          </object>
                         </child>
                         <child>
-                          <object class="GtkBox" id="subscribe-page"/>
+                          <object class="AdwViewStack" id="view-stack">
+                            <child>
+                              <object class="DewUpdatePage"/>
+                            </child>
+                            <child>
+                              <object class="GtkBox" id="subscribe-page"/>
+                            </child>
+                          </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
+                    <property name="name">normal-view</property>
+                    <property name="title">Home</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage" id="player">
+                    <property name="child">
+                      <object class="DewVideoPage"/>
+                    </property>
+                    <property name="icon-name">audio-x-generic</property>
+                    <property name="name">player</property>
+                    <property name="title">Player</property>
                   </object>
                 </child>
               </object>
