@@ -96,7 +96,10 @@ impl DewVideoRow {
         self.set_published(vid_data.published);
         self.imp().thumbnail.set_length(vid_data.length);
 
-        self.imp().thumbnail.update_from_vid_data(cache, vid_data).await
+        self.imp()
+            .thumbnail
+            .update_from_vid_data(cache, &vid_data)
+            .await
     }
 
     pub fn set_published(&self, published: u64) {

@@ -34,10 +34,10 @@ mod imp {
     #[template(resource = "/null/daknig/DewDuct/window.ui")]
     pub struct DewDuctWindow {
         // Template widgets
-        #[template_child]
-        pub flap: TemplateChild<adw::Flap>,
-        #[template_child(id = "view-stack")]
-        pub view_stack: TemplateChild<adw::ViewStack>,
+        // #[template_child]
+        // pub flap: TemplateChild<adw::Flap>,
+        // #[template_child(id = "view-stack")]
+        // pub view_stack: TemplateChild<adw::ViewStack>,
     }
 
     #[glib::object_subclass]

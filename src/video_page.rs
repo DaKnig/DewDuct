@@ -83,15 +83,15 @@ mod imp {
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
-	pub fn set_id(&self, new_id: GString) {
-	    *self.id.borrow_mut() = Some(new_id);
-	    todo!() // fetch info!
-	}
+        pub fn set_id(&self, new_id: GString) {
+            *self.id.borrow_mut() = Some(new_id);
+            todo!() // fetch info!
+        }
 
-	pub fn reset_id(&self) {
-	    *self.id.borrow_mut() = None;
-	    todo!() // reset the video and all stuffs
-	}
+        pub fn reset_id(&self) {
+            *self.id.borrow_mut() = None;
+            todo!() // reset the video and all stuffs
+        }
     }
 }
 

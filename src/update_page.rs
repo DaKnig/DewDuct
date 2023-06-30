@@ -152,7 +152,7 @@ mod imp {
             let vid_id: glib::GString = list_item
                 .item()
                 .and_downcast::<gtk::StringObject>()
-                .expect("The item has to be an `Payment`.")
+                .expect("The item has to be an `StringObject`.")
                 .string();
             let vid: DewVideoRow = list_item
                 .child()
@@ -172,16 +172,4 @@ glib::wrapper! {
     pub struct DewUpdatePage(ObjectSubclass<imp::DewUpdatePage>)
         @extends gtk::Widget, gtk::Box,
         @implements gio::ActionGroup, gio::ActionMap;
-}
-
-impl DewUpdatePage {
-    pub fn new() -> Self {
-        glib::Object::builder().build()
-    }
-}
-
-impl Default for DewUpdatePage {
-    fn default() -> Self {
-        Self::new()
-    }
 }

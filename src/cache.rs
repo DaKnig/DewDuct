@@ -18,7 +18,7 @@ impl DewCache {
         self.dir = dir.into();
     }
     pub fn dir(&self) -> PathBuf {
-	self.dir.clone()
+        self.dir.clone()
     }
     /// cache: the cache with the directory where the info should be stored.
     /// fname: file we are looking for, relative to the cache.
@@ -33,12 +33,8 @@ impl DewCache {
     ) -> Result<(), E> {
         let path = cache.dir().join(fname);
         match File::open(&path).ok() {
-            Some(_) => {
-                Ok(())
-            }
-            None => {
-                fetcher.await
-            }
+            Some(_) => Ok(()),
+            None => fetcher.await,
         }
     }
 }

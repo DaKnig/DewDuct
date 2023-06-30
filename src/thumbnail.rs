@@ -81,10 +81,6 @@ glib::wrapper! {
 }
 
 impl DewThumbnail {
-    pub fn new() -> Self {
-        glib::Object::builder().build()
-    }
-
     pub fn thumbnail(&self) -> gtk::Picture {
         self.imp().thumbnail.get()
     }
@@ -106,11 +102,11 @@ impl DewThumbnail {
     pub async fn update_from_vid_data(
         &self,
         cache: DewCache,
-        vid_data: Video,
+        vid_data: impl std::ops::Deref<Target = Video>,
     ) -> anyhow::Result<()> {
         let thumb = vid_data
             .thumbnails
-            .into_iter()
+            .iter()
             .filter(|thumb| thumb.width >= 320)
             .min_by_key(|thumb| thumb.width)
             .ok_or(Err::NoThumbnails {
@@ -119,7 +115,7 @@ impl DewThumbnail {
 
         // thumbnail_fname.push();
         let mut thumbnail_fname = cache.dir();
-        thumbnail_fname.push(vid_data.id);
+        thumbnail_fname.push(&vid_data.id);
         thumbnail_fname.push(&thumb.quality);
         thumbnail_fname.set_extension("jpg");
 
@@ -136,7 +132,7 @@ impl DewThumbnail {
                 //?
             };
 
-            let target = thumb.url;
+            let target = &thumb.url;
             let mut response = isahc::get_async(target).await?;
 
             let content: &[u8] = &response.bytes().await?;
@@ -154,12 +150,6 @@ impl DewThumbnail {
             .thumbnail
             .set_filename(Some(thumbnail_fname.as_path()));
         Ok(())
-    }
-}
-
-impl Default for DewThumbnail {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
