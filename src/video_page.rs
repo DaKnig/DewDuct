@@ -19,6 +19,7 @@
  */
 
 use std::cell::RefCell;
+use std::rc::Rc;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
@@ -54,7 +55,7 @@ mod imp {
         // description: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
-        id: RefCell<Option<GString>>,
+        id: Rc<RefCell<Option<GString>>>,
     }
 
     #[glib::object_subclass]

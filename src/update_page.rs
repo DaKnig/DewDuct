@@ -75,6 +75,19 @@ mod imp {
             self.new_vids.set_model(Some(&gtk::NoSelection::new(Some(
                 self.new_vids_store.clone(),
             ))));
+            let new_vids_store = self.new_vids_store.clone();
+            self.new_vids
+                .connect_activate(move |list_view, index: u32| {
+                    let Some(id) = new_vids_store.string(index)
+                                   else {return};
+                    let id: String = id.to_string();
+                    list_view
+                        .activate_action(
+                            "win.play",
+                            Some(&Some(id).to_variant()),
+                        )
+                        .expect("the action win.play does not exist");
+                });
 
             let cache_dir =
                 PathBuf::new().join(glib::tmp_dir()).join(config::PKGNAME);

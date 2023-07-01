@@ -20,6 +20,8 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use gio::SimpleAction;
+use glib::{clone, MainContext};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -34,8 +36,8 @@ mod imp {
     #[template(resource = "/null/daknig/DewDuct/window.ui")]
     pub struct DewDuctWindow {
         // Template widgets
-        // #[template_child]
-        // pub flap: TemplateChild<adw::Flap>,
+        #[template_child]
+        video_page: TemplateChild<DewVideoPage>,
         // #[template_child(id = "view-stack")]
         // pub view_stack: TemplateChild<adw::ViewStack>,
     }
@@ -58,7 +60,55 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewDuctWindow {}
+    impl ObjectImpl for DewDuctWindow {
+        fn constructed(&self) {
+            self.parent_constructed();
+
+            // Add action "player"
+            let action_play = SimpleAction::new_stateful(
+                "play",
+                Some(&Option::<String>::static_variant_type()),
+                None::<String>.to_variant(),
+            );
+
+            let vid_page = self.video_page.clone();
+            action_play.connect_activate(
+                clone!(@weak vid_page => move |action, parameter| {
+                    // Get state
+                    let state: Option<String> = action
+                        .state()
+                        .expect("Could not get state.")
+                        .get()
+                        .expect("not a Option<String>!");
+
+                    // Get parameter
+                    let parameter: Option<String> = parameter
+                        .expect("Could not get parameter.")
+                        .get()
+                        .expect("not a Option<String>!");
+
+                    if parameter == state {
+                        println!("clicked on the same vid...");
+                        return
+                    } else {
+                        println!("was {state:?} became {parameter:?}");
+                    }
+                    // Increase state by parameter and save state
+                    // state += parameter;
+                    action.set_state(parameter.to_variant());
+
+                    // Update label with new state
+                    match &parameter {
+                        Some(id) => {
+                            println!("gonna play {id}...");
+                        },
+                        None => println!("stop playing..."),
+                    }
+                }),
+            );
+            self.obj().add_action(&action_play);
+        }
+    }
     impl WidgetImpl for DewDuctWindow {}
     impl WindowImpl for DewDuctWindow {}
     impl ApplicationWindowImpl for DewDuctWindow {}

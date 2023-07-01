@@ -37,7 +37,7 @@
             <child type="content">
               <object class="GtkStack" id="screen-stack">
                 <child>
-                  <object class="GtkStackPage" id="normal-view">
+                  <object class="GtkStackPage" id="normal-view-page">
                     <property name="child">
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
@@ -63,9 +63,9 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkStackPage" id="player">
+                  <object class="GtkStackPage" id="player-page">
                     <property name="child">
-                      <object class="DewVideoPage"/>
+                      <object class="DewVideoPage" id="video_page"/>
                     </property>
                     <property name="icon-name">audio-x-generic</property>
                     <property name="name">player</property>
