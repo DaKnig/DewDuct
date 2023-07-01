@@ -18,16 +18,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::RefCell;
-use std::rc::Rc;
+use std::{cell::RefCell, rc::Rc};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::GString;
+use glib::{clone, GString, MainContext};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use invidious::video::Video;
+
+use crate::cache::DewCache;
 use crate::thumbnail::DewThumbnail;
 
 mod imp {
@@ -37,8 +39,8 @@ mod imp {
     #[template(resource = "/null/daknig/DewDuct/video_page.ui")]
     pub struct DewVideoPage {
         // Template widgets
-        // #[template_child]
-        // vid_thumbnail: TemplateChild<DewThumbnail>,
+        #[template_child]
+        vid_thumbnail: TemplateChild<DewThumbnail>,
         // #[template_child]
         // author_thumb: TemplateChild<gtk::Image>,
         // #[template_child]
@@ -55,7 +57,7 @@ mod imp {
         // description: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
-        id: Rc<RefCell<Option<GString>>>,
+        vid: Rc<RefCell<Option<Video>>>,
     }
 
     #[glib::object_subclass]
@@ -77,20 +79,35 @@ mod imp {
 
     impl ObjectImpl for DewVideoPage {
         fn constructed(&self) {
-            self.id.take();
+            self.vid.take();
         }
     }
     impl WidgetImpl for DewVideoPage {}
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
-        pub fn set_id(&self, new_id: GString) {
-            *self.id.borrow_mut() = Some(new_id);
+        pub fn set_id(&self, cache: DewCache, new_vid: Video) {
+            *self.vid.borrow_mut() = Some(new_vid);
+            MainContext::default().spawn_local(
+                clone!(@weak self as page => async move {
+                    let Some(ref vid) = *page.vid.borrow() else {return};
+                    page.vid_thumbnail
+                        .update_from_vid_data(cache, vid)
+                        .await
+                        .unwrap_or_else(|err| {
+                            println!(
+                                "can't open video in the VideoPage: {}",
+                                err
+                            )
+                        })
+                }),
+            );
+
             todo!() // fetch info!
         }
 
         pub fn reset_id(&self) {
-            *self.id.borrow_mut() = None;
+            *self.vid.borrow_mut() = None;
             todo!() // reset the video and all stuffs
         }
     }
