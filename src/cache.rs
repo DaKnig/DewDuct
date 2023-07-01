@@ -24,7 +24,7 @@ impl DewCache {
     /// fname: file we are looking for, relative to the cache.
     /// fetcher: function for fetching said file, if it is not in cache.
     pub async fn fetch_file<E>(
-        cache: Self,
+        cache: &Self,
         fname: &Path,
         fetcher: impl Future<Output = Result<(), E>>,
         // impl FnOnce() -> Fut

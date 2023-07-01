@@ -20,6 +20,7 @@
 
 use std::cell::RefCell;
 use std::path::PathBuf;
+use std::rc::Rc;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
@@ -50,7 +51,7 @@ mod imp {
 
         new_vids_store: StringList,
         invidious_client: RefCell<invidious::ClientAsync>,
-        cache: RefCell<DewCache>,
+        cache: Rc<RefCell<DewCache>>,
     }
 
     #[glib::object_subclass]
@@ -153,7 +154,7 @@ mod imp {
 
             let vid_data = vid_data.unwrap();
 
-            vid.set_from_video_data(vid_data, cache)
+            vid.set_from_video_data(vid_data, &cache)
                 .await
                 .unwrap_or_else(|err| {
                     println!("error loading video info: {}", err);

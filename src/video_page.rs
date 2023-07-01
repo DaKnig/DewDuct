@@ -86,28 +86,25 @@ mod imp {
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
-        pub fn set_id(&self, cache: DewCache, new_vid: Video) {
-            *self.vid.borrow_mut() = Some(new_vid);
-            MainContext::default().spawn_local(
-                clone!(@weak self as page => async move {
-                    let Some(ref vid) = *page.vid.borrow() else {return};
-                    page.vid_thumbnail
-                        .update_from_vid_data(cache, vid)
-                        .await
-                        .unwrap_or_else(|err| {
-                            println!(
-                                "can't open video in the VideoPage: {}",
-                                err
-                            )
-                        })
-                }),
-            );
+        pub async fn set_vid(&self, cache: &DewCache, new_vid: Video) {
+            self.vid_thumbnail
+                .update_from_vid_data(cache, &new_vid)
+                .await
+                .unwrap_or_else(|err| {
+                    println!(
+                        "can't open video {} in the VideoPage: {}",
+                        new_vid.id, err
+                    )
+                });
 
+            *self.vid.borrow_mut() = Some(new_vid);
+            self.obj().set_visible(false);
             todo!() // fetch info!
         }
 
-        pub fn reset_id(&self) {
+        pub fn reset_vid(&self) {
             *self.vid.borrow_mut() = None;
+            self.obj().set_visible(false);
             todo!() // reset the video and all stuffs
         }
     }

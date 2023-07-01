@@ -101,7 +101,7 @@ impl DewThumbnail {
 
     pub async fn update_from_vid_data(
         &self,
-        cache: DewCache,
+        cache: &DewCache,
         vid_data: impl std::ops::Deref<Target = Video>,
     ) -> anyhow::Result<()> {
         let thumb = vid_data

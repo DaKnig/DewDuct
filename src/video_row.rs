@@ -88,7 +88,7 @@ impl DewVideoRow {
     pub async fn set_from_video_data(
         &self,
         vid_data: Video,
-        cache: DewCache,
+        cache: &DewCache,
     ) -> anyhow::Result<()> {
         self.imp().title.set_text(&vid_data.title);
         self.imp().channel.set_text(&vid_data.author);
