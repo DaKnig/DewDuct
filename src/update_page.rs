@@ -29,6 +29,7 @@ use gtk::{gio, glib, StringList};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use invidious;
 use invidious::ClientAsyncTrait;
 
 use crate::cache::DewCache;

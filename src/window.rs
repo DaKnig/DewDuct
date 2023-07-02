@@ -18,6 +18,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use gio::SimpleAction;
@@ -26,20 +29,27 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use crate::cache::DewCache;
 use crate::update_page::DewUpdatePage;
 use crate::video_page::DewVideoPage;
+
+use invidious::{ClientAsync, ClientAsyncTrait};
 
 mod imp {
     use super::*;
 
-    #[derive(Debug, Default, gtk::CompositeTemplate)]
+    #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/null/daknig/DewDuct/window.ui")]
     pub struct DewDuctWindow {
         // Template widgets
         #[template_child]
         video_page: TemplateChild<DewVideoPage>,
+        #[template_child(id = "screen-stack")]
+        screen_stack: TemplateChild<gtk::Stack>,
         // #[template_child(id = "view-stack")]
         // pub view_stack: TemplateChild<adw::ViewStack>,
+        cache: Rc<RefCell<DewCache>>,
+        invidious: Rc<RefCell<ClientAsync>>,
     }
 
     #[glib::object_subclass]
@@ -71,9 +81,8 @@ mod imp {
                 None::<String>.to_variant(),
             );
 
-            let vid_page = self.video_page.clone();
             action_play.connect_activate(
-                clone!(@weak vid_page => move |action, parameter| {
+                clone!(@weak self as win => move |action, param| {
                     // Get state
                     let state: Option<String> = action
                         .state()
@@ -81,8 +90,8 @@ mod imp {
                         .get()
                         .expect("not a Option<String>!");
 
-                    // Get parameter
-                    let parameter: Option<String> = parameter
+                    // Get param
+                    let parameter: Option<String> = param
                         .expect("Could not get parameter.")
                         .get()
                         .expect("not a Option<String>!");
@@ -98,12 +107,35 @@ mod imp {
                     action.set_state(parameter.to_variant());
 
                     // Update label with new state
-                    match &parameter {
-                        Some(id) => {
-                            println!("gonna play {id}...");
-                        },
-                        None => println!("stop playing..."),
-                    }
+
+                    let Some(id) = parameter else {
+                        println!("stop playing...");
+			win.video_page.imp().reset_vid();
+                        return
+                    };
+
+                    // let inv = invidious.borrow();
+
+                    // vid_page.imp().set_vid(cache, vid);
+                    MainContext::default().spawn_local(async move {
+                        let cache = win.cache.borrow();
+                        let vid_page = win.video_page.get();
+                        let invidious = win.invidious.borrow().clone();
+
+                        match invidious.video(&id, None).await {
+                            Ok(vid) => {
+                                vid_page.imp().set_vid(&cache, vid).await;
+				win.screen_stack.set_visible_child_full(
+				    "video_page",
+				    gtk::StackTransitionType::SlideUp
+				);
+                            },
+                            Err(err) => {
+                                println!("cant load {id}: {err}");
+                            }
+                        }
+                    });
+
                 }),
             );
             self.obj().add_action(&action_play);

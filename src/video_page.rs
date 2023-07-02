@@ -22,7 +22,6 @@ use std::{cell::RefCell, rc::Rc};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{clone, GString, MainContext};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
