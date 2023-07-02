@@ -42,18 +42,18 @@ mod imp {
         vid_thumbnail: TemplateChild<DewThumbnail>,
         // #[template_child]
         // author_thumb: TemplateChild<gtk::Image>,
-        // #[template_child]
-        // author_name: TemplateChild<gtk::Label>,
-        // #[template_child]
-        // sub_count: TemplateChild<gtk::Label>,
+        #[template_child]
+        author_name: TemplateChild<gtk::Label>,
+        #[template_child]
+        sub_count: TemplateChild<gtk::Label>,
         // #[template_child]
         // views: TemplateChild<gtk::Label>,
         // #[template_child]
         // likes: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_stack: TemplateChild<adw::ViewStack>,
-        // #[template_child]
-        // description: TemplateChild<gtk::Label>,
+        #[template_child]
+        description: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
         vid: Rc<RefCell<Option<Video>>>,
@@ -95,6 +95,12 @@ mod imp {
                         new_vid.id, err
                     )
                 });
+            self.author_name.set_text(&new_vid.author);
+            self.sub_count.set_text(&format!(
+                "{} subscribers",
+                new_vid.sub_count_text
+            ));
+            self.description.set_text(&new_vid.description);
 
             *self.vid.borrow_mut() = Some(new_vid);
             self.obj().set_visible(true);

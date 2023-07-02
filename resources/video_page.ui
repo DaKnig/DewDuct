@@ -57,24 +57,35 @@
       </object>
     </child>
     <child>
-      <object class="AdwViewStack" id="bottom_stack">
-        <property name="vexpand">True</property>
+      <object class="GtkScrolledWindow">
         <child>
-          <object class="AdwViewStackPage">
-            <property name="child">
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkLabel" id="description">
-                    <property name="halign">start</property>
-                    <property name="label">This video is amazing!</property>
-                    <property name="vexpand">True</property>
+          <object class="AdwViewStack" id="bottom_stack">
+            <property name="vexpand">True</property>
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="description">
+                        <property name="label">This video is amazing!</property>
+                        <property name="selectable">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="wrap">True</property>
+                        <property name="wrap-mode">word-char</property>
+                        <property name="xalign">0.0</property>
+                        <style>
+                          <class name="body"/>
+                          <class name="link"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
-                </child>
+                </property>
+                <property name="name">description</property>
+                <property name="title">Description</property>
               </object>
-            </property>
-            <property name="name">description</property>
-            <property name="title">Description</property>
+            </child>
           </object>
         </child>
       </object>

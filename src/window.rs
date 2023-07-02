@@ -98,6 +98,10 @@ mod imp {
 
                     if parameter == state {
                         println!("clicked on the same vid...");
+                        win.screen_stack.set_visible_child_full(
+                            "video_page",
+                            gtk::StackTransitionType::SlideUp
+                        );
                         return
                     } else {
                         println!("was {state:?} became {parameter:?}");
@@ -110,7 +114,7 @@ mod imp {
 
                     let Some(id) = parameter else {
                         println!("stop playing...");
-			win.video_page.imp().reset_vid();
+                        win.video_page.imp().reset_vid();
                         return
                     };
 
@@ -125,10 +129,10 @@ mod imp {
                         match invidious.video(&id, None).await {
                             Ok(vid) => {
                                 vid_page.imp().set_vid(&cache, vid).await;
-				win.screen_stack.set_visible_child_full(
-				    "video_page",
-				    gtk::StackTransitionType::SlideUp
-				);
+                                win.screen_stack.set_visible_child_full(
+                                    "video_page",
+                                    gtk::StackTransitionType::SlideUp
+                                );
                             },
                             Err(err) => {
                                 println!("cant load {id}: {err}");

@@ -104,6 +104,8 @@ impl DewThumbnail {
         cache: &DewCache,
         vid_data: impl std::ops::Deref<Target = Video>,
     ) -> anyhow::Result<()> {
+        self.set_length(vid_data.length);
+
         let thumb = vid_data
             .thumbnails
             .iter()

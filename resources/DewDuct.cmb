@@ -60,11 +60,12 @@
 	(6,8,"GtkBox",None,3,None,None,None,2,None),
 	(6,9,"GtkLabel","views",8,None,None,None,None,None),
 	(6,10,"GtkLabel","likes",8,None,None,None,1,None),
-	(6,11,"AdwViewStack","bottom_stack",1,None,None,None,2,None),
-	(6,12,"AdwViewStackPage",None,11,None,None,None,None,None),
-	(6,13,"GtkBox",None,12,None,None,None,None,None),
-	(6,14,"GtkLabel","description",13,None,None,None,None,None),
-	(6,15,"AdwViewSwitcherBar","bottom_switcher",1,None,None,None,3,None)
+	(6,15,"AdwViewSwitcherBar","bottom_switcher",1,None,None,None,4,None),
+	(6,16,"GtkScrolledWindow",None,1,None,None,None,2,None),
+	(6,17,"AdwViewStack","bottom_stack",16,None,None,None,None,None),
+	(6,18,"AdwViewStackPage",None,17,None,None,None,None,None),
+	(6,19,"GtkBox",None,18,None,None,None,None,None),
+	(6,20,"GtkLabel","description",19,None,None,None,None,None)
   </object>
   <object_property>
 	(2,1,"GtkOrientable","orientation","1",None,None,None,None,None,None,None,None,None),
@@ -137,15 +138,18 @@
 	(6,9,"GtkWidget","halign","start",None,None,None,None,None,None,None,None,None),
 	(6,10,"GtkLabel","label","1k likes",None,None,None,None,None,None,None,None,None),
 	(6,10,"GtkWidget","halign","start",None,None,None,None,None,None,None,None,None),
-	(6,11,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
-	(6,12,"AdwViewStackPage","child",None,None,None,None,None,13,None,None,None,None),
-	(6,12,"AdwViewStackPage","name","description",None,None,None,None,None,None,None,None,None),
-	(6,12,"AdwViewStackPage","title","Description",None,None,None,None,None,None,None,None,None),
-	(6,13,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
-	(6,14,"GtkLabel","label","This video is amazing!",None,None,None,None,None,None,None,None,None),
-	(6,14,"GtkWidget","halign","start",None,None,None,None,None,None,None,None,None),
-	(6,14,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
-	(6,15,"AdwViewSwitcherBar","reveal","True",None,None,None,None,None,None,None,None,None)
+	(6,15,"AdwViewSwitcherBar","reveal","True",None,None,None,None,None,None,None,None,None),
+	(6,17,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(6,18,"AdwViewStackPage","child",None,None,None,None,None,19,None,None,None,None),
+	(6,18,"AdwViewStackPage","name","description",None,None,None,None,None,None,None,None,None),
+	(6,18,"AdwViewStackPage","title","Description",None,None,None,None,None,None,None,None,None),
+	(6,19,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkLabel","label","This video is amazing!",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkLabel","selectable","True",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkLabel","wrap","True",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkLabel","wrap-mode","word-char",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkLabel","xalign","0.0",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)
@@ -159,9 +163,14 @@
 	(5,5,"GtkWidget",2,2,None,1,None),
 	(3,6,"GtkWidget",1,1,None,None,None),
 	(3,6,"GtkWidget",2,2,None,1,None),
-	(2,10,"GtkWidget",2,2,None,1,None)
+	(2,10,"GtkWidget",2,2,None,1,None),
+	(6,20,"GtkWidget",1,1,None,None,None),
+	(6,20,"GtkWidget",2,2,None,1,None),
+	(6,20,"GtkWidget",2,3,None,1,None)
   </object_data>
   <object_data_arg>
-	(3,6,"GtkWidget",2,2,"name","background")
+	(3,6,"GtkWidget",2,2,"name","background"),
+	(6,20,"GtkWidget",2,2,"name","body"),
+	(6,20,"GtkWidget",2,3,"name","link")
   </object_data_arg>
 </cambalache-project>
