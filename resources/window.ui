@@ -65,12 +65,14 @@
                 <child>
                   <object class="GtkStackPage" id="player-page">
                     <property name="child">
-                      <object class="DewVideoPage" id="video_page"/>
+                      <object class="DewVideoPage" id="video_page">
+                        <property name="visible">False</property>
+                      </object>
                     </property>
                     <property name="icon-name">audio-x-generic</property>
                     <property name="name">player</property>
                     <property name="title">Player</property>
-                    <property name="visible">False</property>
+                    <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
                   </object>
                 </child>
               </object>

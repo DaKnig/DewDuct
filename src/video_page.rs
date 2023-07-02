@@ -98,8 +98,7 @@ mod imp {
                 });
 
             *self.vid.borrow_mut() = Some(new_vid);
-            self.obj().set_visible(false);
-            todo!() // fetch info!
+            self.obj().set_visible(true);
         }
 
         pub fn reset_vid(&self) {
