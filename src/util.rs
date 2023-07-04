@@ -1,3 +1,6 @@
+use crate::cache::DewCache;
+use once_cell::sync::OnceCell;
+
 pub fn format_semi_engineering(value: f32) -> String {
     static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'B', 'T'];
     let suffix = (0..)
@@ -20,4 +23,10 @@ pub fn format_semi_engineering(value: f32) -> String {
     ret += " views";
 
     ret
+}
+
+pub(crate) fn cache() -> &'static DewCache {
+    static APP_CACHE: OnceCell<DewCache> =
+        OnceCell::new();
+    &APP_CACHE.get_or_init(||{DewCache::default()})
 }

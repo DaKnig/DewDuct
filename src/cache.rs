@@ -18,11 +18,8 @@ impl DewCache {
     pub fn new(dir: &Path) -> Self {
         DewCache { dir: dir.into() }
     }
-    pub(crate) fn change_dir(&mut self, dir: &Path) {
-        self.dir = dir.into();
-    }
-    pub(crate) fn dir(&self) -> PathBuf {
-        self.dir.clone()
+    pub(crate) fn dir(&self) -> &PathBuf {
+        &self.dir
     }
     /// cache: the cache with the directory where the info should be stored.
     /// fname: file we are looking for, relative to the cache.

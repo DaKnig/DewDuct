@@ -176,6 +176,7 @@ dependencies = [
  "invidious",
  "isahc",
  "libadwaita",
+ "once_cell",
  "thiserror",
 ]
 

@@ -19,8 +19,6 @@
  */
 
 use std::cell::RefCell;
-use std::path::PathBuf;
-use std::rc::Rc;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
@@ -32,8 +30,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 use invidious;
 use invidious::ClientAsyncTrait;
 
-use crate::cache::DewCache;
-use crate::config;
+use crate::util;
 use crate::video_row::DewVideoRow;
 
 mod imp {
@@ -52,7 +49,6 @@ mod imp {
 
         new_vids_store: StringList,
         invidious_client: RefCell<invidious::ClientAsync>,
-        cache: Rc<RefCell<DewCache>>,
     }
 
     #[glib::object_subclass]
@@ -91,10 +87,7 @@ mod imp {
                         .expect("the action win.play does not exist");
                 });
 
-            let cache_dir =
-                PathBuf::new().join(glib::tmp_dir()).join(config::PKGNAME);
-
-            self.cache.borrow_mut().change_dir(&cache_dir);
+	    println!("constructed update page");
         }
     }
     impl WidgetImpl for DewUpdatePage {}
@@ -144,7 +137,7 @@ mod imp {
         }
 
         async fn fetch_vid_info(&self, vid: DewVideoRow, vid_id: GString) {
-            let cache = self.cache.borrow().clone();
+            let cache = util::cache();
             let vid_data =
                 self.invidious_client.borrow().video(&vid_id, None).await;
 

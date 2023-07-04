@@ -116,7 +116,7 @@ impl DewThumbnail {
             })?;
 
         // thumbnail_fname.push();
-        let mut thumbnail_fname = cache.dir();
+        let mut thumbnail_fname = cache.dir().clone();
         thumbnail_fname.push(&vid_data.id);
         thumbnail_fname.push(&thumb.quality);
         thumbnail_fname.set_extension("jpg");
