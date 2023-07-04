@@ -73,7 +73,16 @@ mod imp {
     impl ObjectImpl for DewDuctWindow {
         fn constructed(&self) {
             self.parent_constructed();
+            self.setup_actions();
+        }
+    }
+    impl WidgetImpl for DewDuctWindow {}
+    impl WindowImpl for DewDuctWindow {}
+    impl ApplicationWindowImpl for DewDuctWindow {}
+    impl AdwApplicationWindowImpl for DewDuctWindow {}
 
+    impl DewDuctWindow {
+        pub fn setup_actions(&self) {
             // Add action "player"
             let action_play = SimpleAction::new_stateful(
                 "play",
@@ -145,10 +154,6 @@ mod imp {
             self.obj().add_action(&action_play);
         }
     }
-    impl WidgetImpl for DewDuctWindow {}
-    impl WindowImpl for DewDuctWindow {}
-    impl ApplicationWindowImpl for DewDuctWindow {}
-    impl AdwApplicationWindowImpl for DewDuctWindow {}
 }
 
 glib::wrapper! {

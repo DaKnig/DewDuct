@@ -1,8 +1,12 @@
 // use invidious::video::Video;
-use gtk::glib;
+
 use std::fs::File;
 use std::future::Future;
 use std::path::{Path, PathBuf};
+
+use gtk::glib;
+
+use crate::config;
 
 #[derive(Clone)]
 pub struct DewCache {
@@ -14,16 +18,16 @@ impl DewCache {
     pub fn new(dir: &Path) -> Self {
         DewCache { dir: dir.into() }
     }
-    pub fn change_dir(&mut self, dir: &Path) {
+    pub(crate) fn change_dir(&mut self, dir: &Path) {
         self.dir = dir.into();
     }
-    pub fn dir(&self) -> PathBuf {
+    pub(crate) fn dir(&self) -> PathBuf {
         self.dir.clone()
     }
     /// cache: the cache with the directory where the info should be stored.
     /// fname: file we are looking for, relative to the cache.
     /// fetcher: function for fetching said file, if it is not in cache.
-    pub async fn fetch_file<E>(
+    pub(crate) async fn fetch_file<E>(
         cache: &Self,
         fname: &Path,
         fetcher: impl Future<Output = Result<(), E>>,
@@ -41,8 +45,9 @@ impl DewCache {
 
 impl Default for DewCache {
     fn default() -> Self {
-        DewCache {
-            dir: glib::tmp_dir(),
-        }
+        let mut dir = glib::tmp_dir();
+        dir.push(config::PKGNAME);
+
+        DewCache { dir }
     }
 }
