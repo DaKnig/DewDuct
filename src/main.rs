@@ -19,7 +19,13 @@
  */
 
 mod application;
+mod cache;
 mod config;
+mod thumbnail;
+mod update_page;
+mod util;
+mod video_page;
+mod video_row;
 mod window;
 
 use self::application::DewDuctApplication;
@@ -29,12 +35,6 @@ use self::window::DewDuctWindow;
 #[allow(unused_imports)]
 use gtk::prelude::*;
 use gtk::{gio, glib};
-
-mod cache;
-mod thumbnail;
-mod update_page;
-mod video_page;
-mod video_row;
 
 fn main() -> glib::ExitCode {
     // Load resources

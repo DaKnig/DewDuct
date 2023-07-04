@@ -28,6 +28,7 @@ use invidious::video::Video;
 
 use crate::cache::DewCache;
 use crate::thumbnail::DewThumbnail;
+use crate::util;
 
 mod imp {
     use super::*;
@@ -107,19 +108,23 @@ impl DewVideoRow {
     }
 
     pub fn set_views(&self, views: u64) {
-        static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'G', 'T'];
-        let suffix = (0..)
-            .map(|x| 1000f64.powi(x) as u64)
-            .zip(SUFFIXES)
-            .filter(|x| views > x.0)
-            .last()
-            .unwrap();
+        self.imp()
+            .views
+            .set_text(&util::format_semi_engineering(views as f32));
 
-        self.imp().views.set_text(&format!(
-            "{}{} views",
-            views / suffix.0,
-            suffix.1
-        ));
+        // static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'G', 'T'];
+        // let suffix = (0..)
+        //     .map(|x| 1000f64.powi(x) as
+        //     .zip(SUFFIXES)
+        //     .filter(|x| views > x.0)
+        //     .last()
+        //     .unwrap();
+
+        // self.imp().views.set_text(&format!(
+        //     "{}{} views",
+        //     views / suffix.0,
+        //     suffix.1
+        // ));
     }
 }
 
