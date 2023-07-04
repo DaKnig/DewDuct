@@ -68,7 +68,12 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="description">
+                        <property name="can-focus">False</property>
+                        <property name="focus-on-click">False</property>
                         <property name="label">This video is amazing!</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-top">5</property>
                         <property name="selectable">True</property>
                         <property name="vexpand">True</property>
                         <property name="wrap">True</property>

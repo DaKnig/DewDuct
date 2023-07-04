@@ -6,6 +6,7 @@
   <requires lib="libadwaita" version="1.3"/>
   <template class="DewUpdatePage" parent="GtkBox">
     <property name="orientation">1</property>
+    <property name="width-request">280</property>
     <child>
       <object class="GtkButton" id="update_button">
         <property name="label">Last updated: never</property>

@@ -82,7 +82,21 @@ mod imp {
     impl AdwApplicationWindowImpl for DewDuctWindow {}
 
     impl DewDuctWindow {
+        pub fn back(&self) {
+            // self.video_page.imp().reset_vid();
+            self.screen_stack.set_visible_child_full(
+                "normal_view_page",
+                gtk::StackTransitionType::SlideDown,
+            );
+
+        }
+
         pub fn setup_actions(&self) {
+            let action_back = SimpleAction::new("back", None);
+            action_back.connect_activate(clone!(@weak self as win => move
+						|_, _| win.back()));
+            self.obj().add_action(&action_back);
+
             // Add action "player"
             let action_play = SimpleAction::new_stateful(
                 "play",

@@ -13,10 +13,17 @@
         <property name="orientation">vertical</property>
         <child>
           <object class="AdwHeaderBar">
-            <child>
+            <child type="start">
               <object class="GtkToggleButton">
                 <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="bidirectional | sync-create"/>
                 <property name="icon-name">open-menu-symbolic</property>
+              </object>
+            </child>
+            <child type="start">
+              <object class="GtkButton" id="back_button">
+                <property name="action-name">win.back</property>
+                <property name="icon-name">go-previous-symbolic</property>
+                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">True</property>
               </object>
             </child>
           </object>
@@ -37,7 +44,7 @@
             <child type="content">
               <object class="GtkStack" id="screen-stack">
                 <child>
-                  <object class="GtkStackPage" id="normal-view-page">
+                  <object class="GtkStackPage" id="normal_view_page">
                     <property name="child">
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
@@ -58,7 +65,7 @@
                         </child>
                       </object>
                     </property>
-                    <property name="name">normal-view</property>
+                    <property name="name">normal_view_page</property>
                     <property name="title">Home</property>
                   </object>
                 </child>
