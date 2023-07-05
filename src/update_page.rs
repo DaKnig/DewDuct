@@ -92,37 +92,35 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewUpdatePage {
+        async fn update_vids_async(&self) {
+            let invidious = self.invidious_client.borrow().clone();
+
+            let popular_items = invidious.popular(None).await;
+            match popular_items {
+                Ok(popular) => {
+                    let mut store = self.new_vids_store.clone();
+                    let vids = popular.items.into_iter().map(|x| x.id);
+
+                    let n_items = store.n_items();
+                    store.splice(0, n_items, &[]); // empty
+                    store.extend(vids);
+                    self.update_button.remove_css_class("error");
+                }
+                Err(err) => {
+                    eprintln!("{}", err);
+                    self.update_button.add_css_class("error");
+                }
+            }
+        }
+
         #[template_callback]
         fn update_vids(&self) {
-            let main_context = MainContext::default();
             // The main loop executes the asynchronous block
-            main_context.spawn_local(
-                clone!(@weak self as page => async move {
-                        let invidious =
-                            page.invidious_client.borrow().clone();
-
-                        let popular_items = invidious.popular(None).await;
-                        match popular_items {
-                            Ok(popular) => {
-                                let mut store = page.new_vids_store.clone();
-                                let vids = popular
-                                    .items
-                                    .into_iter()
-                                    .map(|x| x.id);
-
-                                let n_items = store.n_items();
-                                store.splice(0, n_items, &[]); // empty
-                                store.extend(vids);
-                                page.update_button
-                                    .remove_css_class("error");
-                            }
-                            Err(err) => {
-                                eprintln!("{}", err);
-                                page.update_button
-                                    .add_css_class("error");
-                            }
-                        }
-                    }
+            MainContext::default().spawn_local(
+                clone!(@weak self as page =>
+                       async move {
+                           page.update_vids_async().await
+                       }
                 ),
             );
         }

@@ -15,9 +15,6 @@ pub struct DewCache {
 }
 
 impl DewCache {
-    pub fn new(dir: &Path) -> Self {
-        DewCache { dir: dir.into() }
-    }
     pub(crate) fn dir(&self) -> &PathBuf {
         &self.dir
     }
