@@ -28,7 +28,6 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use invidious::video::Video;
 
-use crate::cache::DewCache;
 use crate::thumbnail::DewThumbnail;
 
 mod imp {
@@ -85,9 +84,9 @@ mod imp {
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
-        pub async fn set_vid(&self, cache: &DewCache, new_vid: Video) {
+        pub async fn set_vid(&self, new_vid: Video) {
             self.vid_thumbnail
-                .update_from_vid_data(cache, &new_vid)
+                .update_from_vid_data(&new_vid)
                 .await
                 .unwrap_or_else(|err| {
                     println!(

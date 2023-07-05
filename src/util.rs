@@ -1,5 +1,6 @@
 use crate::cache::DewCache;
 use once_cell::sync::OnceCell;
+use std::path::{Path, PathBuf};
 
 pub fn format_semi_engineering(value: f32) -> String {
     static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'B', 'T'];
@@ -26,7 +27,16 @@ pub fn format_semi_engineering(value: f32) -> String {
 }
 
 pub(crate) fn cache() -> &'static DewCache {
-    static APP_CACHE: OnceCell<DewCache> =
-        OnceCell::new();
-    &APP_CACHE.get_or_init(||{DewCache::default()})
+    static APP_CACHE: OnceCell<DewCache> = OnceCell::new();
+    &APP_CACHE.get_or_init(|| DewCache::default())
+}
+
+pub(crate) fn cache_dir(fname: &Path) -> PathBuf {
+    // let mut fname = cache().dir().clone().into();
+    let mut dir = cache().dir().clone();
+    dir.push(fname);
+    // fname.push(&vid_data.id);
+    // fname.push(&thumb.quality);
+    // fname.set_extension("jpg");
+    dir
 }

@@ -28,9 +28,6 @@ impl DewCache {
         cache: &Self,
         fname: &Path,
         fetcher: impl Future<Output = Result<(), E>>,
-        // impl FnOnce() -> Fut
-        // where
-        //    Fut: Future<Output = ()>,
     ) -> Result<(), E> {
         let path = cache.dir().join(fname);
         match File::open(&path).ok() {

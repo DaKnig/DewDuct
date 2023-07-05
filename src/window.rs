@@ -29,7 +29,6 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use crate::cache::DewCache;
 use crate::update_page::DewUpdatePage;
 use crate::video_page::DewVideoPage;
 
@@ -46,9 +45,10 @@ mod imp {
         video_page: TemplateChild<DewVideoPage>,
         #[template_child(id = "screen-stack")]
         screen_stack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        update_page: TemplateChild<DewUpdatePage>,
         // #[template_child(id = "view-stack")]
         // pub view_stack: TemplateChild<adw::ViewStack>,
-        cache: Rc<RefCell<DewCache>>,
         invidious: Rc<RefCell<ClientAsync>>,
     }
 
@@ -145,13 +145,12 @@ mod imp {
 
                     // vid_page.imp().set_vid(cache, vid);
                     MainContext::default().spawn_local(async move {
-                        let cache = win.cache.borrow();
                         let vid_page = win.video_page.get();
                         let invidious = win.invidious.borrow().clone();
 
                         match invidious.video(&id, None).await {
                             Ok(vid) => {
-                                vid_page.imp().set_vid(&cache, vid).await;
+                                vid_page.imp().set_vid(vid).await;
                                 win.screen_stack.set_visible_child_full(
                                     "video_page",
                                     gtk::StackTransitionType::SlideUp

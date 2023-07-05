@@ -30,8 +30,10 @@ use isahc::AsyncReadResponseExt;
 
 use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 
 use crate::cache::DewCache;
+use crate::util::{cache, cache_dir};
 
 mod imp {
     use super::*;
@@ -101,7 +103,6 @@ impl DewThumbnail {
 
     pub async fn update_from_vid_data(
         &self,
-        cache: &DewCache,
         vid_data: impl std::ops::Deref<Target = Video>,
     ) -> anyhow::Result<()> {
         self.set_length(vid_data.length);
@@ -116,8 +117,7 @@ impl DewThumbnail {
             })?;
 
         // thumbnail_fname.push();
-        let mut thumbnail_fname = cache.dir().clone();
-        thumbnail_fname.push(&vid_data.id);
+        let mut thumbnail_fname = cache_dir(Path::new(&vid_data.id));
         thumbnail_fname.push(&thumb.quality);
         thumbnail_fname.set_extension("jpg");
 
@@ -147,7 +147,7 @@ impl DewThumbnail {
             anyhow::Ok(())
         };
 
-        DewCache::fetch_file(cache, &thumbnail_fname, fetcher).await?;
+        DewCache::fetch_file(cache(), &thumbnail_fname, fetcher).await?;
         self.imp()
             .thumbnail
             .set_filename(Some(thumbnail_fname.as_path()));

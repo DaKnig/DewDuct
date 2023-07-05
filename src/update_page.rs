@@ -30,7 +30,6 @@ use gtk::{prelude::*, subclass::prelude::*};
 use invidious;
 use invidious::ClientAsyncTrait;
 
-use crate::util;
 use crate::video_row::DewVideoRow;
 
 mod imp {
@@ -86,8 +85,6 @@ mod imp {
                         )
                         .expect("the action win.play does not exist");
                 });
-
-	    println!("constructed update page");
         }
     }
     impl WidgetImpl for DewUpdatePage {}
@@ -137,7 +134,6 @@ mod imp {
         }
 
         async fn fetch_vid_info(&self, vid: DewVideoRow, vid_id: GString) {
-            let cache = util::cache();
             let vid_data =
                 self.invidious_client.borrow().video(&vid_id, None).await;
 
@@ -148,7 +144,7 @@ mod imp {
 
             let vid_data = vid_data.unwrap();
 
-            vid.set_from_video_data(vid_data, &cache)
+            vid.set_from_video_data(vid_data)
                 .await
                 .unwrap_or_else(|err| {
                     println!("error loading video info: {}", err);

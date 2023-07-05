@@ -34,7 +34,7 @@
 	(3,21,"GtkBox",None,20,None,None,None,None,None),
 	(3,22,"AdwViewSwitcherBar",None,21,None,None,None,None,None),
 	(3,23,"AdwViewStack","view-stack",21,None,None,None,1,None),
-	(3,24,"DewUpdatePage",None,23,None,None,None,None,None),
+	(3,24,"DewUpdatePage","update_page",23,None,None,None,None,None),
 	(3,25,"GtkBox","subscribe-page",23,None,None,None,1,None),
 	(3,26,"GtkButton","back_button",3,None,"start",None,None,None),
 	(4,1,"GtkBox","DewThumbnail",None,None,None,None,None,None),
