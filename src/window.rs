@@ -104,29 +104,12 @@ mod imp {
 
             action_play.connect_activate(
                 clone!(@weak self as win => move |action, param| {
-                    // Get state
-                    let state: Option<String> = action
-                        .state()
-                        .expect("Could not get state.")
-                        .get()
-                        .expect("not a Option<String>!");
-
                     // Get param
                     let parameter: Option<String> = param
                         .expect("Could not get parameter.")
                         .get()
                         .expect("not a Option<String>!");
 
-                    if parameter == state {
-                        println!("clicked on the same vid...");
-                        win.screen_stack.set_visible_child_full(
-                            "video_page",
-                            gtk::StackTransitionType::SlideUp
-                        );
-                        return
-                    } else {
-                        println!("was {state:?} became {parameter:?}");
-                    }
                     // Increase state by parameter and save state
                     // state += parameter;
                     action.set_state(parameter.to_variant());

@@ -87,30 +87,44 @@ mod imp {
 
     impl DewVideoPage {
         pub async fn set_vid(&self, new_vid: Video) {
-            self.vid_thumbnail
-                .update_from_vid_data(&new_vid)
-                .await
-                .unwrap_or_else(|err| {
-                    println!(
-                        "can't open video {} in the VideoPage: {}",
-                        new_vid.id, err
-                    )
-                });
-            self.author_name.set_text(&new_vid.author);
-            self.title.set_text(&new_vid.title);
-            self.sub_count.set_text(&format!(
-                "{} subscribers",
-                new_vid.sub_count_text
-            ));
+            if let None =
+                self.vid.borrow().as_ref().filter(|x| x.id == new_vid.id)
+            {
+                println!(
+                    "was {:?} became {:?}",
+                    self.vid.borrow().as_ref().map(|x| &x.id),
+                    Some(&new_vid.id)
+                );
 
-            // self.description.set_markup(&new_vid.description_html);
-            self.description.set_text(&new_vid.description);
-
+                self.vid_thumbnail
+                    .update_from_vid_data(&new_vid)
+                    .await
+                    .unwrap_or_else(|err| {
+                        println!(
+                            "can't open video {} in the VideoPage: {}",
+                            new_vid.id, err
+                        )
+                    });
+                self.author_name.set_text(&new_vid.author);
+                self.title.set_text(&new_vid.title);
+                self.sub_count.set_text(&format!(
+                    "{} subscribers",
+                    new_vid.sub_count_text
+                ));
+                // self.description.set_markup(&new_vid.description_html);
+                self.description.set_text(&new_vid.description);
+            } else {
+                println!("clicked on the same vid...")
+            }
             *self.vid.borrow_mut() = Some(new_vid);
             self.obj().set_visible(true);
         }
 
         pub fn reset_vid(&self) {
+            println!(
+                "was Some({state:?}) became None",
+                state = self.vid.take().map(|x| x.id)
+            );
             *self.vid.borrow_mut() = None;
             self.obj().set_visible(false);
             todo!() // reset the video and all stuffs
