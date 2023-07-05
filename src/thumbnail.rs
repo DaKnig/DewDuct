@@ -43,7 +43,7 @@ mod imp {
     pub struct DewThumbnail {
         // Template widgets
         #[template_child]
-        pub thumbnail: TemplateChild<gtk::Picture>,
+        pub(super) thumbnail: TemplateChild<gtk::Picture>,
         #[template_child]
         pub(super) length: TemplateChild<gtk::Label>,
         #[template_child]
@@ -83,11 +83,7 @@ glib::wrapper! {
 }
 
 impl DewThumbnail {
-    pub fn thumbnail(&self) -> gtk::Picture {
-        self.imp().thumbnail.get()
-    }
-
-    pub fn set_length(&self, length: u32) {
+    fn set_length(&self, length: u32) {
         let (hrs, mins, secs) =
             (length / 3600, (length / 60) % 60, length % 60);
 
@@ -101,7 +97,7 @@ impl DewThumbnail {
             .set_text(&format!("{}{:02}:{:02}", hrs_str, mins, secs));
     }
 
-    pub async fn update_from_vid_data(
+    pub(crate) async fn update_from_vid_data(
         &self,
         vid_data: impl std::ops::Deref<Target = Video>,
     ) -> anyhow::Result<()> {

@@ -81,11 +81,7 @@ impl DewVideoRow {
         glib::Object::builder().build()
     }
 
-    pub fn thumbnail(&self) -> gtk::Picture {
-        self.imp().thumbnail.thumbnail()
-    }
-
-    pub async fn set_from_video_data(
+    pub(crate) async fn set_from_video_data(
         &self,
         vid_data: Video,
     ) -> anyhow::Result<()> {
@@ -93,33 +89,17 @@ impl DewVideoRow {
         self.imp().channel.set_text(&vid_data.author);
         self.set_views(vid_data.views);
         self.set_published(vid_data.published);
-        self.imp().thumbnail.set_length(vid_data.length);
-
         self.imp().thumbnail.update_from_vid_data(&vid_data).await
     }
 
-    pub fn set_published(&self, published: u64) {
+    fn set_published(&self, published: u64) {
         self.imp().published.set_text(&format!("{}", published));
     }
 
-    pub fn set_views(&self, views: u64) {
+    fn set_views(&self, views: u64) {
         self.imp()
             .views
             .set_text(&util::format_semi_engineering(views as f32));
-
-        // static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'G', 'T'];
-        // let suffix = (0..)
-        //     .map(|x| 1000f64.powi(x) as
-        //     .zip(SUFFIXES)
-        //     .filter(|x| views > x.0)
-        //     .last()
-        //     .unwrap();
-
-        // self.imp().views.set_text(&format!(
-        //     "{}{} views",
-        //     views / suffix.0,
-        //     suffix.1
-        // ));
     }
 }
 

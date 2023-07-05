@@ -80,7 +80,7 @@ mod imp {
     impl AdwApplicationWindowImpl for DewDuctWindow {}
 
     impl DewDuctWindow {
-        pub fn back(&self) {
+        pub(super) fn back(&self) {
             // self.video_page.imp().reset_vid();
             self.screen_stack.set_visible_child_full(
                 "normal_view_page",

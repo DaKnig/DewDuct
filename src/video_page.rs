@@ -86,7 +86,7 @@ mod imp {
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
-        pub async fn set_vid(&self, new_vid: Video) {
+        pub(crate) async fn set_vid(&self, new_vid: Video) {
             if let None =
                 self.vid.borrow().as_ref().filter(|x| x.id == new_vid.id)
             {
@@ -120,7 +120,7 @@ mod imp {
             self.obj().set_visible(true);
         }
 
-        pub fn reset_vid(&self) {
+        pub(crate) fn reset_vid(&self) {
             println!(
                 "was Some({state:?}) became None",
                 state = self.vid.take().map(|x| x.id)
