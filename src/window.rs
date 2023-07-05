@@ -23,8 +23,7 @@ use std::rc::Rc;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use gio::SimpleAction;
-use glib::{clone, MainContext};
+use glib::Variant;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -66,6 +65,7 @@ mod imp {
             klass.install_action("win.back", None, |win, _, _| {
                 win.imp().back()
             });
+            klass.install_action_async("win.play", None, Self::Type::play);
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -73,12 +73,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewDuctWindow {
-        fn constructed(&self) {
-            self.parent_constructed();
-            self.setup_actions();
-        }
-    }
+    impl ObjectImpl for DewDuctWindow {}
     impl WidgetImpl for DewDuctWindow {}
     impl WindowImpl for DewDuctWindow {}
     impl ApplicationWindowImpl for DewDuctWindow {}
@@ -94,58 +89,35 @@ mod imp {
 
         }
 
-        pub fn setup_actions(&self) {
-            // Add action "player"
-            let action_play = SimpleAction::new_stateful(
-                "play",
-                Some(&Option::<String>::static_variant_type()),
-                None::<String>.to_variant(),
-            );
+        pub(super) async fn play(&self, _: String, param: Option<Variant>) {
+            // Get param
+            let parameter: Option<String> = param
+                .expect("Could not get parameter.")
+                .get()
+                .expect("not a Option<String>!");
 
-            action_play.connect_activate(
-                clone!(@weak self as win => move |action, param| {
-                    // Get param
-                    let parameter: Option<String> = param
-                        .expect("Could not get parameter.")
-                        .get()
-                        .expect("not a Option<String>!");
+            // Update label with new state
+            let Some(id) = parameter else {
+                println!("stop playing...");
+                self.video_page.imp().reset_vid();
+                return
+            };
 
-                    // Increase state by parameter and save state
-                    // state += parameter;
-                    action.set_state(parameter.to_variant());
+            let vid_page = self.video_page.get();
+            let invidious = self.invidious.borrow().clone();
 
-                    // Update label with new state
-
-                    let Some(id) = parameter else {
-                        println!("stop playing...");
-                        win.video_page.imp().reset_vid();
-                        return
-                    };
-
-                    // let inv = invidious.borrow();
-
-                    // vid_page.imp().set_vid(cache, vid);
-                    MainContext::default().spawn_local(async move {
-                        let vid_page = win.video_page.get();
-                        let invidious = win.invidious.borrow().clone();
-
-                        match invidious.video(&id, None).await {
-                            Ok(vid) => {
-                                vid_page.imp().set_vid(vid).await;
-                                win.screen_stack.set_visible_child_full(
-                                    "video_page",
-                                    gtk::StackTransitionType::SlideUp
-                                );
-                            },
-                            Err(err) => {
-                                println!("cant load {id}: {err}");
-                            }
-                        }
-                    });
-
-                }),
-            );
-            self.obj().add_action(&action_play);
+            match invidious.video(&id, None).await {
+                Ok(vid) => {
+                    vid_page.imp().set_vid(vid).await;
+                    self.screen_stack.set_visible_child_full(
+                        "video_page",
+                        gtk::StackTransitionType::SlideUp,
+                    );
+                }
+                Err(err) => {
+                    println!("cant load {id}: {err}");
+                }
+            }
         }
     }
 }
@@ -161,5 +133,8 @@ impl DewDuctWindow {
         glib::Object::builder()
             .property("application", application)
             .build()
+    }
+    pub async fn play(self, action_name: String, param: Option<Variant>) {
+        self.imp().play(action_name, param).await;
     }
 }
