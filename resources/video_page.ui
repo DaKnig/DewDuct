@@ -10,6 +10,21 @@
       <object class="DewThumbnail" id="vid_thumbnail"/>
     </child>
     <child>
+      <object class="GtkLabel" id="title">
+        <property name="ellipsize">end</property>
+        <property name="label">Video Title!!!</property>
+        <property name="lines">1</property>
+        <property name="margin-bottom">5</property>
+        <property name="margin-end">7</property>
+        <property name="margin-start">7</property>
+        <property name="margin-top">5</property>
+        <property name="xalign">0.0</property>
+        <style>
+          <class name="header"/>
+        </style>
+      </object>
+    </child>
+    <child>
       <object class="GtkBox">
         <child>
           <object class="GtkImage" id="author_thumb">
@@ -79,6 +94,7 @@
                         <property name="wrap">True</property>
                         <property name="wrap-mode">word-char</property>
                         <property name="xalign">0.0</property>
+                        <property name="yalign">0.0</property>
                         <style>
                           <class name="body"/>
                           <class name="link"/>

@@ -22,7 +22,6 @@ use std::cell::RefCell;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{clone, GString, MainContext};
 use gtk::{gio, glib, StringList};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -92,7 +91,8 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewUpdatePage {
-        async fn update_vids_async(&self) {
+        #[template_callback]
+        async fn update_vids(&self) {
             let invidious = self.invidious_client.borrow().clone();
 
             let popular_items = invidious.popular(None).await;
@@ -114,24 +114,23 @@ mod imp {
         }
 
         #[template_callback]
-        fn update_vids(&self) {
-            // The main loop executes the asynchronous block
-            MainContext::default().spawn_local(
-                clone!(@weak self as page =>
-                       async move {
-                           page.update_vids_async().await
-                       }
-                ),
-            );
-        }
-
-        #[template_callback]
         fn setup_vid_widget(&self, list_item: gtk::ListItem) {
             let vid = DewVideoRow::new();
             list_item.set_child(Some(&vid));
         }
 
-        async fn fetch_vid_info(&self, vid: DewVideoRow, vid_id: GString) {
+        #[template_callback]
+        async fn bind_vid_widget(&self, list_item: gtk::ListItem) {
+            let vid_id: glib::GString = list_item
+                .item()
+                .and_downcast::<gtk::StringObject>()
+                .expect("The item has to be an `StringObject`.")
+                .string();
+            let vid: DewVideoRow = list_item
+                .child()
+                .and_downcast()
+                .expect("The item needs to be a DewVideoRow");
+
             let vid_data =
                 self.invidious_client.borrow().video(&vid_id, None).await;
 
@@ -147,25 +146,6 @@ mod imp {
                 .unwrap_or_else(|err| {
                     println!("error loading video info: {}", err);
                 })
-        }
-
-        #[template_callback]
-        fn bind_vid_widget(&self, list_item: gtk::ListItem) {
-            let vid_id: glib::GString = list_item
-                .item()
-                .and_downcast::<gtk::StringObject>()
-                .expect("The item has to be an `StringObject`.")
-                .string();
-            let vid: DewVideoRow = list_item
-                .child()
-                .and_downcast()
-                .expect("The item needs to be a DewVideoRow");
-
-            MainContext::default().spawn_local(
-                clone!(@weak self as page => async move {
-                    page.fetch_vid_info(vid.clone(), vid_id).await
-                }),
-            );
         }
     }
 }

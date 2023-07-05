@@ -39,6 +39,8 @@ mod imp {
         // Template widgets
         #[template_child]
         vid_thumbnail: TemplateChild<DewThumbnail>,
+        #[template_child]
+        title: TemplateChild<gtk::Label>,
         // #[template_child]
         // author_thumb: TemplateChild<gtk::Image>,
         #[template_child]
@@ -95,6 +97,7 @@ mod imp {
                     )
                 });
             self.author_name.set_text(&new_vid.author);
+            self.title.set_text(&new_vid.title);
             self.sub_count.set_text(&format!(
                 "{} subscribers",
                 new_vid.sub_count_text

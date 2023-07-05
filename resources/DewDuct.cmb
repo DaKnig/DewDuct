@@ -53,7 +53,7 @@
 	(5,10,"GtkLabel",None,3,None,None,None,1,None),
 	(6,1,"GtkBox","DewVideoPage",None,None,None,None,None,None),
 	(6,2,"DewThumbnail","vid_thumbnail",1,None,None,None,None,None),
-	(6,3,"GtkBox",None,1,None,None,None,1,None),
+	(6,3,"GtkBox",None,1,None,None,None,2,None),
 	(6,4,"GtkImage","author_thumb",3,None,None,None,None,None),
 	(6,5,"GtkBox",None,3,None,None,None,1,None),
 	(6,6,"GtkLabel","author_name",5,None,None,None,None,None),
@@ -62,11 +62,12 @@
 	(6,9,"GtkLabel","views",8,None,None,None,None,None),
 	(6,10,"GtkLabel","likes",8,None,None,None,1,None),
 	(6,15,"AdwViewSwitcherBar","bottom_switcher",1,None,None,None,4,None),
-	(6,16,"GtkScrolledWindow",None,1,None,None,None,2,None),
+	(6,16,"GtkScrolledWindow",None,1,None,None,None,3,None),
 	(6,17,"AdwViewStack","bottom_stack",16,None,None,None,None,None),
 	(6,18,"AdwViewStackPage",None,17,None,None,None,None,None),
 	(6,19,"GtkBox",None,18,None,None,None,None,None),
-	(6,20,"GtkLabel","description",19,None,None,None,None,None)
+	(6,20,"GtkLabel","description",19,None,None,None,None,None),
+	(6,21,"GtkLabel","title",1,None,None,None,1,None)
   </object>
   <object_property>
 	(2,1,"GtkOrientable","orientation","1",None,None,None,None,None,None,None,None,None),
@@ -154,12 +155,21 @@
 	(6,20,"GtkLabel","wrap","True",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkLabel","wrap-mode","word-char",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkLabel","xalign","0.0",None,None,None,None,None,None,None,None,None),
+	(6,20,"GtkLabel","yalign","0.0",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkWidget","can-focus","False",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkWidget","focus-on-click","False",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkWidget","margin-end","10",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkWidget","margin-start","10",None,None,None,None,None,None,None,None,None),
 	(6,20,"GtkWidget","margin-top","5",None,None,None,None,None,None,None,None,None),
-	(6,20,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None)
+	(6,20,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkLabel","ellipsize","end",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkLabel","label","Video Title!!!",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkLabel","lines","1",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkLabel","xalign","0.0",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkWidget","margin-bottom","5",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkWidget","margin-end","7",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkWidget","margin-start","7",None,None,None,None,None,None,None,None,None),
+	(6,21,"GtkWidget","margin-top","5",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)
@@ -176,11 +186,14 @@
 	(2,10,"GtkWidget",2,2,None,1,None),
 	(6,20,"GtkWidget",1,1,None,None,None),
 	(6,20,"GtkWidget",2,2,None,1,None),
-	(6,20,"GtkWidget",2,3,None,1,None)
+	(6,20,"GtkWidget",2,3,None,1,None),
+	(6,21,"GtkWidget",1,1,None,None,None),
+	(6,21,"GtkWidget",2,2,None,1,None)
   </object_data>
   <object_data_arg>
 	(3,6,"GtkWidget",2,2,"name","background"),
 	(6,20,"GtkWidget",2,2,"name","body"),
-	(6,20,"GtkWidget",2,3,"name","link")
+	(6,20,"GtkWidget",2,3,"name","link"),
+	(6,21,"GtkWidget",2,2,"name","header")
   </object_data_arg>
 </cambalache-project>
