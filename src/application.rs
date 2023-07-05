@@ -97,7 +97,7 @@ impl DewDuctApplication {
             .activate(move |app: &Self, _, _| app.show_about())
             .build();
         self.add_action_entries([quit_action, about_action]);
-	self.set_accels_for_action("win.back", &["Escape"]);
+        self.set_accels_for_action("win.back", &["Escape"]);
     }
 
     fn show_about(&self) {

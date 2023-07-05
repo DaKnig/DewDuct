@@ -63,6 +63,9 @@ mod imp {
             DewVideoPage::ensure_type();
             klass.bind_template();
             // klass.bind_template_callbacks();
+            klass.install_action("win.back", None, |win, _, _| {
+                win.imp().back()
+            });
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -92,11 +95,6 @@ mod imp {
         }
 
         pub fn setup_actions(&self) {
-            let action_back = SimpleAction::new("back", None);
-            action_back.connect_activate(clone!(@weak self as win => move
-						|_, _| win.back()));
-            self.obj().add_action(&action_back);
-
             // Add action "player"
             let action_play = SimpleAction::new_stateful(
                 "play",
