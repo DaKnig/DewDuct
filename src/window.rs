@@ -62,9 +62,7 @@ mod imp {
             DewVideoPage::ensure_type();
             klass.bind_template();
             // klass.bind_template_callbacks();
-            klass.install_action("win.back", None, |win, _, _| {
-                win.imp().back()
-            });
+            klass.install_action("win.back", None, Self::Type::back);
             klass.install_action_async("win.play", None, Self::Type::play);
         }
 
@@ -136,5 +134,8 @@ impl DewDuctWindow {
     }
     pub async fn play(self, action_name: String, param: Option<Variant>) {
         self.imp().play(action_name, param).await;
+    }
+    pub fn back(&self, _: &str, _: Option<&Variant>) {
+        self.imp().back()
     }
 }

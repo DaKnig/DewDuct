@@ -113,10 +113,10 @@ mod imp {
                 ));
                 // self.description.set_markup(&new_vid.description_html);
                 self.description.set_text(&new_vid.description);
+                *self.vid.borrow_mut() = Some(new_vid);
             } else {
                 println!("clicked on the same vid...")
             }
-            *self.vid.borrow_mut() = Some(new_vid);
             self.obj().set_visible(true);
         }
 
