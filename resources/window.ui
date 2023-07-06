@@ -32,7 +32,7 @@
           <object class="AdwFlap" id="flap">
             <property name="flap">
               <object class="GtkStackSidebar">
-                <property name="stack">screen-stack</property>
+                <property name="stack">screen_stack</property>
                 <property name="vexpand">True</property>
                 <style>
                   <class name="background"/>
@@ -42,7 +42,7 @@
             <property name="fold-threshold-policy">natural</property>
             <property name="reveal-flap">False</property>
             <child type="content">
-              <object class="GtkStack" id="screen-stack">
+              <object class="GtkStack" id="screen_stack">
                 <child>
                   <object class="GtkStackPage" id="normal_view_page">
                     <property name="child">

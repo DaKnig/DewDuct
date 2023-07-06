@@ -42,7 +42,7 @@ mod imp {
         // Template widgets
         #[template_child]
         video_page: TemplateChild<DewVideoPage>,
-        #[template_child(id = "screen-stack")]
+        #[template_child]
         screen_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         update_page: TemplateChild<DewUpdatePage>,

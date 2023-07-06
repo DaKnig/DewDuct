@@ -27,7 +27,7 @@
 	(3,4,"GtkToggleButton",None,3,None,"start",None,None,None),
 	(3,5,"AdwFlap","flap",2,None,None,None,1,None),
 	(3,6,"GtkStackSidebar",None,5,None,"flap",None,None,None),
-	(3,7,"GtkStack","screen-stack",5,None,"content",None,1,None),
+	(3,7,"GtkStack","screen_stack",5,None,"content",None,1,None),
 	(3,13,"GtkStackPage",None,7,None,None,None,1,None),
 	(3,14,"DewVideoPage","video_page",13,None,None,None,None,None),
 	(3,20,"GtkStackPage","normal_view_page",7,None,None,None,None,None),
