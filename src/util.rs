@@ -1,6 +1,14 @@
 use crate::cache::DewCache;
+use humantime::format_duration;
 use once_cell::sync::OnceCell;
 use std::path::{Path, PathBuf};
+use std::time::Duration;
+
+pub(crate) fn format_rel_time(duration: Duration) -> String {
+    let mut s: String = format_duration(duration).to_string();
+    s = s.split_whitespace().next().unwrap().to_owned();
+    s
+}
 
 pub fn format_semi_engineering(value: f32) -> String {
     static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'B', 'T'];
@@ -32,11 +40,7 @@ pub(crate) fn cache() -> &'static DewCache {
 }
 
 pub(crate) fn cache_dir(fname: &Path) -> PathBuf {
-    // let mut fname = cache().dir().clone().into();
     let mut dir = cache().dir().clone();
     dir.push(fname);
-    // fname.push(&vid_data.id);
-    // fname.push(&thumb.quality);
-    // fname.set_extension("jpg");
     dir
 }

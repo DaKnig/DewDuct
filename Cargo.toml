@@ -10,6 +10,7 @@ anyhow = "1.0"
 thiserror = "1.0"
 isahc = "1.7"
 once_cell = "1.18"
+humantime = "2.1"
 
 [dependencies.invidious]
 version = "0.6.1"

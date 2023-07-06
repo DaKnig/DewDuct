@@ -18,6 +18,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib};
@@ -93,7 +95,25 @@ impl DewVideoRow {
     }
 
     fn set_published(&self, published: u64) {
-        self.imp().published.set_text(&format!("{}", published));
+        let now = SystemTime::now();
+        let published: SystemTime =
+            UNIX_EPOCH + Duration::from_secs(published);
+        let rel_upload_time = if now > published {
+            now.duration_since(published)
+                .map(|duration| util::format_rel_time(duration) + " ago")
+        } else {
+            published.duration_since(now).map(|duration| {
+                "in ".to_string() + &util::format_rel_time(duration)
+            })
+        };
+        let Ok(rel_upload_time) = rel_upload_time else {
+            println!("{}", rel_upload_time.unwrap_err());
+            return;
+        };
+
+        self.imp()
+            .published
+            .set_text(&format!("{}", rel_upload_time));
     }
 
     fn set_views(&self, views: u64) {

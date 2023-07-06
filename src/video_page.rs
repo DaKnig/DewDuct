@@ -87,8 +87,11 @@ mod imp {
 
     impl DewVideoPage {
         pub(crate) async fn set_vid(&self, new_vid: Video) {
-            if let None =
-                self.vid.borrow().as_ref().filter(|x| x.id == new_vid.id)
+            if !self
+                .vid
+                .borrow()
+                .as_ref()
+                .is_some_and(|x| x.id == new_vid.id)
             {
                 println!(
                     "was {:?} became {:?}",
