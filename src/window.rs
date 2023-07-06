@@ -46,8 +46,10 @@ mod imp {
         screen_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         update_page: TemplateChild<DewUpdatePage>,
-        // #[template_child(id = "view-stack")]
-        // pub view_stack: TemplateChild<adw::ViewStack>,
+        #[template_child]
+        search_entry: TemplateChild<gtk::SearchEntry>,
+        #[template_child]
+        search_bar: TemplateChild<gtk::SearchBar>,
         invidious: Rc<RefCell<ClientAsync>>,
     }
 
@@ -71,7 +73,12 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewDuctWindow {}
+    impl ObjectImpl for DewDuctWindow {
+        fn constructed(&self) {
+            self.parent_constructed();
+            self.search_bar.connect_entry(&*self.search_entry);
+        }
+    }
     impl WidgetImpl for DewDuctWindow {}
     impl WindowImpl for DewDuctWindow {}
     impl ApplicationWindowImpl for DewDuctWindow {}
@@ -84,7 +91,7 @@ mod imp {
                 "normal_view_page",
                 gtk::StackTransitionType::SlideDown,
             );
-
+	    self.search_bar.set_search_mode(false);
         }
 
         pub(super) async fn play(&self, _: String, param: Option<Variant>) {

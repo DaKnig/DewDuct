@@ -26,6 +26,17 @@
                 <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">True</property>
               </object>
             </child>
+            <child type="title">
+              <object class="GtkSearchBar" id="search_bar">
+                <property name="child">
+                  <object class="GtkSearchEntry" id="search_entry">
+                    <property name="placeholder-text">Search</property>
+                  </object>
+                </property>
+                <property name="key-capture-widget">DewDuctWindow</property>
+                <property name="show-close-button">True</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
