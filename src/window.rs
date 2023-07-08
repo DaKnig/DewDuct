@@ -23,11 +23,12 @@ use std::rc::Rc;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::Variant;
+use glib::{clone, GString, Variant};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use crate::search_page::DewSearchPage;
 use crate::update_page::DewUpdatePage;
 use crate::video_page::DewVideoPage;
 
@@ -43,6 +44,8 @@ mod imp {
         #[template_child]
         video_page: TemplateChild<DewVideoPage>,
         #[template_child]
+        search_page: TemplateChild<DewSearchPage>,
+        #[template_child]
         screen_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         update_page: TemplateChild<DewUpdatePage>,
@@ -50,6 +53,8 @@ mod imp {
         search_entry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
+
+        last_visible_page: Rc<RefCell<Option<GString>>>,
         invidious: Rc<RefCell<ClientAsync>>,
     }
 
@@ -62,6 +67,7 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             DewUpdatePage::ensure_type();
             DewVideoPage::ensure_type();
+            DewSearchPage::ensure_type();
             klass.bind_template();
             // klass.bind_template_callbacks();
             klass.install_action("win.back", None, Self::Type::back);
@@ -77,6 +83,24 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.search_bar.connect_entry(&*self.search_entry);
+            self.search_bar.connect_search_mode_enabled_notify(
+                clone!(@weak self as win =>
+                move |search_bar: &gtk::SearchBar| {
+                    let screen_stack = &win.screen_stack;
+                    let last_visible_page = &win.last_visible_page;
+                    let transition_to =
+			if search_bar.is_search_mode() {
+                            last_visible_page.replace(
+				screen_stack.visible_child_name());
+                            "search_page".into()
+			} else {
+			    last_visible_page
+				.take()
+				.unwrap_or("normal_view_page".into())
+                        };
+                    win.screen_stack.set_visible_child_name(&transition_to);
+                }),
+            );
         }
     }
     impl WidgetImpl for DewDuctWindow {}
@@ -86,12 +110,12 @@ mod imp {
 
     impl DewDuctWindow {
         pub(super) fn back(&self) {
-            // self.video_page.imp().reset_vid();
             self.screen_stack.set_visible_child_full(
                 "normal_view_page",
                 gtk::StackTransitionType::SlideDown,
             );
-	    self.search_bar.set_search_mode(false);
+            self.search_bar.set_search_mode(false);
+	    self.video_page.set_visible(false);
         }
 
         pub(super) async fn play(&self, _: String, param: Option<Variant>) {

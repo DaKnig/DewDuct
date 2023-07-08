@@ -17,6 +17,7 @@
               <object class="GtkToggleButton">
                 <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="bidirectional | sync-create"/>
                 <property name="icon-name">open-menu-symbolic</property>
+                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | invert-boolean | sync-create">True</property>
               </object>
             </child>
             <child type="start">
@@ -34,7 +35,6 @@
                   </object>
                 </property>
                 <property name="key-capture-widget">DewDuctWindow</property>
-                <property name="show-close-button">True</property>
               </object>
             </child>
           </object>
@@ -78,6 +78,14 @@
                     </property>
                     <property name="name">normal_view_page</property>
                     <property name="title">Home</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="child">
+                      <object class="DewSearchPage" id="search_page"/>
+                    </property>
+                    <property name="name">search_page</property>
                   </object>
                 </child>
                 <child>

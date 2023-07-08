@@ -4,6 +4,7 @@
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">update_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">video_page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">search_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">video_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">thumbnail.ui</file>
     <file>dummi_thumbnail.svg</file>

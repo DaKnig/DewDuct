@@ -6,13 +6,16 @@
 	(3,1,"window.ui","window.ui",None,None,None,None,None,None,None),
 	(4,1,None,"thumbnail.ui",None,None,None,None,None,None,None),
 	(5,1,None,"video_row.ui",None,None,None,None,None,None,None),
-	(6,1,"video_page.ui","video_page.ui",None,None,None,None,None,None,None)
+	(6,1,"video_page.ui","video_page.ui",None,None,None,None,None,None,None),
+	(8,1,"search_page.ui","search_page.ui",None,None,None,None,None,None,None)
   </ui>
   <ui_library>
 	(2,"gtk","4.0",None),
 	(3,"gtk","4.8",None),
 	(6,"gtk","4.8",None),
-	(6,"libadwaita","1.3",None)
+	(6,"libadwaita","1.3",None),
+	(8,"gtk","4.10",None),
+	(8,"libadwaita","1.3",None)
   </ui_library>
   <object>
 	(2,1,"GtkBox","DewUpdatePage",None,None,None,None,None,None),
@@ -37,8 +40,10 @@
 	(3,24,"DewUpdatePage","update_page",23,None,None,None,None,None),
 	(3,25,"GtkBox","subscribe-page",23,None,None,None,1,None),
 	(3,26,"GtkButton","back_button",3,None,"start",None,None,None),
-	(3,30,"GtkSearchBar","search_bar",3,None,"title",None,None,None),
+	(3,30,"GtkSearchBar","search_bar",3,None,"title",None,None,""),
 	(3,31,"GtkSearchEntry","search_entry",30,None,None,None,None,None),
+	(3,32,"GtkStackPage",None,7,None,None,None,None,None),
+	(3,33,"DewSearchPage","search_page",32,None,None,None,None,None),
 	(4,1,"GtkBox","DewThumbnail",None,None,None,None,None,None),
 	(4,2,"GtkOverlay",None,1,None,None,None,None,None),
 	(4,3,"GtkProgressBar","watched_progress",1,None,None,None,1,None),
@@ -69,7 +74,15 @@
 	(6,18,"AdwViewStackPage",None,17,None,None,None,None,None),
 	(6,19,"GtkBox",None,18,None,None,None,None,None),
 	(6,20,"GtkLabel","description",19,None,None,None,None,None),
-	(6,21,"GtkLabel","title",1,None,None,None,1,None)
+	(6,21,"GtkLabel","title",1,None,None,None,1,None),
+	(8,1,"GtkBox","DewSearchPage",None,None,None,None,None,None),
+	(8,2,"GtkStack","search_stack",1,None,None,None,None,None),
+	(8,3,"GtkStackPage","not_found_page",2,None,None,None,None,None),
+	(8,4,"AdwStatusPage",None,3,None,None,None,None,None),
+	(8,5,"GtkStackPage","results_page",2,None,None,None,1,None),
+	(8,6,"GtkScrolledWindow",None,5,None,None,None,None,None),
+	(8,7,"AdwClampScrollable",None,6,None,None,None,None,None),
+	(8,8,"GtkListView",None,7,None,None,None,None,None)
   </object>
   <object_property>
 	(2,1,"GtkOrientable","orientation","1",None,None,None,None,None,None,None,None,None),
@@ -84,6 +97,7 @@
 	(3,2,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
 	(3,4,"GtkButton","icon-name","open-menu-symbolic",None,None,None,None,None,None,None,None,None),
 	(3,4,"GtkToggleButton","active",None,None,None,None,None,None,5,"AdwFlap","reveal-flap","bidirectional | sync-create"),
+	(3,4,"GtkWidget","visible","True",None,None,None,None,None,14,"GtkWidget","visible","bidirectional | invert-boolean | sync-create"),
 	(3,5,"AdwFlap","flap",None,None,None,None,None,6,None,None,None,None),
 	(3,5,"AdwFlap","fold-threshold-policy","natural",None,None,None,None,None,None,None,None,None),
 	(3,5,"AdwFlap","reveal-flap","False",None,None,None,None,None,None,None,None,None),
@@ -105,8 +119,9 @@
 	(3,26,"GtkWidget","visible","True",None,None,None,None,None,14,"GtkWidget","visible","bidirectional | sync-create"),
 	(3,30,"GtkSearchBar","child",None,None,None,None,None,31,None,None,None,None),
 	(3,30,"GtkSearchBar","key-capture-widget","1",None,None,None,None,None,None,None,None,None),
-	(3,30,"GtkSearchBar","show-close-button","True",None,None,None,None,None,None,None,None,None),
 	(3,31,"GtkSearchEntry","placeholder-text","Search",None,None,None,None,None,None,None,None,None),
+	(3,32,"GtkStackPage","child",None,None,None,None,None,33,None,None,None,None),
+	(3,32,"GtkStackPage","name","search_page",None,None,None,None,None,None,None,None,None),
 	(4,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkLabel","label","0:00",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkWidget","halign","end",None,None,None,None,None,None,None,None,None),
@@ -175,7 +190,16 @@
 	(6,21,"GtkWidget","margin-bottom","5",None,None,None,None,None,None,None,None,None),
 	(6,21,"GtkWidget","margin-end","7",None,None,None,None,None,None,None,None,None),
 	(6,21,"GtkWidget","margin-start","7",None,None,None,None,None,None,None,None,None),
-	(6,21,"GtkWidget","margin-top","5",None,None,None,None,None,None,None,None,None)
+	(6,21,"GtkWidget","margin-top","5",None,None,None,None,None,None,None,None,None),
+	(8,3,"GtkStackPage","child",None,None,None,None,None,4,None,None,None,None),
+	(8,3,"GtkStackPage","name","not_found_page",None,None,None,None,None,None,None,None,None),
+	(8,4,"AdwStatusPage","description","Try a different search.",None,None,None,None,None,None,None,None,None),
+	(8,4,"AdwStatusPage","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
+	(8,4,"AdwStatusPage","title","No Results Found",None,None,None,None,None,None,None,None,None),
+	(8,4,"GtkWidget","hexpand","True",None,None,None,None,None,None,None,None,None),
+	(8,4,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(8,5,"GtkStackPage","child",None,None,None,None,None,6,None,None,None,None),
+	(8,5,"GtkStackPage","name","results_page",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)

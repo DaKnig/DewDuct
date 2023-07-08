@@ -21,6 +21,7 @@
 mod application;
 mod cache;
 mod config;
+mod search_page;
 mod thumbnail;
 mod update_page;
 mod util;
