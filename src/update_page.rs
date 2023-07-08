@@ -26,7 +26,6 @@ use gtk::{gio, glib, StringList};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious;
 use invidious::ClientAsyncTrait;
 
 use crate::video_row::DewVideoRow;
@@ -131,8 +130,9 @@ mod imp {
                 .and_downcast()
                 .expect("The item needs to be a DewVideoRow");
 
-            let vid_data =
-                self.invidious_client.borrow().video(&vid_id, None).await;
+            let invidious = self.invidious_client.borrow().clone();
+
+            let vid_data = invidious.video(&vid_id, None).await;
 
             if let Err(err) = vid_data {
                 eprintln!("can't fetch the data of vid ID {vid_id}: {err}");

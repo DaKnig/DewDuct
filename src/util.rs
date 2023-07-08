@@ -13,7 +13,7 @@ pub(crate) fn format_rel_time(duration: Duration) -> String {
 pub fn format_semi_engineering(value: f32) -> String {
     static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'B', 'T'];
     let suffix = (0..)
-        .map(|x| 1000f32.powi(x) as f32)
+        .map(|x| 1000f32.powi(x))
         .zip(SUFFIXES)
         .filter(|x| value > x.0)
         .last()
@@ -36,7 +36,7 @@ pub fn format_semi_engineering(value: f32) -> String {
 
 pub(crate) fn cache() -> &'static DewCache {
     static APP_CACHE: OnceCell<DewCache> = OnceCell::new();
-    &APP_CACHE.get_or_init(|| DewCache::default())
+    APP_CACHE.get_or_init(DewCache::default)
 }
 
 pub(crate) fn cache_dir(fname: &Path) -> PathBuf {

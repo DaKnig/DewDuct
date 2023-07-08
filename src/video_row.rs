@@ -111,9 +111,7 @@ impl DewVideoRow {
             return;
         };
 
-        self.imp()
-            .published
-            .set_text(&format!("{}", rel_upload_time));
+        self.imp().published.set_text(&rel_upload_time);
     }
 
     fn set_views(&self, views: u64) {

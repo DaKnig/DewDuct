@@ -115,7 +115,7 @@ mod imp {
                 gtk::StackTransitionType::SlideDown,
             );
             self.search_bar.set_search_mode(false);
-	    self.video_page.set_visible(false);
+            self.video_page.set_visible(false);
         }
 
         pub(super) async fn play(&self, _: String, param: Option<Variant>) {
