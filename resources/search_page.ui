@@ -33,9 +33,9 @@
     <child>
       <object class="GtkStack" id="search_stack">
         <child>
-          <object class="GtkStackPage" id="not_found_page">
+          <object class="GtkStackPage">
             <property name="child">
-              <object class="AdwStatusPage">
+              <object class="AdwStatusPage" id="not_found_page">
                 <property name="description">Try a different search.</property>
                 <property name="hexpand">True</property>
                 <property name="icon-name">edit-find-symbolic</property>
@@ -47,9 +47,9 @@
           </object>
         </child>
         <child>
-          <object class="GtkStackPage" id="results_page">
+          <object class="GtkStackPage">
             <property name="child">
-              <object class="GtkScrolledWindow">
+              <object class="GtkScrolledWindow" id="results_page">
                 <child>
                   <object class="AdwClampScrollable">
                     <child>
