@@ -2,9 +2,34 @@
 <!-- Created with Cambalache 0.13.0 -->
 <interface>
   <!-- interface-name search_page.ui -->
-  <requires lib="gtk" version="4.10"/>
+  <requires lib="gtk" version="4.8"/>
   <requires lib="libadwaita" version="1.3"/>
   <template class="DewSearchPage" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="AdwHeaderBar">
+        <child type="start">
+          <object class="GtkButton" id="back_button">
+            <property name="action-name">win.back</property>
+            <property name="icon-name">go-previous-symbolic</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkToggleButton" id="search_button">
+            <property name="action-name">win.search_started</property>
+            <property name="icon-name">edit-find-symbolic</property>
+          </object>
+        </child>
+        <child type="title">
+          <object class="GtkSearchEntry" id="search_entry">
+            <signal name="search-started" handler="search_started" swapped="yes"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSearchBar" id="search_bar"/>
+        </child>
+      </object>
+    </child>
     <child>
       <object class="GtkStack" id="search_stack">
         <child>

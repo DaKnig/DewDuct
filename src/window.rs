@@ -50,10 +50,7 @@ mod imp {
         #[template_child]
         update_page: TemplateChild<DewUpdatePage>,
         #[template_child]
-        search_entry: TemplateChild<gtk::SearchEntry>,
-        #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
-
         last_visible_page: Rc<RefCell<Option<GString>>>,
         invidious: Rc<RefCell<ClientAsync>>,
     }
@@ -72,6 +69,11 @@ mod imp {
             klass.bind_template_callbacks();
             klass.install_action("win.back", None, Self::Type::back);
             klass.install_action_async("win.play", None, Self::Type::play);
+            klass.install_action(
+                "win.search_started",
+                None,
+                Self::Type::search_started,
+            );
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -82,12 +84,25 @@ mod imp {
     impl ObjectImpl for DewDuctWindow {
         fn constructed(&self) {
             self.parent_constructed();
-            self.search_bar.connect_entry(&*self.search_entry);
-            self.search_bar.connect_search_mode_enabled_notify(
-                clone!(@weak self as win =>
-                    move |_| win.toggle_search_mode()
-                ),
-            );
+            self.search_bar.set_key_capture_widget(Some(&*self.obj()));
+            self.search_bar
+                .connect_entry(self.search_page.search_entry());
+            self.search_page
+                .search_bar()
+                .set_key_capture_widget(Some(&*self.obj()));
+
+            self.search_page
+                .search_entry()
+                .connect_search_started(clone!(
+                    @weak self as win => move |_| {
+                    win.search_started()
+                }));
+            // self.update_page.imp().search_button.connect_whitespace
+            // self.search_bar.connect_search_mode_enabled_notify(
+            //     clone!(@weak self as win =>
+            //         move |_| win.toggle_search_mode()
+            //     ),
+            // );
         }
     }
     impl WidgetImpl for DewDuctWindow {}
@@ -98,28 +113,24 @@ mod imp {
     #[gtk::template_callbacks]
     impl DewDuctWindow {
         #[template_callback]
-        pub(super) fn toggle_search_mode(&self) {
-            let search_bar = &self.search_bar;
+        pub(super) fn search_started(&self) {
             let screen_stack = &self.screen_stack;
             let last_visible_page = &self.last_visible_page;
-            let transition_to = if search_bar.is_search_mode() {
-                last_visible_page
-                    .replace(screen_stack.visible_child_name());
-                "search_page".into()
-            } else {
-                last_visible_page
-                    .take()
-                    .unwrap_or("normal_view_page".into())
-            };
-            self.screen_stack.set_visible_child_name(&transition_to);
+
+            // search_bar.set_search_mode(true);
+            last_visible_page.replace(screen_stack.visible_child_name());
+            self.screen_stack.set_visible_child(&self.search_page.get());
         }
         pub(super) fn back(&self) {
             self.screen_stack.set_visible_child_full(
                 "normal_view_page",
-                gtk::StackTransitionType::SlideDown,
+                match &*self.screen_stack.visible_child_name().unwrap() {
+                    "search_page" => gtk::StackTransitionType::Crossfade,
+                    _ => gtk::StackTransitionType::SlideDown,
+                },
             );
-            self.search_bar.set_search_mode(false);
             self.video_page.set_visible(false);
+            self.search_page.search_entry().emit_stop_search();
         }
 
         pub(super) async fn play(&self, _: String, param: Option<Variant>) {
@@ -172,5 +183,8 @@ impl DewDuctWindow {
     }
     pub fn back(&self, _: &str, _: Option<&Variant>) {
         self.imp().back()
+    }
+    pub fn search_started(&self, _: &str, _: Option<&Variant>) {
+        self.imp().search_started();
     }
 }

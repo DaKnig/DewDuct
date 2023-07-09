@@ -34,8 +34,10 @@ mod imp {
     #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/null/daknig/DewDuct/search_page.ui")]
     pub struct DewSearchPage {
-        // #[template_child]
-        // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
+        #[template_child]
+        pub(super) search_bar: TemplateChild<gtk::SearchBar>,
+        #[template_child]
+        pub(super) search_entry: TemplateChild<gtk::SearchEntry>,
         // vid: Rc<RefCell<Option<Video>>>,
     }
 
@@ -48,7 +50,7 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             DewVideoRow::ensure_type();
             klass.bind_template();
-            // klass.bind_template_callbacks();
+            klass.bind_template_callbacks();
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -56,15 +58,36 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewSearchPage {}
+    impl ObjectImpl for DewSearchPage {
+        fn constructed(&self) {
+            self.parent_constructed();
+            self.search_bar.connect_entry(&*self.search_entry);
+            // self.search_bar.set_key_capture_widget(Some(&self.root()));
+        }
+    }
     impl WidgetImpl for DewSearchPage {}
     impl BoxImpl for DewSearchPage {}
 
-    impl DewSearchPage {}
+    #[gtk::template_callbacks]
+    impl DewSearchPage {
+        #[template_callback]
+        pub(crate) fn search_started(&self) {
+            glib::g_warning!("Dew", "search_started");
+        }
+    }
 }
 
 glib::wrapper! {
     pub struct DewSearchPage(ObjectSubclass<imp::DewSearchPage>)
         @extends gtk::Widget, gtk::Box,
         @implements gio::ActionGroup, gio::ActionMap;
+}
+
+impl DewSearchPage {
+    pub fn search_bar(&self) -> &gtk::SearchBar {
+        &self.imp().search_bar
+    }
+    pub fn search_entry(&self) -> &gtk::SearchEntry {
+        &self.imp().search_entry
+    }
 }

@@ -40,6 +40,8 @@ mod imp {
         #[template_child]
         update_button: TemplateChild<gtk::Button>,
         #[template_child]
+        pub(crate) search_button: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
         vid_factory: TemplateChild<gtk::SignalListItemFactory>,
         #[template_child]
         new_vids: TemplateChild<gtk::ListView>,

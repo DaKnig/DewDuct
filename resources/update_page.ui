@@ -8,9 +8,24 @@
     <property name="orientation">1</property>
     <property name="width-request">280</property>
     <child>
-      <object class="GtkButton" id="update_button">
-        <property name="label">Last updated: never</property>
-        <signal name="clicked" handler="update_vids" swapped="yes"/>
+      <object class="AdwHeaderBar">
+        <child type="start">
+          <object class="GtkButton">
+            <property name="icon-name">open-menu-symbolic</property>
+          </object>
+        </child>
+        <child type="start">
+          <object class="GtkButton" id="update_button">
+            <property name="icon-name">view-refresh-symbolic</property>
+            <signal name="clicked" handler="update_vids" swapped="yes"/>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkToggleButton" id="search_button">
+            <property name="action-name">win.search_started</property>
+            <property name="icon-name">edit-find-symbolic</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
