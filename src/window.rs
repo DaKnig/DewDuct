@@ -69,7 +69,7 @@ mod imp {
             DewVideoPage::ensure_type();
             DewSearchPage::ensure_type();
             klass.bind_template();
-            // klass.bind_template_callbacks();
+            klass.bind_template_callbacks();
             klass.install_action("win.back", None, Self::Type::back);
             klass.install_action_async("win.play", None, Self::Type::play);
         }
@@ -85,21 +85,8 @@ mod imp {
             self.search_bar.connect_entry(&*self.search_entry);
             self.search_bar.connect_search_mode_enabled_notify(
                 clone!(@weak self as win =>
-                move |search_bar: &gtk::SearchBar| {
-                    let screen_stack = &win.screen_stack;
-                    let last_visible_page = &win.last_visible_page;
-                    let transition_to =
-			if search_bar.is_search_mode() {
-                            last_visible_page.replace(
-				screen_stack.visible_child_name());
-                            "search_page".into()
-			} else {
-			    last_visible_page
-				.take()
-				.unwrap_or("normal_view_page".into())
-                        };
-                    win.screen_stack.set_visible_child_name(&transition_to);
-                }),
+                    move |_| win.toggle_search_mode()
+                ),
             );
         }
     }
@@ -108,7 +95,24 @@ mod imp {
     impl ApplicationWindowImpl for DewDuctWindow {}
     impl AdwApplicationWindowImpl for DewDuctWindow {}
 
+    #[gtk::template_callbacks]
     impl DewDuctWindow {
+        #[template_callback]
+        pub(super) fn toggle_search_mode(&self) {
+            let search_bar = &self.search_bar;
+            let screen_stack = &self.screen_stack;
+            let last_visible_page = &self.last_visible_page;
+            let transition_to = if search_bar.is_search_mode() {
+                last_visible_page
+                    .replace(screen_stack.visible_child_name());
+                "search_page".into()
+            } else {
+                last_visible_page
+                    .take()
+                    .unwrap_or("normal_view_page".into())
+            };
+            self.screen_stack.set_visible_child_name(&transition_to);
+        }
         pub(super) fn back(&self) {
             self.screen_stack.set_visible_child_full(
                 "normal_view_page",

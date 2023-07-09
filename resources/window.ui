@@ -20,13 +20,6 @@
                 <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | invert-boolean | sync-create">True</property>
               </object>
             </child>
-            <child type="start">
-              <object class="GtkButton" id="back_button">
-                <property name="action-name">win.back</property>
-                <property name="icon-name">go-previous-symbolic</property>
-                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">True</property>
-              </object>
-            </child>
             <child type="title">
               <object class="GtkSearchBar" id="search_bar">
                 <property name="child">
@@ -35,6 +28,20 @@
                   </object>
                 </property>
                 <property name="key-capture-widget">DewDuctWindow</property>
+              </object>
+            </child>
+            <child type="start">
+              <object class="GtkButton" id="back_button">
+                <property name="action-name">win.back</property>
+                <property name="icon-name">go-previous-symbolic</property>
+                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="search_button">
+                <property name="active" bind-source="search_button" bind-property="visible" bind-flags="bidirectional | invert-boolean | sync-create">False</property>
+                <property name="icon-name">edit-find-symbolic</property>
+                <property name="visible" bind-source="search_bar" bind-property="search-mode-enabled" bind-flags="bidirectional | invert-boolean | sync-create">True</property>
               </object>
             </child>
           </object>
