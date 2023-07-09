@@ -80,10 +80,10 @@
 	(6,26,"GtkButton","back_button",22,None,"start",None,2,None),
 	(8,1,"GtkBox","DewSearchPage",None,None,None,None,None,None),
 	(8,2,"GtkStack","search_stack",1,None,None,None,1,None),
-	(8,3,"GtkStackPage","not_found_page",2,None,None,None,None,None),
-	(8,4,"AdwStatusPage",None,3,None,None,None,None,None),
-	(8,5,"GtkStackPage","results_page",2,None,None,None,1,None),
-	(8,6,"GtkScrolledWindow",None,5,None,None,None,None,None),
+	(8,3,"GtkStackPage",None,2,None,None,None,None,None),
+	(8,4,"AdwStatusPage","not_found_page",3,None,None,None,None,None),
+	(8,5,"GtkStackPage",None,2,None,None,None,1,None),
+	(8,6,"GtkScrolledWindow","results_page",5,None,None,None,None,None),
 	(8,7,"AdwClampScrollable",None,6,None,None,None,None,None),
 	(8,8,"GtkListView",None,7,None,None,None,None,None),
 	(8,9,"AdwHeaderBar",None,1,None,None,None,None,None),
@@ -217,7 +217,10 @@
 	(6,2,11,"GtkSignalListItemFactory","setup","setup_vid_widget",None,None,"yes",None,None),
 	(7,2,11,"GtkSignalListItemFactory","bind","bind_vid_widget",None,None,"yes",None,None),
 	(8,2,18,"GtkButton","clicked","update_vids",None,None,"yes",None,None),
-	(9,8,14,"GtkSearchEntry","search-started","search_started",None,None,1,None,None)
+	(9,8,14,"GtkSearchEntry","search-started","search_started",None,None,1,None,None),
+	(10,8,14,"GtkSearchEntry","search-changed","search_changed",None,None,1,None,None),
+	(11,8,14,"GtkSearchEntry","stop-search","stop_search",None,None,1,None,None),
+	(12,8,14,"GtkSearchEntry","activate","search_activate",None,None,1,None,None)
   </object_signal>
   <object_data>
 	(5,5,"GtkWidget",2,2,None,1,None),

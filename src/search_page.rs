@@ -18,13 +18,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-// use std::{cell::RefCell, rc::Rc};
+use std::{cell::RefCell, rc::Rc};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
+use gtk::SearchEntry;
+
+use invidious::ClientAsyncTrait;
 
 use crate::video_row::DewVideoRow;
 
@@ -37,7 +40,15 @@ mod imp {
         #[template_child]
         pub(super) search_bar: TemplateChild<gtk::SearchBar>,
         #[template_child]
-        pub(super) search_entry: TemplateChild<gtk::SearchEntry>,
+        pub(super) search_entry: TemplateChild<SearchEntry>,
+        #[template_child]
+        not_found_page: TemplateChild<adw::StatusPage>,
+        #[template_child]
+        results_page: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        search_stack: TemplateChild<gtk::Stack>,
+
+        invidious_client: Rc<RefCell<invidious::ClientAsync>>,
         // vid: Rc<RefCell<Option<Video>>>,
     }
 
@@ -62,7 +73,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.search_bar.connect_entry(&*self.search_entry);
-            // self.search_bar.set_key_capture_widget(Some(&self.root()));
         }
     }
     impl WidgetImpl for DewSearchPage {}
@@ -72,7 +82,57 @@ mod imp {
     impl DewSearchPage {
         #[template_callback]
         pub(crate) fn search_started(&self) {
-            glib::g_warning!("Dew", "search_started");
+            // glib::g_warning!("Dew", "search_started");
+        }
+        #[template_callback]
+        pub(crate) fn stop_search(&self) {
+            // glib::g_warning!("Dew", "stop_search");
+        }
+        #[template_callback]
+        pub(crate) async fn search_activate(
+            &self,
+            entry: &SearchEntry,
+        ) {
+            glib::g_warning!("Dew", "search activated");
+        }
+        #[template_callback]
+        pub(crate) async fn search_changed(
+            &self,
+            entry: &SearchEntry,
+        ) {
+            // glib::g_warning!("Dew", "search_changed");
+            let client = self.invidious_client.borrow().clone();
+
+            // get the dang results, errors = no results
+            let query = format!("q={}", entry.text());
+            let search_suggestions: Vec<_> = match client
+                .search_suggestions(Some(&query))
+                .await
+            {
+                Ok(search) => {
+                    dbg!(search.query);
+                    if query[2..] != entry.text() {
+                        println!("query was {}, returning!", &query[2..]);
+                        return;
+                    }
+                    search.suggestions
+                }
+                Err(err) => {
+                    glib::g_warning!("Dew", "no results: {:?}", err);
+                    vec![]
+                }
+            }
+            .into_iter()
+            .collect();
+
+            // if zero, show the "not found" page
+            let page_to_show: &gtk::Widget = match search_suggestions.len()
+            {
+                0 => self.not_found_page.upcast_ref(),
+                _ => self.results_page.upcast_ref(),
+            };
+            self.search_stack.set_visible_child(page_to_show);
+            glib::g_warning!("Dew", "{:?}", search_suggestions);
         }
     }
 }
@@ -87,7 +147,7 @@ impl DewSearchPage {
     pub fn search_bar(&self) -> &gtk::SearchBar {
         &self.imp().search_bar
     }
-    pub fn search_entry(&self) -> &gtk::SearchEntry {
+    pub fn search_entry(&self) -> &SearchEntry {
         &self.imp().search_entry
     }
 }

@@ -23,6 +23,9 @@
         <child type="title">
           <object class="GtkSearchEntry" id="search_entry">
             <signal name="search-started" handler="search_started" swapped="yes"/>
+            <signal name="search-changed" handler="search_changed" swapped="yes"/>
+            <signal name="stop-search" handler="stop_search" swapped="yes"/>
+            <signal name="activate" handler="search_activate" swapped="yes"/>
           </object>
         </child>
         <child>

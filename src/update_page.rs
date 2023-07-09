@@ -69,6 +69,12 @@ mod imp {
     impl ObjectImpl for DewUpdatePage {
         fn constructed(&self) {
             self.invidious_client.take(); // ClientSync::default()
+            glib::g_warning!(
+                "Dew",
+                "update_page invidious instance: {:?}",
+                &self.invidious_client.borrow().instance
+            );
+            // *self.invidious_client.mut_borrow() =
             self.new_vids.set_model(Some(&gtk::NoSelection::new(Some(
                 self.new_vids_store.clone(),
             ))));
