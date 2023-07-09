@@ -689,9 +689,9 @@ dependencies = [
 
 [[package]]
 name = "invidious"
-version = "0.6.1"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91f6daf24c1873150e2e7b9450d0dcdaf064ec547d6f1e1d5c49c482e981e3e3"
+checksum = "461a3b6a72770ac4136a366a3fdedfc1eac4c0b8b560b397748c78fe7b4396c8"
 dependencies = [
  "async-trait",
  "http_req",

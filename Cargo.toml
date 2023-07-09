@@ -13,7 +13,7 @@ once_cell = "1.18"
 humantime = "2.1"
 
 [dependencies.invidious]
-version = "0.6.1"
+version = "0.6.3"
 features = ["async", "isahc_async"]
 
 [build-dependencies]
