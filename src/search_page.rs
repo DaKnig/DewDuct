@@ -22,12 +22,14 @@ use std::{cell::RefCell, rc::Rc};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use gtk::SearchEntry;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
-use gtk::SearchEntry;
 
+use html_escape::decode_html_entities;
 use invidious::ClientAsyncTrait;
+use urlencoding::encode;
 
 use crate::video_row::DewVideoRow;
 
@@ -89,30 +91,33 @@ mod imp {
             // glib::g_warning!("Dew", "stop_search");
         }
         #[template_callback]
-        pub(crate) async fn search_activate(
-            &self,
-            entry: &SearchEntry,
-        ) {
+        pub(crate) async fn search_activate(&self, _entry: &SearchEntry) {
             glib::g_warning!("Dew", "search activated");
         }
         #[template_callback]
-        pub(crate) async fn search_changed(
-            &self,
-            entry: &SearchEntry,
-        ) {
+        pub(crate) async fn search_changed(&self, entry: &SearchEntry) {
             // glib::g_warning!("Dew", "search_changed");
             let client = self.invidious_client.borrow().clone();
 
             // get the dang results, errors = no results
-            let query = format!("q={}", entry.text());
+            let query = &*entry.text();
+            if query.is_empty() {
+                return;
+            }
+
+            // encode to make utf8 work
+            let query_transformed = format!("q={}", encode(query));
             let search_suggestions: Vec<_> = match client
-                .search_suggestions(Some(&query))
+                .search_suggestions(Some(&query_transformed))
                 .await
             {
                 Ok(search) => {
-                    dbg!(search.query);
-                    if query[2..] != entry.text() {
-                        println!("query was {}, returning!", &query[2..]);
+                    println!(
+                        "search.query = {}",
+                        decode_html_entities(&search.query)
+                    );
+                    if query != entry.text() {
+                        println!("query was {}, returning!", &query);
                         return;
                     }
                     search.suggestions
@@ -123,6 +128,7 @@ mod imp {
                 }
             }
             .into_iter()
+            .map(|s| decode_html_entities(&s).into_owned())
             .collect();
 
             // if zero, show the "not found" page
@@ -132,7 +138,14 @@ mod imp {
                 _ => self.results_page.upcast_ref(),
             };
             self.search_stack.set_visible_child(page_to_show);
-            glib::g_warning!("Dew", "{:?}", search_suggestions);
+
+            // now display suggestions
+            let for_display = search_suggestions
+                .into_iter()
+                .fold("".into(), |a: String, b: String| {
+                    a + ", " + b.as_ref()
+                });
+            glib::g_warning!("Dew", "{}", for_display);
         }
     }
 }
