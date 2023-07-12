@@ -57,7 +57,7 @@ mod imp {
         description: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
-        vid: Rc<RefCell<Option<Video>>>,
+        id: Rc<RefCell<Option<String>>>,
     }
 
     #[glib::object_subclass]
@@ -79,7 +79,7 @@ mod imp {
 
     impl ObjectImpl for DewVideoPage {
         fn constructed(&self) {
-            self.vid.take();
+            self.id.take();
         }
     }
     impl WidgetImpl for DewVideoPage {}
@@ -88,14 +88,14 @@ mod imp {
     impl DewVideoPage {
         pub(crate) async fn set_vid(&self, new_vid: Video) {
             if !self
-                .vid
+                .id
                 .borrow()
                 .as_ref()
-                .is_some_and(|x| x.id == new_vid.id)
+                .is_some_and(|id| id == &new_vid.id)
             {
                 println!(
                     "was {:?} became {:?}",
-                    self.vid.borrow().as_ref().map(|x| &x.id),
+                    self.id.borrow().as_ref(),
                     Some(&new_vid.id)
                 );
 
@@ -105,7 +105,7 @@ mod imp {
                     .unwrap_or_else(|err| {
                         println!(
                             "can't open video {} in the VideoPage: {}",
-                            new_vid.id, err
+                            &new_vid.id, err
                         )
                     });
                 self.author_name.set_text(&new_vid.author);
@@ -116,7 +116,7 @@ mod imp {
                 ));
                 // self.description.set_markup(&new_vid.description_html);
                 self.description.set_text(&new_vid.description);
-                *self.vid.borrow_mut() = Some(new_vid);
+                *self.id.borrow_mut() = Some(new_vid.id);
             } else {
                 println!("clicked on the same vid...")
             }
@@ -124,11 +124,8 @@ mod imp {
         }
 
         pub(crate) fn reset_vid(&self) {
-            println!(
-                "was Some({state:?}) became None",
-                state = self.vid.take().map(|x| x.id)
-            );
-            *self.vid.borrow_mut() = None;
+            println!("was Some({:?}) became None", self.id.take());
+            *self.id.borrow_mut() = None;
             self.obj().set_visible(false);
             todo!() // reset the video and all stuffs
         }
