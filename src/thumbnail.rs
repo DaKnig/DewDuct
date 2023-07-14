@@ -25,7 +25,6 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, subclass::prelude::*};
 
 use anyhow::Context;
-use invidious::video::Video;
 use isahc::AsyncReadResponseExt;
 
 use std::fs::File;
@@ -97,23 +96,31 @@ impl DewThumbnail {
             .set_text(&format!("{}{:02}:{:02}", hrs_str, mins, secs));
     }
 
-    pub(crate) async fn update_from_vid_data(
-        &self,
-        vid_data: impl std::ops::Deref<Target = Video>,
-    ) -> anyhow::Result<()> {
-        self.set_length(vid_data.length);
+    fn set_progress(&self, watched_progress: f64) {
+        self.imp()
+            .watched_progress
+            .get()
+            .set_fraction(watched_progress);
+    }
 
-        let thumb = vid_data
-            .thumbnails
+    pub(crate) async fn update_from_params(
+        &self,
+        id: String,
+        thumbnails: &[invidious::hidden::VideoThumbnail],
+        length: u32,
+        watched_progress: f64,
+    ) -> anyhow::Result<()> {
+        self.set_length(length);
+        self.set_progress(watched_progress);
+
+        let thumb = thumbnails
             .iter()
             .filter(|thumb| thumb.width >= 320)
             .min_by_key(|thumb| thumb.width)
-            .ok_or(Err::NoThumbnails {
-                id: vid_data.id.clone(),
-            })?;
+            .ok_or(Err::NoThumbnails { id: id.clone() })?;
 
         // thumbnail_fname.push();
-        let mut thumbnail_fname = cache_dir(Path::new(&vid_data.id));
+        let mut thumbnail_fname = cache_dir(Path::new(&id));
         thumbnail_fname.push(&thumb.quality);
         thumbnail_fname.set_extension("jpg");
 
@@ -134,6 +141,9 @@ impl DewThumbnail {
             let mut response = isahc::get_async(target).await?;
 
             let content: &[u8] = &response.bytes().await?;
+            if content.len() == 0 {
+                Err(Err::NoThumbnails { id })?;
+            }
             dest.write(content).with_context(|| {
                 format!("error writing to {}", thumbnail_fname.display())
             })?;

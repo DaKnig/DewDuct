@@ -122,8 +122,8 @@ mod imp {
 
         #[template_callback]
         fn setup_vid_widget(&self, list_item: gtk::ListItem) {
-            let vid = DewVideoRow::new();
-            list_item.set_child(Some(&vid));
+            let row = DewVideoRow::new();
+            list_item.set_child(Some(&row));
         }
 
         #[template_callback]
@@ -133,7 +133,7 @@ mod imp {
                 .and_downcast::<gtk::StringObject>()
                 .expect("The item has to be an `StringObject`.")
                 .string();
-            let vid: DewVideoRow = list_item
+            let row: DewVideoRow = list_item
                 .child()
                 .and_downcast()
                 .expect("The item needs to be a DewVideoRow");
@@ -147,13 +147,30 @@ mod imp {
                 return;
             }
 
-            let vid_data = vid_data.unwrap();
+            let invidious::video::Video {
+                id,
+                views,
+                author,
+                title,
+                published,
+                length,
+                thumbnails,
+                ..
+            } = vid_data.unwrap();
 
-            vid.set_from_video_data(vid_data)
-                .await
-                .unwrap_or_else(|err| {
-                    println!("error loading video info: {}", err);
-                })
+            row.set_from_params(
+                id.clone(),
+                views,
+                author.clone(),
+                title.clone(),
+                published,
+                length,
+                &thumbnails,
+            )
+            .await
+            .unwrap_or_else(|err| {
+                println!("error loading video info: {}", err);
+            })
         }
     }
 }

@@ -37,11 +37,13 @@ use self::window::DewDuctWindow;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
+pub use util::*;
+
 fn main() -> glib::ExitCode {
     // Load resources
     gio::resources_register_include!("dewduct.gresource")
         .expect("Failed to register resources.");
-
+    glib::BoxedAnyObject::static_type();
     // let resources = gio::Resource::load(PKGDATADIR.to_owned() + "/dewduct.gresource")
     //     .expect("Could not load resources");
     // gio::resources_register(&resources);

@@ -90,7 +90,10 @@
 	(8,12,"GtkToggleButton","search_button",9,None,"end",None,1,None),
 	(8,13,"GtkButton","back_button",9,None,"start",None,None,None),
 	(8,14,"GtkSearchEntry","search_entry",9,None,"title",None,2,None),
-	(8,15,"GtkSearchBar","search_bar",9,None,None,None,3,None)
+	(8,15,"GtkSearchBar","search_bar",9,None,None,None,3,None),
+	(8,16,"GtkSignalListItemFactory",None,8,None,None,None,None,None),
+	(8,17,"GtkNoSelection",None,8,None,None,None,None,None),
+	(8,18,"GListStore","search_result_list",17,None,None,None,None,None)
   </object>
   <object_property>
 	(2,1,"GtkOrientable","orientation","1",None,None,None,None,None,None,None,None,None),
@@ -205,10 +208,14 @@
 	(8,4,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
 	(8,5,"GtkStackPage","child",None,None,None,None,None,6,None,None,None,None),
 	(8,5,"GtkStackPage","name","results_page",None,None,None,None,None,None,None,None,None),
+	(8,8,"GtkListView","factory",None,None,None,None,None,16,None,None,None,None),
+	(8,8,"GtkListView","model",None,None,None,None,None,17,None,None,None,None),
 	(8,12,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
 	(8,12,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
 	(8,13,"GtkActionable","action-name","win.back",None,None,None,None,None,None,None,None,None),
-	(8,13,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None)
+	(8,13,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None),
+	(8,17,"GtkNoSelection","model",None,None,None,None,None,18,None,None,None,None),
+	(8,18,"GListStore","item-type","BoxedAnyObject",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)
@@ -220,7 +227,9 @@
 	(9,8,14,"GtkSearchEntry","search-started","search_started",None,None,1,None,None),
 	(10,8,14,"GtkSearchEntry","search-changed","search_changed",None,None,1,None,None),
 	(11,8,14,"GtkSearchEntry","stop-search","stop_search",None,None,1,None,None),
-	(12,8,14,"GtkSearchEntry","activate","search_activate",None,None,1,None,None)
+	(12,8,14,"GtkSearchEntry","activate","search_activate",None,None,1,None,None),
+	(13,8,16,"GtkSignalListItemFactory","bind","bind_row",None,None,1,None,None),
+	(14,8,16,"GtkSignalListItemFactory","setup","setup_row",None,None,1,None,None)
   </object_signal>
   <object_data>
 	(5,5,"GtkWidget",2,2,None,1,None),

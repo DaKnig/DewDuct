@@ -28,10 +28,14 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, subclass::prelude::*};
 
 use html_escape::decode_html_entities;
+use invidious::hidden::SearchItem;
 use invidious::ClientAsyncTrait;
 use urlencoding::encode;
 
 use crate::video_row::DewVideoRow;
+
+#[allow(unused_imports)]
+use crate::util::*;
 
 mod imp {
     use super::*;
@@ -49,6 +53,8 @@ mod imp {
         results_page: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         search_stack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        search_result_list: TemplateChild<gio::ListStore>,
 
         invidious_client: Rc<RefCell<invidious::ClientAsync>>,
         // vid: Rc<RefCell<Option<Video>>>,
@@ -91,8 +97,48 @@ mod imp {
             // glib::g_warning!("Dew", "stop_search");
         }
         #[template_callback]
-        pub(crate) async fn search_activate(&self, _entry: &SearchEntry) {
+        pub(crate) async fn search_activate(&self, entry: &SearchEntry) {
             glib::g_warning!("Dew", "search activated");
+            let query = entry.text();
+            eprintln!("searching {}...", query);
+
+            // qeury for search results
+            let query_transformed = format!("q={}", encode(&query));
+            let client = &self.invidious_client.borrow().clone();
+            let search_results: Vec<SearchItem> =
+                match client.search(Some(&query_transformed)).await {
+                    Ok(search) => search.items,
+                    Err(err) => {
+                        glib::g_warning!("Dew", "no results: {:?}", err);
+                        vec![]
+                    }
+                };
+
+            // if zero, show the "not found" page
+            if search_results.len() == 0 {
+                self.search_stack.set_visible_child(&*self.not_found_page);
+                return;
+            } else {
+                self.search_stack.set_visible_child(&*self.results_page)
+            }
+
+            {
+                // actually putting in the items
+                self.search_result_list.remove_all();
+                let search_results: Vec<_> = search_results
+                    .into_iter()
+                    .filter(|x| {
+                        if let SearchItem::Video { .. } = x {
+                            true
+                        } else {
+                            false
+                        }
+                    })
+                    .map(glib::BoxedAnyObject::new)
+                    .collect();
+
+                self.search_result_list.extend_from_slice(&search_results);
+            }
         }
         #[template_callback]
         pub(crate) async fn search_changed(&self, entry: &SearchEntry) {
@@ -131,14 +177,6 @@ mod imp {
             .map(|s| decode_html_entities(&s).into_owned())
             .collect();
 
-            // if zero, show the "not found" page
-            let page_to_show: &gtk::Widget = match search_suggestions.len()
-            {
-                0 => self.not_found_page.upcast_ref(),
-                _ => self.results_page.upcast_ref(),
-            };
-            self.search_stack.set_visible_child(page_to_show);
-
             // now display suggestions
             let for_display = search_suggestions
                 .into_iter()
@@ -146,6 +184,48 @@ mod imp {
                     a + ", " + b.as_ref()
                 });
             glib::g_warning!("Dew", "{}", for_display);
+        }
+
+        #[template_callback(function)]
+        fn setup_row(list_item: gtk::ListItem) {
+            let row = DewVideoRow::new();
+            list_item.set_child(Some(&row));
+        }
+
+        #[template_callback(function)]
+        async fn bind_row(list_item: gtk::ListItem) {
+            let boxed: glib::BoxedAnyObject = list_item
+                .item()
+                .and_downcast()
+                .expect("The item has to be an `BoxedAnyObject`");
+            // get_type_of_value(&boxed);
+            let search_item: std::cell::Ref<SearchItem> =
+                boxed.try_borrow().unwrap();
+            let SearchItem::Video{title, author, views, published,
+				  id, length, thumbnails, ..} =
+		&*search_item
+	    else {
+		todo!()
+	    };
+
+            let row: DewVideoRow = list_item
+                .child()
+                .and_downcast()
+                .expect("The item needs to be a DewVideoRow");
+
+            row.set_from_params(
+                id.clone(),
+                *views,
+                author.clone(),
+                title.clone(),
+                *published,
+                *length as u32,
+                thumbnails,
+            )
+            .await
+            .unwrap_or_else(|err| {
+                glib::g_warning!("Dew", "{}", err);
+            });
         }
     }
 }

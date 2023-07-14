@@ -4,6 +4,7 @@
   <!-- interface-name search_page.ui -->
   <requires lib="gtk" version="4.8"/>
   <requires lib="libadwaita" version="1.3"/>
+  <requires lib="gio" version="2.44"/>
   <template class="DewSearchPage" parent="GtkBox">
     <property name="orientation">vertical</property>
     <child>
@@ -56,7 +57,23 @@
                 <child>
                   <object class="AdwClampScrollable">
                     <child>
-                      <object class="GtkListView"/>
+                      <object class="GtkListView">
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="bind" handler="bind_row" swapped="yes"/>
+                            <signal name="setup" handler="setup_row" swapped="yes"/>
+                          </object>
+                        </property>
+                        <property name="model">
+                          <object class="GtkNoSelection">
+                            <property name="model">
+                              <object class="GListStore" id="search_result_list">
+                                <property name="item-type">BoxedAnyObject</property>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
                     </child>
                   </object>
                 </child>

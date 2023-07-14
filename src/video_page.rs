@@ -99,24 +99,39 @@ mod imp {
                     Some(&new_vid.id)
                 );
 
-                self.vid_thumbnail
-                    .update_from_vid_data(&new_vid)
-                    .await
-                    .unwrap_or_else(|err| {
-                        println!(
-                            "can't open video {} in the VideoPage: {}",
-                            &new_vid.id, err
-                        )
-                    });
-                self.author_name.set_text(&new_vid.author);
-                self.title.set_text(&new_vid.title);
+                let Video {
+                    id,
+                    thumbnails,
+                    length,
+                    author,
+                    title,
+                    description,
+                    ..
+                } = new_vid;
+
+                self.author_name.set_text(&author);
+                self.title.set_text(&title);
                 self.sub_count.set_text(&format!(
                     "{} subscribers",
                     new_vid.sub_count_text
                 ));
                 // self.description.set_markup(&new_vid.description_html);
-                self.description.set_text(&new_vid.description);
-                *self.id.borrow_mut() = Some(new_vid.id);
+                self.description.set_text(&description);
+                *self.id.borrow_mut() = Some(id.clone());
+                self.vid_thumbnail
+                    .update_from_params(
+                        id.clone(),
+                        &thumbnails,
+                        length,
+                        0.0f64,
+                    )
+                    .await
+                    .unwrap_or_else(|err| {
+                        println!(
+                            "can't open video {} in the VideoPage: {}",
+                            id, err
+                        )
+                    });
             } else {
                 println!("clicked on the same vid...")
             }

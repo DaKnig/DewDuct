@@ -26,7 +26,7 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious::video::Video;
+// use invidious::video::Video;
 
 use crate::thumbnail::DewThumbnail;
 use crate::util;
@@ -83,15 +83,28 @@ impl DewVideoRow {
         glib::Object::builder().build()
     }
 
-    pub(crate) async fn set_from_video_data(
+    pub(crate) async fn set_from_params(
         &self,
-        vid_data: Video,
+        id: String,
+        views: u64,
+        author: String,
+        title: String,
+        published: u64,
+        length: u32,
+        thumbnails: &[invidious::hidden::VideoThumbnail],
     ) -> anyhow::Result<()> {
-        self.imp().title.set_text(&vid_data.title);
-        self.imp().channel.set_text(&vid_data.author);
-        self.set_views(vid_data.views);
-        self.set_published(vid_data.published);
-        self.imp().thumbnail.update_from_vid_data(&vid_data).await
+        let watched_progress: f64 = 0.; // todo!
+
+        self.imp().title.set_text(&title);
+        self.imp().channel.set_text(&author);
+        self.set_views(views);
+        self.set_published(published);
+        // self.imp().thumbnail.update_from_vid_data(&vid_data).await
+        self.imp()
+            .thumbnail
+            .update_from_params(id, thumbnails, length, watched_progress)
+            .await?;
+        Ok(())
     }
 
     fn set_published(&self, published: u64) {
