@@ -115,7 +115,7 @@ mod imp {
                 };
 
             // if zero, show the "not found" page
-            if search_results.len() == 0 {
+            if search_results.is_empty() {
                 self.search_stack.set_visible_child(&*self.not_found_page);
                 return;
             } else {
@@ -127,13 +127,7 @@ mod imp {
                 self.search_result_list.remove_all();
                 let search_results: Vec<_> = search_results
                     .into_iter()
-                    .filter(|x| {
-                        if let SearchItem::Video { .. } = x {
-                            true
-                        } else {
-                            false
-                        }
-                    })
+                    .filter(|x| matches!(x, SearchItem::Video { .. }))
                     .map(glib::BoxedAnyObject::new)
                     .collect();
 

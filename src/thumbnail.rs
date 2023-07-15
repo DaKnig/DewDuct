@@ -141,7 +141,7 @@ impl DewThumbnail {
             let mut response = isahc::get_async(target).await?;
 
             let content: &[u8] = &response.bytes().await?;
-            if content.len() == 0 {
+            if content.is_empty() {
                 Err(Err::NoThumbnails { id })?;
             }
             dest.write(content).with_context(|| {
