@@ -52,7 +52,7 @@ mod imp {
         #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
         last_visible_page: Rc<RefCell<Option<GString>>>,
-        invidious: Rc<RefCell<ClientAsync>>,
+        pub(super) invidious_client: Rc<RefCell<ClientAsync>>,
     }
 
     #[glib::object_subclass]
@@ -148,7 +148,7 @@ mod imp {
             };
 
             let vid_page = self.video_page.get();
-            let invidious = self.invidious.borrow().clone();
+            let invidious = self.obj().invidious_client();
 
             match invidious.video(&id, None).await {
                 Ok(vid) => {
@@ -160,6 +160,10 @@ mod imp {
                 }
                 Err(err) => {
                     println!("cant load {id}: {err}");
+                    println!(
+                        "the instance used was {}",
+                        invidious.instance
+                    );
                 }
             }
         }
@@ -169,7 +173,7 @@ mod imp {
 glib::wrapper! {
     pub struct DewDuctWindow(ObjectSubclass<imp::DewDuctWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::Root;
 }
 
 impl DewDuctWindow {
@@ -186,5 +190,8 @@ impl DewDuctWindow {
     }
     pub fn search_started(&self, _: &str, _: Option<&Variant>) {
         self.imp().search_started();
+    }
+    pub fn invidious_client(&self) -> invidious::ClientAsync {
+        self.imp().invidious_client.borrow().clone()
     }
 }

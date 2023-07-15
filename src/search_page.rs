@@ -18,8 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::{cell::RefCell, rc::Rc};
-
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::SearchEntry;
@@ -55,9 +53,6 @@ mod imp {
         search_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         search_result_list: TemplateChild<gio::ListStore>,
-
-        invidious_client: Rc<RefCell<invidious::ClientAsync>>,
-        // vid: Rc<RefCell<Option<Video>>>,
     }
 
     #[glib::object_subclass]
@@ -104,12 +99,17 @@ mod imp {
 
             // qeury for search results
             let query_transformed = format!("q={}", encode(&query));
-            let client = &self.invidious_client.borrow().clone();
+            let client = &self.obj().invidious_client();
             let search_results: Vec<SearchItem> =
                 match client.search(Some(&query_transformed)).await {
                     Ok(search) => search.items,
                     Err(err) => {
-                        glib::g_warning!("Dew", "no results: {:?}", err);
+                        glib::g_warning!(
+                            "Dew",
+                            "instance {}; no results: {:?}",
+                            &client.instance,
+                            err
+                        );
                         vec![]
                     }
                 };
@@ -137,7 +137,7 @@ mod imp {
         #[template_callback]
         pub(crate) async fn search_changed(&self, entry: &SearchEntry) {
             // glib::g_warning!("Dew", "search_changed");
-            let client = self.invidious_client.borrow().clone();
+            let client = self.obj().invidious_client();
 
             // get the dang results, errors = no results
             let query = &*entry.text();
@@ -236,5 +236,10 @@ impl DewSearchPage {
     }
     pub fn search_entry(&self) -> &SearchEntry {
         &self.imp().search_entry
+    }
+    pub fn invidious_client(&self) -> invidious::ClientAsync {
+        let window: crate::window::DewDuctWindow =
+            self.root().and_downcast().unwrap();
+        window.invidious_client()
     }
 }

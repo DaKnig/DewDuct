@@ -18,8 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::RefCell;
-
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, StringList};
@@ -47,7 +45,6 @@ mod imp {
         new_vids: TemplateChild<gtk::ListView>,
 
         new_vids_store: StringList,
-        invidious_client: RefCell<invidious::ClientAsync>,
     }
 
     #[glib::object_subclass]
@@ -68,13 +65,6 @@ mod imp {
 
     impl ObjectImpl for DewUpdatePage {
         fn constructed(&self) {
-            self.invidious_client.take(); // ClientSync::default()
-            glib::g_warning!(
-                "Dew",
-                "update_page invidious instance: {:?}",
-                &self.invidious_client.borrow().instance
-            );
-            // *self.invidious_client.mut_borrow() =
             self.new_vids.set_model(Some(&gtk::NoSelection::new(Some(
                 self.new_vids_store.clone(),
             ))));
@@ -98,9 +88,16 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewUpdatePage {
+        fn invidious_client(&self) -> invidious::ClientAsync {
+            self.obj()
+                .root()
+                .and_downcast::<crate::window::DewDuctWindow>()
+                .unwrap()
+                .invidious_client()
+        }
         #[template_callback]
         async fn update_vids(&self) {
-            let invidious = self.invidious_client.borrow().clone();
+            let invidious = self.invidious_client();
 
             let popular_items = invidious.popular(None).await;
             match popular_items {
@@ -138,7 +135,7 @@ mod imp {
                 .and_downcast()
                 .expect("The item needs to be a DewVideoRow");
 
-            let invidious = self.invidious_client.borrow().clone();
+            let invidious = self.invidious_client();
 
             let vid_data = invidious.video(&vid_id, None).await;
 

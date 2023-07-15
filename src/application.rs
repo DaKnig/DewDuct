@@ -63,6 +63,16 @@ mod imp {
                 window.upcast()
             };
 
+            println!(
+                "instance used: {}",
+                window
+                    .clone()
+                    .downcast::<DewDuctWindow>()
+                    .unwrap()
+                    .invidious_client()
+                    .instance
+            );
+
             // Ask the window manager/compositor to present the window
             window.present();
         }
