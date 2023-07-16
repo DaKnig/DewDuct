@@ -193,11 +193,10 @@ mod imp {
                 .and_downcast()
                 .expect("The item has to be an `BoxedAnyObject`");
             // get_type_of_value(&boxed);
-            let search_item: std::cell::Ref<SearchItem> =
-                boxed.try_borrow().unwrap();
+
             let SearchItem::Video{title, author, views, published,
 				  id, length, thumbnails, ..} =
-		&*search_item
+                boxed.try_borrow::<SearchItem>().unwrap().clone()
 	    else {
 		todo!()
 	    };
@@ -208,13 +207,13 @@ mod imp {
                 .expect("The item needs to be a DewVideoRow");
 
             row.set_from_params(
-                id.clone(),
-                *views,
-                author.clone(),
-                title.clone(),
-                *published,
-                *length as u32,
-                thumbnails,
+                id,
+                views,
+                author,
+                title,
+                published,
+                length as u32,
+                &thumbnails,
             )
             .await
             .unwrap_or_else(|err| {
