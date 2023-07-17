@@ -84,6 +84,9 @@ mod imp {
     impl ObjectImpl for DewDuctWindow {
         fn constructed(&self) {
             self.parent_constructed();
+            self.invidious_client.borrow_mut().instance =
+                "https://inv.pistasjis.net".into();
+
             self.search_bar.set_key_capture_widget(Some(&*self.obj()));
             self.search_bar
                 .connect_entry(self.search_page.search_entry());
