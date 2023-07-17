@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!-- Created with Cambalache 0.13.0 -->
+<!-- Created with Cambalache 0.13.1 -->
 <interface>
-  <!-- interface-name video_page.ui -->
   <requires lib="gtk" version="4.8"/>
   <requires lib="libadwaita" version="1.3"/>
   <template class="DewVideoPage" parent="GtkBox">
     <property name="orientation">vertical</property>
     <child>
       <object class="AdwHeaderBar">
+        <property name="hexpand">True</property>
         <child type="start">
           <object class="GtkButton" id="back_button">
             <property name="action-name">win.back</property>
