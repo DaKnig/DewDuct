@@ -31,6 +31,7 @@ use invidious::ClientAsyncTrait;
 use urlencoding::encode;
 
 use crate::video_row::DewVideoRow;
+use crate::yt_item_list::DewYtItemList;
 
 #[allow(unused_imports)]
 use crate::util::*;
@@ -48,11 +49,9 @@ mod imp {
         #[template_child]
         not_found_page: TemplateChild<adw::StatusPage>,
         #[template_child]
-        results_page: TemplateChild<gtk::ScrolledWindow>,
+        pub(super) results_page: TemplateChild<DewYtItemList>,
         #[template_child]
         search_stack: TemplateChild<gtk::Stack>,
-        #[template_child]
-        search_result_list: TemplateChild<gio::ListStore>,
     }
 
     #[glib::object_subclass]
@@ -124,14 +123,13 @@ mod imp {
 
             {
                 // actually putting in the items
-                self.search_result_list.remove_all();
                 let search_results: Vec<_> = search_results
                     .into_iter()
                     .filter(|x| matches!(x, SearchItem::Video { .. }))
-                    .map(glib::BoxedAnyObject::new)
+                    .map(|x| x.into())
                     .collect();
 
-                self.search_result_list.extend_from_slice(&search_results);
+                self.results_page.set_from_vec(search_results);
             }
         }
         #[template_callback]

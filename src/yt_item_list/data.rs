@@ -1,4 +1,4 @@
-/* yt_item_list.rs
+/* yt_item_list/data.rs
  *
  * Copyright 2023 DaKnig
  *
@@ -18,25 +18,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#![allow(unused_imports)]
+#[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::Properties;
-use gtk::{gio, glib};
+use glib::{ParamSpec, Properties, Value};
+use gtk::glib;
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use anyhow::Context;
-use isahc::AsyncReadResponseExt;
-
 use std::cell::{Cell, Ref, RefCell};
-use std::fs::File;
-use std::io::Write;
-use std::ops::Deref;
-use std::path::Path;
-
-use crate::cache::DewCache;
-use crate::util::{cache, cache_dir};
-use crate::video_row::DewVideoRow;
 
 mod imp_data {
     use super::*;
@@ -48,13 +37,13 @@ mod imp_data {
         pub title: RefCell<String>,
         #[property(get, set)]
         pub id: RefCell<String>,
-        #[property(get, set)]
+        #[property(construct, get, set)]
         pub author: RefCell<String>,
         // #[property(get, set)]
         pub author_thumbnails:
             RefCell<Vec<invidious::hidden::AuthorThumbnail>>,
         #[property(get, set)]
-        pub length: Cell<u32>,
+        pub length: Cell<u64>,
         // #[property(get, set)]
         pub thumbnails: RefCell<Vec<invidious::hidden::VideoThumbnail>>,
         #[property(get, set)]
@@ -66,7 +55,9 @@ mod imp_data {
         #[property(get, set)]
         pub live: Cell<bool>,
         #[property(get, set)]
-        pub likes: Cell<u32>,
+        pub likes: Cell<i32>,
+        #[property(get, set)]
+        pub description: RefCell<Option<String>>,
     }
 
     #[glib::object_subclass]
@@ -75,7 +66,24 @@ mod imp_data {
         type Type = super::DewYtItem;
         type ParentType = glib::Object;
     }
-    impl ObjectImpl for DewYtItem {}
+    impl ObjectImpl for DewYtItem {
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(
+            &self,
+            id: usize,
+            value: &Value,
+            pspec: &ParamSpec,
+        ) {
+            self.derived_set_property(id, value, pspec)
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
+    }
 }
 
 glib::wrapper! {
@@ -112,6 +120,44 @@ impl DewYtItem {
     }
 }
 
+use invidious::hidden::SearchItem;
+impl From<SearchItem> for DewYtItem {
+    fn from(vid: SearchItem) -> Self {
+        if let SearchItem::Video {
+            author,
+            id,
+            length,
+            live,
+            published,
+            thumbnails,
+            title,
+            views,
+            description,
+            ..
+        } = vid
+        {
+            let ret: Self = glib::Object::builder()
+                .property("author", author)
+                .property("id", id)
+                .property("length", length)
+                .property("likes", 0)
+                .property("live", live)
+                .property("published", published)
+                .property("sub-count-text", "")
+                .property("title", title)
+                .property("views", views)
+                .property("description", Some(description))
+                .build();
+
+            ret.set_author_thumbnails(vec![]);
+            ret.set_thumbnails(thumbnails);
+            ret
+        } else {
+            todo!()
+        }
+    }
+}
+
 impl From<invidious::video::Video> for DewYtItem {
     fn from(vid: invidious::video::Video) -> Self {
         use invidious::video::Video;
@@ -130,19 +176,20 @@ impl From<invidious::video::Video> for DewYtItem {
             ..
         } = vid.clone();
 
-        let ret = Self::new();
+        let ret: Self = glib::Object::builder()
+            .property("author", author)
+            .property("id", id)
+            .property("length", length)
+            .property("likes", likes)
+            .property("live", live)
+            .property("published", published)
+            .property("sub_count_text", sub_count_text)
+            .property("title", title)
+            .property("views", views)
+            .build();
 
-        ret.set_author(author);
         ret.set_author_thumbnails(author_thumbnails);
-        ret.set_id(id);
-        ret.set_length(length);
-        ret.set_likes(likes);
-        ret.set_live(live);
-        ret.set_published(published);
-        ret.set_sub_count_text(sub_count_text);
         ret.set_thumbnails(thumbnails);
-        ret.set_title(title);
-        ret.set_views(views);
 
         return ret;
     }

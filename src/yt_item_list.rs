@@ -43,7 +43,7 @@ mod imp {
     impl ObjectSubclass for DewYtItemList {
         const NAME: &'static str = "DewYtItemList";
         type Type = super::DewYtItemList;
-        type ParentType = gtk::Box;
+        type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
             DewVideoRow::ensure_type();
@@ -58,10 +58,20 @@ mod imp {
 
     impl ObjectImpl for DewYtItemList {}
     impl WidgetImpl for DewYtItemList {}
-    impl BoxImpl for DewYtItemList {}
+    impl BinImpl for DewYtItemList {}
 
     #[gtk::template_callbacks]
     impl DewYtItemList {
+        #[template_callback(function)]
+        fn activate(index: u32, list_view: gtk::ListView) {
+            let Some(item) = list_view.model().unwrap().item(index as u32)
+                                                 else {return};
+            let id: String = item.downcast::<DewYtItem>().unwrap().id();
+            list_view
+                .activate_action("win.play", Some(&Some(id).to_variant()))
+                .expect("the action win.play does not exist");
+        }
+
         #[template_callback(function)]
         fn setup_row(list_item: gtk::ListItem) {
             let row = DewVideoRow::new();
@@ -102,6 +112,17 @@ mod imp {
 
 glib::wrapper! {
     pub struct DewYtItemList(ObjectSubclass<imp::DewYtItemList>)
-        @extends gtk::Widget, gtk::Box,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl DewYtItemList {
+    pub fn remove_all(&self) {
+        self.imp().list_store.remove_all()
+    }
+
+    pub fn set_from_vec(&self, vec: Vec<DewYtItem>) {
+        self.remove_all();
+        self.imp().list_store.extend_from_slice(&vec);
+    }
 }
