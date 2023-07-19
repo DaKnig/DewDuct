@@ -156,13 +156,13 @@ mod imp {
             } = vid_data.unwrap();
 
             row.set_from_params(
-                id.clone(),
-                views,
                 author.clone(),
-                title.clone(),
-                published,
+                id.clone(),
                 length,
+                published,
                 &thumbnails,
+                title.clone(),
+                views,
             )
             .await
             .unwrap_or_else(|err| {

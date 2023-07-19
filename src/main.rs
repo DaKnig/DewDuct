@@ -28,6 +28,7 @@ mod util;
 mod video_page;
 mod video_row;
 mod window;
+mod yt_item_list;
 
 use self::application::DewDuctApplication;
 use self::window::DewDuctWindow;
@@ -44,6 +45,7 @@ fn main() -> glib::ExitCode {
     gio::resources_register_include!("dewduct.gresource")
         .expect("Failed to register resources.");
     glib::BoxedAnyObject::static_type();
+    yt_item_list::DewYtItem::static_type();
     // let resources = gio::Resource::load(PKGDATADIR.to_owned() + "/dewduct.gresource")
     //     .expect("Could not load resources");
     // gio::resources_register(&resources);

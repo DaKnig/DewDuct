@@ -207,13 +207,13 @@ mod imp {
                 .expect("The item needs to be a DewVideoRow");
 
             row.set_from_params(
-                id,
-                views,
                 author,
-                title,
-                published,
+                id,
                 length as u32,
+                published,
                 &thumbnails,
+                title,
+                views,
             )
             .await
             .unwrap_or_else(|err| {

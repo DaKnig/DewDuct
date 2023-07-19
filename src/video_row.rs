@@ -83,15 +83,15 @@ impl DewVideoRow {
         glib::Object::builder().build()
     }
 
-    pub(crate) async fn set_from_params(
-        &self,
-        id: String,
-        views: u64,
+    pub(crate) async fn set_from_params<'a>(
+        &'a self,
         author: String,
-        title: String,
-        published: u64,
+        id: String,
         length: u32,
-        thumbnails: &[invidious::hidden::VideoThumbnail],
+        published: u64,
+        thumbnails: &Vec<invidious::hidden::VideoThumbnail>,
+        title: String,
+        views: u64,
     ) -> anyhow::Result<()> {
         let watched_progress: f64 = 0.; // todo!
 

@@ -7,7 +7,7 @@
 	(4,1,None,"thumbnail.ui",None,None,None,None,None,None,None),
 	(5,1,None,"video_row.ui",None,None,None,None,None,None,None),
 	(6,1,None,"video_page.ui",None,None,None,None,None,None,None),
-	(7,None,None,"yt_item_list.ui",None,None,None,None,None,None,None),
+	(7,7,None,"yt_item_list.ui",None,None,None,None,None,None,None),
 	(8,1,None,"search_page.ui",None,None,None,None,None,None,None)
   </ui>
   <ui_library>
@@ -17,6 +17,8 @@
 	(2,"libadwaita","1.3",None),
 	(6,"gtk","4.8",None),
 	(6,"libadwaita","1.3",None),
+	(7,"gtk","4.2",None),
+	(7,"libadwaita","1.3",None),
 	(8,"gtk","4.8",None),
 	(8,"libadwaita","1.3",None)
   </ui_library>
@@ -79,6 +81,13 @@
 	(6,21,"GtkLabel","title",1,None,None,None,2,None),
 	(6,22,"AdwHeaderBar",None,1,None,None,None,None,None),
 	(6,26,"GtkButton","back_button",22,None,"start",None,2,None),
+	(7,7,"AdwBin","DewYtItemList",None,None,None,None,None,None),
+	(7,8,"GtkScrolledWindow",None,7,None,None,None,None,None),
+	(7,9,"AdwClampScrollable",None,8,None,None,None,None,None),
+	(7,10,"GtkListView",None,9,None,None,None,None,None),
+	(7,11,"GtkSignalListItemFactory","vid_factory",10,None,None,None,None,None),
+	(7,12,"GtkNoSelection",None,10,None,None,None,None,None),
+	(7,13,"GListStore","list_store",12,None,None,None,None,None),
 	(8,1,"GtkBox","DewSearchPage",None,None,None,None,None,None),
 	(8,2,"GtkStack","search_stack",1,None,None,None,1,None),
 	(8,3,"GtkStackPage",None,2,None,None,None,None,None),
@@ -200,6 +209,13 @@
 	(6,22,"GtkWidget","hexpand","True",None,None,None,None,None,None,None,None,None),
 	(6,26,"GtkActionable","action-name","win.back",None,None,None,None,None,None,None,None,None),
 	(6,26,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None),
+	(7,7,"AdwBin","child",None,None,None,None,None,8,None,None,None,None),
+	(7,8,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(7,10,"GtkListView","factory",None,None,None,None,None,11,None,None,None,None),
+	(7,10,"GtkListView","model",None,None,None,None,None,12,None,None,None,None),
+	(7,10,"GtkListView","single-click-activate","True",None,None,None,None,None,None,None,None,None),
+	(7,12,"GtkNoSelection","model",None,None,None,None,None,13,None,None,None,None),
+	(7,13,"GListStore","item-type","DewYtItem",None,None,None,None,None,None,None,None,None),
 	(8,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
 	(8,3,"GtkStackPage","child",None,None,None,None,None,4,None,None,None,None),
 	(8,3,"GtkStackPage","name","not_found_page",None,None,None,None,None,None,None,None,None),
@@ -231,7 +247,10 @@
 	(11,8,14,"GtkSearchEntry","stop-search","stop_search",None,None,1,None,None),
 	(12,8,14,"GtkSearchEntry","activate","search_activate",None,None,1,None,None),
 	(13,8,16,"GtkSignalListItemFactory","bind","bind_row",None,None,1,None,None),
-	(14,8,16,"GtkSignalListItemFactory","setup","setup_row",None,None,1,None,None)
+	(14,8,16,"GtkSignalListItemFactory","setup","setup_row",None,None,1,None,None),
+	(17,7,11,"GtkSignalListItemFactory","setup","setup_row",None,None,"yes",None,None),
+	(18,7,11,"GtkSignalListItemFactory","bind","bind_row",None,None,"yes",None,None),
+	(19,7,10,"GtkListView","activate","activate",None,None,1,None,None)
   </object_signal>
   <object_data>
 	(5,5,"GtkWidget",2,2,None,1,None,None,None,None),
