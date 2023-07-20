@@ -18,10 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::RefCell,
+    process::{Child, Command},
+    rc::Rc,
+};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -58,6 +63,7 @@ mod imp {
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
         id: Rc<RefCell<Option<String>>>,
+        mpv_child: Rc<RefCell<Option<Child>>>,
     }
 
     #[glib::object_subclass]
@@ -80,6 +86,36 @@ mod imp {
     impl ObjectImpl for DewVideoPage {
         fn constructed(&self) {
             self.id.take();
+            let click = gtk::GestureClick::new();
+
+            let id = self.id.clone();
+            let mpv_child = self.mpv_child.clone();
+            // let's spawn mpv when thumbnail is clicked!
+            click.connect_pressed(move |_, _n, _x, _y| {
+                let tmp = id.borrow();
+                let Some(id) = tmp.as_ref() else {return};
+
+                let url = format!("https://youtube.com/watch?v={}", id);
+                let mut mpv = Command::new("mpv");
+                mpv.arg(url).arg("--ytdl-format=best[height<=480]");
+                g_warning!(
+                    "Dew",
+                    "running... {:?} {:?}",
+                    mpv.get_program(),
+                    mpv.get_args().collect::<Vec<_>>()
+                );
+
+                // spawn child process
+                let mpv_process = mpv.spawn().expect("mpv not found");
+                let prev_mpv = mpv_child.replace(Some(mpv_process));
+
+                // if there was already a mpv instance running...
+                if let Some(mut prev_mpv) = prev_mpv {
+                    prev_mpv.kill().expect("error killing it");
+                }
+            });
+
+            self.vid_thumbnail.add_controller(click);
         }
     }
     impl WidgetImpl for DewVideoPage {}
