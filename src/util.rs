@@ -12,19 +12,21 @@ pub(crate) fn format_rel_time(duration: Duration) -> String {
 
 pub fn format_semi_engineering(value: f32) -> String {
     static SUFFIXES: [char; 5] = [' ', 'k', 'M', 'B', 'T'];
-    let suffix = (0..)
+    let Some(suffix) = (0..)
         .map(|x| 1000f32.powi(x))
         .zip(SUFFIXES)
-        .filter(|x| value > x.0)
-        .last()
-        .unwrap();
+        .filter(|x| value >= x.0 || x.1 == ' ')
+        .last() else {
+	    eprintln!("wtf: cant format value {value}");
+	    return "".into();
+	};
 
     // explain with an example: value = 15942
     let normalized = value / suffix.0; // normalized = 15.942
     let exp = suffix.1; // exp = 'k'
 
     let mut ret = format!("{}", normalized as u16);
-    if normalized < 10. {
+    if normalized < 10. && value > 10. {
         ret += &format!(".{}", ((normalized % 1.) * 10.) as u8);
     }
 
