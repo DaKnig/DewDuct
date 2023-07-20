@@ -28,24 +28,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkScrolledWindow">
-        <property name="vexpand">True</property>
-        <child>
-          <object class="AdwClampScrollable">
-            <child>
-              <object class="GtkListView" id="new_vids">
-                <property name="factory">
-                  <object class="GtkSignalListItemFactory" id="vid_factory">
-                    <signal name="setup" handler="setup_vid_widget" swapped="yes"/>
-                    <signal name="bind" handler="bind_vid_widget" swapped="yes"/>
-                  </object>
-                </property>
-                <property name="single-click-activate">True</property>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
+      <object class="DewYtItemList" id="vid_list"/>
     </child>
   </template>
 </interface>

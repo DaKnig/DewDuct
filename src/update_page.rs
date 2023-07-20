@@ -20,13 +20,13 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gio, glib, StringList};
+use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
 use invidious::ClientAsyncTrait;
 
-use crate::video_row::DewVideoRow;
+use crate::yt_item_list::*;
 
 mod imp {
     use super::*;
@@ -40,11 +40,7 @@ mod imp {
         #[template_child]
         pub(crate) search_button: TemplateChild<gtk::ToggleButton>,
         #[template_child]
-        vid_factory: TemplateChild<gtk::SignalListItemFactory>,
-        #[template_child]
-        new_vids: TemplateChild<gtk::ListView>,
-
-        new_vids_store: StringList,
+        vid_list: TemplateChild<DewYtItemList>,
     }
 
     #[glib::object_subclass]
@@ -54,6 +50,7 @@ mod imp {
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
+            DewYtItemList::ensure_type();
             klass.bind_template();
             klass.bind_template_callbacks();
         }
@@ -63,26 +60,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewUpdatePage {
-        fn constructed(&self) {
-            self.new_vids.set_model(Some(&gtk::NoSelection::new(Some(
-                self.new_vids_store.clone(),
-            ))));
-            let new_vids_store = self.new_vids_store.clone();
-            self.new_vids
-                .connect_activate(move |list_view, index: u32| {
-                    let Some(id) = new_vids_store.string(index)
-                                   else {return};
-                    let id: String = id.to_string();
-                    list_view
-                        .activate_action(
-                            "win.play",
-                            Some(&Some(id).to_variant()),
-                        )
-                        .expect("the action win.play does not exist");
-                });
-        }
-    }
+    impl ObjectImpl for DewUpdatePage {}
     impl WidgetImpl for DewUpdatePage {}
     impl BoxImpl for DewUpdatePage {}
 
@@ -100,74 +78,21 @@ mod imp {
             let invidious = self.invidious_client();
 
             let popular_items = invidious.popular(None).await;
-            match popular_items {
-                Ok(popular) => {
-                    let mut store = self.new_vids_store.clone();
-                    let vids = popular.items.into_iter().map(|x| x.id);
+            let Ok(popular) = popular_items else {
+                self.update_button.add_css_class("error");
+		popular_items.expect("pop items:");
+		return;
+	    };
+            self.update_button.remove_css_class("error");
 
-                    let n_items = store.n_items();
-                    store.splice(0, n_items, &[]); // empty
-                    store.extend(vids);
-                    self.update_button.remove_css_class("error");
-                }
-                Err(err) => {
-                    eprintln!("{}", err);
-                    self.update_button.add_css_class("error");
-                }
-            }
-        }
+            // let mut store = self.new_vids_store.clone();
+            let vids =
+                popular.items.into_iter().map(|x| x.into()).collect();
 
-        #[template_callback]
-        fn setup_vid_widget(&self, list_item: gtk::ListItem) {
-            let row = DewVideoRow::new();
-            list_item.set_child(Some(&row));
-        }
-
-        #[template_callback]
-        async fn bind_vid_widget(&self, list_item: gtk::ListItem) {
-            let vid_id: glib::GString = list_item
-                .item()
-                .and_downcast::<gtk::StringObject>()
-                .expect("The item has to be an `StringObject`.")
-                .string();
-            let row: DewVideoRow = list_item
-                .child()
-                .and_downcast()
-                .expect("The item needs to be a DewVideoRow");
-
-            let invidious = self.invidious_client();
-
-            let vid_data = invidious.video(&vid_id, None).await;
-
-            if let Err(err) = vid_data {
-                eprintln!("can't fetch the data of vid ID {vid_id}: {err}");
-                return;
-            }
-
-            let invidious::video::Video {
-                id,
-                views,
-                author,
-                title,
-                published,
-                length,
-                thumbnails,
-                ..
-            } = vid_data.unwrap();
-
-            row.set_from_params(
-                author.clone(),
-                id.clone(),
-                length,
-                published,
-                &thumbnails,
-                title.clone(),
-                views,
-            )
-            .await
-            .unwrap_or_else(|err| {
-                println!("error loading video info: {}", err);
-            })
+            self.vid_list.set_from_vec(vids);
+            // let n_items = store.n_items();
+            // store.splice(0, n_items, &[]); // empty
+            // store.extend(vids);
         }
     }
 }

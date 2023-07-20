@@ -158,9 +158,43 @@ impl From<SearchItem> for DewYtItem {
     }
 }
 
-impl From<invidious::video::Video> for DewYtItem {
-    fn from(vid: invidious::video::Video) -> Self {
-        use invidious::video::Video;
+use invidious::hidden::PopularItem;
+impl From<PopularItem> for DewYtItem {
+    fn from(item: PopularItem) -> Self {
+        let PopularItem {
+            author,
+            id,
+            length,
+            published,
+            thumbnails,
+            title,
+            views,
+            ..
+        } = item.clone();
+
+        let ret: Self = glib::Object::builder()
+            .property("author", author)
+            .property("id", id)
+            .property("length", length as u64)
+            .property("likes", 0)
+            .property("live", false)
+            .property("published", published)
+            .property("sub-count-text", "".to_string())
+            .property("title", title)
+            .property("views", views)
+            .property("description", None::<String>)
+            .build();
+
+        ret.set_author_thumbnails(vec![]);
+        ret.set_thumbnails(thumbnails);
+
+        return ret;
+    }
+}
+
+use invidious::video::Video;
+impl From<Video> for DewYtItem {
+    fn from(vid: Video) -> Self {
         let Video {
             author,
             author_thumbnails,
@@ -173,6 +207,7 @@ impl From<invidious::video::Video> for DewYtItem {
             thumbnails,
             title,
             views,
+            description,
             ..
         } = vid.clone();
 
@@ -183,9 +218,10 @@ impl From<invidious::video::Video> for DewYtItem {
             .property("likes", likes)
             .property("live", live)
             .property("published", published)
-            .property("sub_count_text", sub_count_text)
+            .property("sub-count-text", sub_count_text)
             .property("title", title)
             .property("views", views)
+            .property("description", Some(description))
             .build();
 
         ret.set_author_thumbnails(author_thumbnails);
