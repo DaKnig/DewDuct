@@ -14,9 +14,9 @@
           <object class="GtkSearchBar" id="search_bar"/>
         </child>
         <child>
-          <object class="GtkStack" id="screen_stack">
+          <object class="AdwViewStack" id="screen_stack">
             <child>
-              <object class="GtkStackPage" id="normal_view_page">
+              <object class="AdwViewStackPage" id="normal_view_page">
                 <property name="child">
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
@@ -26,14 +26,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="AdwViewStack" id="view-stack">
-                        <child>
-                          <object class="DewUpdatePage" id="update_page"/>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="subscribe-page"/>
-                        </child>
-                      </object>
+                      <object class="DewUpdatePage" id="update_page"/>
                     </child>
                   </object>
                 </property>
@@ -42,7 +35,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkStackPage">
+              <object class="AdwViewStackPage">
                 <property name="child">
                   <object class="DewSearchPage" id="search_page"/>
                 </property>
@@ -50,7 +43,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkStackPage">
+              <object class="AdwViewStackPage">
                 <property name="child">
                   <object class="DewVideoPage" id="video_page">
                     <property name="visible">False</property>

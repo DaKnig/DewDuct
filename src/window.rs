@@ -46,7 +46,7 @@ mod imp {
         #[template_child]
         search_page: TemplateChild<DewSearchPage>,
         #[template_child]
-        screen_stack: TemplateChild<gtk::Stack>,
+        screen_stack: TemplateChild<adw::ViewStack>,
         #[template_child]
         update_page: TemplateChild<DewUpdatePage>,
         #[template_child]
@@ -125,13 +125,7 @@ mod imp {
             self.screen_stack.set_visible_child(&self.search_page.get());
         }
         pub(super) fn back(&self) {
-            self.screen_stack.set_visible_child_full(
-                "normal_view_page",
-                match &*self.screen_stack.visible_child_name().unwrap() {
-                    "search_page" => gtk::StackTransitionType::Crossfade,
-                    _ => gtk::StackTransitionType::SlideDown,
-                },
-            );
+            self.screen_stack.set_visible_child_name("normal_view_page");
             self.video_page.set_visible(false);
             self.search_page.search_entry().emit_stop_search();
         }
@@ -156,10 +150,7 @@ mod imp {
             match invidious.video(&id, None).await {
                 Ok(vid) => {
                     vid_page.imp().set_vid(vid).await;
-                    self.screen_stack.set_visible_child_full(
-                        "video_page",
-                        gtk::StackTransitionType::SlideUp,
-                    );
+                    self.screen_stack.set_visible_child_name("video_page");
                 }
                 Err(err) => {
                     println!("cant load {id}: {err}");
