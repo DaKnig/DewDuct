@@ -11,73 +11,58 @@
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <child>
-          <object class="AdwFlap" id="flap">
-            <property name="flap">
-              <object class="GtkStackSidebar">
-                <property name="stack">screen_stack</property>
-                <property name="vexpand">True</property>
-                <style>
-                  <class name="background"/>
-                </style>
+          <object class="GtkSearchBar" id="search_bar"/>
+        </child>
+        <child>
+          <object class="GtkStack" id="screen_stack">
+            <child>
+              <object class="GtkStackPage" id="normal_view_page">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="AdwViewSwitcherBar">
+                        <property name="reveal">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwViewStack" id="view-stack">
+                        <child>
+                          <object class="DewUpdatePage" id="update_page"/>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="subscribe-page"/>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">normal_view_page</property>
+                <property name="title">Home</property>
               </object>
-            </property>
-            <property name="fold-threshold-policy">natural</property>
-            <property name="reveal-flap">False</property>
-            <child type="content">
-              <object class="GtkStack" id="screen_stack">
-                <child>
-                  <object class="GtkStackPage" id="normal_view_page">
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="AdwViewSwitcherBar">
-                            <property name="reveal">true</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwViewStack" id="view-stack">
-                            <child>
-                              <object class="DewUpdatePage" id="update_page"/>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="subscribe-page"/>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </property>
-                    <property name="name">normal_view_page</property>
-                    <property name="title">Home</property>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="DewSearchPage" id="search_page"/>
+                </property>
+                <property name="name">search_page</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="DewVideoPage" id="video_page">
+                    <property name="visible">False</property>
                   </object>
-                </child>
-                <child>
-                  <object class="GtkStackPage">
-                    <property name="child">
-                      <object class="DewSearchPage" id="search_page"/>
-                    </property>
-                    <property name="name">search_page</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkStackPage">
-                    <property name="child">
-                      <object class="DewVideoPage" id="video_page">
-                        <property name="visible">False</property>
-                      </object>
-                    </property>
-                    <property name="icon-name">audio-x-generic</property>
-                    <property name="name">video_page</property>
-                    <property name="title">Player</property>
-                    <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
-                  </object>
-                </child>
+                </property>
+                <property name="icon-name">audio-x-generic</property>
+                <property name="name">video_page</property>
+                <property name="title">Player</property>
+                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
               </object>
             </child>
           </object>
-        </child>
-        <child>
-          <object class="GtkSearchBar" id="search_bar"/>
         </child>
       </object>
     </child>

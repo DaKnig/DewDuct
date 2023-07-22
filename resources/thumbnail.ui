@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Created with Cambalache 0.13.1 -->
 <interface>
-  <requires lib="gtk" version="4.10"/>
+  <requires lib="gtk" version="4.8"/>
   <template class="DewThumbnail" parent="GtkBox">
     <property name="orientation">vertical</property>
     <child>
