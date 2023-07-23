@@ -66,7 +66,7 @@ mod imp {
 
     impl ObjectImpl for DewThumbnail {
         fn constructed(&self) {
-            self.thumbnail.get().set_resource(Some(
+            self.thumbnail.set_resource(Some(
                 "/null/daknig/DewDuct/dummi_thumbnail.svg",
             ));
         }

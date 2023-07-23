@@ -64,7 +64,7 @@ mod imp {
     impl DewYtItemList {
         #[template_callback(function)]
         fn activate(index: u32, list_view: gtk::ListView) {
-            let Some(item) = list_view.model().unwrap().item(index as u32)
+            let Some(item) = list_view.model().unwrap().item(index)
                                                  else {return};
             let id: String = item.downcast::<DewYtItem>().unwrap().id();
             list_view

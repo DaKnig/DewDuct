@@ -91,10 +91,6 @@ glib::wrapper! {
 }
 
 impl DewYtItem {
-    pub fn new() -> Self {
-        glib::Object::new()
-    }
-
     pub fn thumbnails(
         &self,
     ) -> Ref<Vec<invidious::hidden::VideoThumbnail>> {
@@ -170,7 +166,7 @@ impl From<PopularItem> for DewYtItem {
             title,
             views,
             ..
-        } = item.clone();
+        } = item;
 
         let ret: Self = glib::Object::builder()
             .property("author", author)
@@ -188,7 +184,7 @@ impl From<PopularItem> for DewYtItem {
         ret.set_author_thumbnails(vec![]);
         ret.set_thumbnails(thumbnails);
 
-        return ret;
+        ret
     }
 }
 
@@ -209,7 +205,7 @@ impl From<Video> for DewYtItem {
             views,
             description,
             ..
-        } = vid.clone();
+        } = vid;
 
         let ret: Self = glib::Object::builder()
             .property("author", author)
@@ -227,6 +223,6 @@ impl From<Video> for DewYtItem {
         ret.set_author_thumbnails(author_thumbnails);
         ret.set_thumbnails(thumbnails);
 
-        return ret;
+        ret
     }
 }

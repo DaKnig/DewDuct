@@ -62,6 +62,7 @@ mod imp {
         description: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
+        vid: Rc<RefCell<Option<Video>>>,
         id: Rc<RefCell<Option<String>>>,
         mpv_child: Rc<RefCell<Option<Child>>>,
     }
@@ -143,22 +144,22 @@ mod imp {
                     title,
                     description,
                     ..
-                } = new_vid;
+                } = &new_vid;
 
-                self.author_name.set_text(&author);
-                self.title.set_text(&title);
+                self.author_name.set_text(author);
+                self.title.set_text(title);
                 self.sub_count.set_text(&format!(
                     "{} subscribers",
-                    new_vid.sub_count_text
+                    &new_vid.sub_count_text
                 ));
                 // self.description.set_markup(&new_vid.description_html);
-                self.description.set_text(&description);
+                self.description.set_text(description);
                 *self.id.borrow_mut() = Some(id.clone());
                 self.vid_thumbnail
                     .update_from_params(
                         id.clone(),
-                        &thumbnails,
-                        length,
+                        thumbnails,
+                        *length,
                         0.0f64,
                     )
                     .await
@@ -168,6 +169,7 @@ mod imp {
                             id, err
                         )
                     });
+                self.vid.replace(Some(new_vid));
             } else {
                 println!("clicked on the same vid...")
             }

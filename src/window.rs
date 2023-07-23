@@ -143,7 +143,7 @@ mod imp {
                 return
             };
 
-            let vid_page = self.video_page.get();
+            let vid_page = &self.video_page;
             let invidious = self.obj().invidious_client();
 
             match invidious.video(&id, None).await {
