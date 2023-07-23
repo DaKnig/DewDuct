@@ -16,21 +16,12 @@
         <child>
           <object class="AdwViewStack" id="screen_stack">
             <child>
-              <object class="AdwViewStackPage" id="normal_view_page">
+              <object class="AdwViewStackPage" id="updates-page">
                 <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="AdwViewSwitcherBar">
-                        <property name="reveal">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="DewUpdatePage" id="update_page"/>
-                    </child>
-                  </object>
+                  <object class="DewUpdatePage" id="update_page"/>
                 </property>
-                <property name="name">normal_view_page</property>
+                <property name="icon-name">video-display-symbolic</property>
+                <property name="name">updates_page</property>
                 <property name="title">Home</property>
               </object>
             </child>
@@ -39,7 +30,9 @@
                 <property name="child">
                   <object class="DewSearchPage" id="search_page"/>
                 </property>
+                <property name="icon-name">system-search-symbolic</property>
                 <property name="name">search_page</property>
+                <property name="title">Search</property>
               </object>
             </child>
             <child>
@@ -49,12 +42,17 @@
                     <property name="visible">False</property>
                   </object>
                 </property>
-                <property name="icon-name">audio-x-generic</property>
+                <property name="icon-name">audio-headphones-symbolic</property>
                 <property name="name">video_page</property>
                 <property name="title">Player</property>
                 <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
               </object>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwViewSwitcher">
+            <property name="stack">screen_stack</property>
           </object>
         </child>
       </object>

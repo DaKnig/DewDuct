@@ -125,8 +125,7 @@ mod imp {
             self.screen_stack.set_visible_child(&self.search_page.get());
         }
         pub(super) fn back(&self) {
-            self.screen_stack.set_visible_child_name("normal_view_page");
-            self.video_page.set_visible(false);
+            self.screen_stack.set_visible_child_name("updates_page");
             self.search_page.search_entry().emit_stop_search();
         }
 
