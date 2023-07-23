@@ -128,9 +128,9 @@ impl DewVideoRow {
     }
 
     fn set_views(&self, views: u64) {
-        self.imp()
-            .views
-            .set_text(&util::format_semi_engineering(views as f32));
+        self.imp().views.set_text(
+            &(util::format_semi_engineering(views as f32) + " views"),
+        );
     }
 }
 

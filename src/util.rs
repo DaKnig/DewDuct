@@ -31,7 +31,6 @@ pub fn format_semi_engineering(value: f32) -> String {
     }
 
     ret.push(exp);
-    ret += " views";
 
     ret
 }

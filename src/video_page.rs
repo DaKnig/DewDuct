@@ -33,6 +33,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use invidious::video::Video;
 
+use crate::format_semi_engineering;
 use crate::thumbnail::DewThumbnail;
 
 mod imp {
@@ -52,10 +53,10 @@ mod imp {
         author_name: TemplateChild<gtk::Label>,
         #[template_child]
         sub_count: TemplateChild<gtk::Label>,
-        // #[template_child]
-        // views: TemplateChild<gtk::Label>,
-        // #[template_child]
-        // likes: TemplateChild<gtk::Label>,
+        #[template_child]
+        views: TemplateChild<gtk::Label>,
+        #[template_child]
+        likes: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_stack: TemplateChild<adw::ViewStack>,
         #[template_child]
@@ -143,11 +144,19 @@ mod imp {
                     author,
                     title,
                     description,
+                    likes,
+                    views,
                     ..
                 } = &new_vid;
 
                 self.author_name.set_text(author);
                 self.title.set_text(title);
+                self.likes.set_text(
+                    &(format_semi_engineering(*likes as f32) + " likes"),
+                );
+                self.views.set_text(
+                    &(format_semi_engineering(*views as f32) + " views"),
+                );
                 self.sub_count.set_text(&format!(
                     "{} subscribers",
                     &new_vid.sub_count_text
