@@ -24,7 +24,7 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious::ClientAsyncTrait;
+use invidious::ClientSyncTrait;
 
 use crate::yt_item_list::*;
 
@@ -66,7 +66,7 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewUpdatePage {
-        fn invidious_client(&self) -> invidious::ClientAsync {
+        fn invidious_client(&self) -> invidious::ClientSync {
             self.obj()
                 .root()
                 .and_downcast::<crate::window::DewDuctWindow>()
@@ -77,7 +77,7 @@ mod imp {
         async fn update_vids(&self) {
             let invidious = self.invidious_client();
 
-            let popular_items = invidious.popular(None).await;
+            let popular_items = invidious.popular(None);
             let Ok(popular) = popular_items else {
                 self.update_button.add_css_class("error");
 		popular_items.expect("pop items:");

@@ -27,7 +27,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use html_escape::decode_html_entities;
 use invidious::hidden::SearchItem;
-use invidious::ClientAsyncTrait;
+use invidious::ClientSyncTrait;
 use urlencoding::encode;
 
 use crate::video_row::DewVideoRow;
@@ -100,7 +100,7 @@ mod imp {
             let query_transformed = format!("q={}", encode(&query));
             let client = &self.obj().invidious_client();
             let search_results: Vec<SearchItem> =
-                match client.search(Some(&query_transformed)).await {
+                match client.search(Some(&query_transformed)) {
                     Ok(search) => search.items,
                     Err(err) => {
                         glib::g_warning!(
@@ -147,7 +147,6 @@ mod imp {
             let query_transformed = format!("q={}", encode(query));
             let search_suggestions: Vec<_> = match client
                 .search_suggestions(Some(&query_transformed))
-                .await
             {
                 Ok(search) => {
                     println!(
@@ -234,7 +233,7 @@ impl DewSearchPage {
     pub fn search_entry(&self) -> &SearchEntry {
         &self.imp().search_entry
     }
-    pub fn invidious_client(&self) -> invidious::ClientAsync {
+    pub fn invidious_client(&self) -> invidious::ClientSync {
         let window: crate::window::DewDuctWindow =
             self.root().and_downcast().unwrap();
         window.invidious_client()

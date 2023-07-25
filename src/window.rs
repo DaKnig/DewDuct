@@ -32,7 +32,7 @@ use crate::search_page::DewSearchPage;
 use crate::update_page::DewUpdatePage;
 use crate::video_page::DewVideoPage;
 
-use invidious::{ClientAsync, ClientAsyncTrait};
+use invidious::{ClientSync, ClientSyncTrait};
 
 mod imp {
     use super::*;
@@ -52,7 +52,7 @@ mod imp {
         #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
         last_visible_page: Rc<RefCell<Option<GString>>>,
-        pub(super) invidious_client: Rc<RefCell<ClientAsync>>,
+        pub(super) invidious_client: Rc<RefCell<ClientSync>>,
     }
 
     #[glib::object_subclass]
@@ -85,7 +85,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.invidious_client.borrow_mut().instance =
-                "https://inv.pistasjis.net".into();
+                "https://invidious.io.lol".into();
 
             self.search_bar.set_key_capture_widget(Some(&*self.obj()));
             self.search_bar
@@ -146,7 +146,7 @@ mod imp {
             let vid_page = &self.video_page;
             let invidious = self.obj().invidious_client();
 
-            match invidious.video(&id, None).await {
+            match invidious.video(&id, None) {
                 Ok(vid) => {
                     vid_page.imp().set_vid(vid).await;
                     self.screen_stack.set_visible_child_name("video_page");
@@ -184,7 +184,11 @@ impl DewDuctWindow {
     pub fn search_started(&self, _: &str, _: Option<&Variant>) {
         self.imp().search_started();
     }
-    pub fn invidious_client(&self) -> invidious::ClientAsync {
-        self.imp().invidious_client.borrow().clone()
+    pub fn invidious_client(&self) -> invidious::ClientSync {
+        let x = self.imp().invidious_client.borrow();
+        invidious::ClientSync {
+            instance: x.instance.clone(),
+            method: x.method.clone(),
+        }
     }
 }
