@@ -104,7 +104,11 @@ mod imp {
             )
             .await
             .unwrap_or_else(|err| {
-                glib::g_warning!("Dew", "{}", err);
+                glib::g_warning!(
+                    "DewYtItemList",
+                    "error binding row: {}",
+                    err
+                );
             });
         }
     }

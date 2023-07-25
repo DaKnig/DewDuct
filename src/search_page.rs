@@ -188,7 +188,7 @@ mod imp {
                 .fold("".into(), |a: String, b: String| {
                     a + ", " + b.as_ref()
                 });
-            glib::g_warning!("Dew", "{}", for_display);
+            glib::g_warning!("DewSearch", "results: {}", for_display);
         }
 
         #[template_callback(function)]
@@ -228,7 +228,11 @@ mod imp {
             )
             .await
             .unwrap_or_else(|err| {
-                glib::g_warning!("Dew", "{}", err);
+                glib::g_warning!(
+                    "DewSearch",
+                    "search result row :{id}: {:?}",
+                    err
+                );
             });
         }
     }

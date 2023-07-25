@@ -20,6 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -138,6 +139,7 @@ impl DewThumbnail {
             };
 
             let target = &thumb.url;
+            g_warning!("DewThumbnail", "url: {}", &target);
             let mut response = isahc::get_async(target).await?;
 
             let content: &[u8] = &response.bytes().await?;
