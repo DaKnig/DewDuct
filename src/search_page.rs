@@ -145,28 +145,27 @@ mod imp {
 
             // encode to make utf8 work
             let query_transformed = format!("q={}", encode(query));
-            let search_suggestions: Vec<_> = match client
-                .search_suggestions(Some(&query_transformed))
-            {
-                Ok(search) => {
-                    println!(
-                        "search.query = {}",
-                        decode_html_entities(&search.query)
-                    );
-                    if query != entry.text() {
-                        println!("query was {}, returning!", &query);
-                        return;
+            let search_suggestions: Vec<_> =
+                match client.search_suggestions(Some(&query_transformed)) {
+                    Ok(search) => {
+                        println!(
+                            "search.query = {}",
+                            decode_html_entities(&search.query)
+                        );
+                        if query != entry.text() {
+                            println!("query was {}, returning!", &query);
+                            return;
+                        }
+                        search.suggestions
                     }
-                    search.suggestions
+                    Err(err) => {
+                        glib::g_warning!("Dew", "no results: {:?}", err);
+                        vec![]
+                    }
                 }
-                Err(err) => {
-                    glib::g_warning!("Dew", "no results: {:?}", err);
-                    vec![]
-                }
-            }
-            .into_iter()
-            .map(|s| decode_html_entities(&s).into_owned())
-            .collect();
+                .into_iter()
+                .map(|s| decode_html_entities(&s).into_owned())
+                .collect();
 
             // now display suggestions
             let for_display = search_suggestions
