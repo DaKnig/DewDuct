@@ -23,7 +23,7 @@ use std::rc::Rc;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{clone, GString, Variant};
+use glib::{clone, g_warning, GString, Variant};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -146,19 +146,23 @@ mod imp {
             let vid_page = &self.video_page;
             let invidious = self.obj().invidious_client();
 
-            match invidious.video(&id, None) {
-                Ok(vid) => {
-                    vid_page.imp().set_vid(vid).await;
-                    self.screen_stack.set_visible_child_name("video_page");
-                }
-                Err(err) => {
-                    println!("cant load {id}: {err}");
-                    println!(
+            let vid = tokio::task::spawn_blocking(move || {
+                invidious.video(&id, None).map_err(|err| {
+                    g_warning!("DewWindow", "cant load {id}: {err:#?}");
+                    g_warning!(
+                        "DewWindow",
                         "the instance used was {}",
                         invidious.instance
                     );
-                }
-            }
+                    ()
+                })
+            })
+            .await;
+
+            let Ok(Ok(vid)) = vid else {return};
+
+            vid_page.imp().set_vid(vid).await;
+            self.screen_stack.set_visible_child_name("video_page");
         }
     }
 }
