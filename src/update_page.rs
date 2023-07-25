@@ -20,6 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -77,12 +78,22 @@ mod imp {
         async fn update_vids(&self) {
             let invidious = self.invidious_client();
 
-            let popular_items = invidious.popular(None);
-            let Ok(popular) = popular_items else {
+            let Ok(Some(popular)) =
+                tokio::task::spawn_blocking(move || {
+                    match invidious.popular(None) {
+			Err(err) => {
+			    g_warning!("DewUpdatePage",
+				       "cant update page: {:#?}", err);
+			    None
+			},
+			Ok(ok) => Some(ok),
+		    }
+                })
+                .await
+	    else {
                 self.update_button.add_css_class("error");
-		popular_items.expect("pop items:");
-		return;
-	    };
+		return
+            };
             self.update_button.remove_css_class("error");
 
             // let mut store = self.new_vids_store.clone();

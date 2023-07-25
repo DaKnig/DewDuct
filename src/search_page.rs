@@ -98,8 +98,8 @@ mod imp {
 
             // qeury for search results
             let query_transformed = format!("q={}", encode(&query));
-            let client = &self.obj().invidious_client();
-            let search_results: Vec<SearchItem> =
+            let client = self.obj().invidious_client();
+            let search_results = tokio::task::spawn_blocking(move || {
                 match client.search(Some(&query_transformed)) {
                     Ok(search) => search.items,
                     Err(err) => {
@@ -111,7 +111,10 @@ mod imp {
                         );
                         vec![]
                     }
-                };
+                }
+            })
+            .await
+            .unwrap_or(vec![]);
 
             // if zero, show the "not found" page
             if search_results.is_empty() {
@@ -138,31 +141,43 @@ mod imp {
             let client = self.obj().invidious_client();
 
             // get the dang results, errors = no results
-            let query = &*entry.text();
+            let query = entry.text().to_string().to_owned();
             if query.is_empty() {
                 return;
             }
 
             // encode to make utf8 work
-            let query_transformed = format!("q={}", encode(query));
-            let search_suggestions: Vec<_> =
-                match client.search_suggestions(Some(&query_transformed)) {
-                    Ok(search) => {
-                        println!(
-                            "search.query = {}",
-                            decode_html_entities(&search.query)
-                        );
-                        if query != entry.text() {
-                            println!("query was {}, returning!", &query);
-                            return;
+            let query_transformed = format!("q={}", encode(&query));
+            let search_suggestions =
+                tokio::task::spawn_blocking(move || {
+                    match client
+                        .search_suggestions(Some(&query_transformed))
+                    {
+                        Ok(search) => {
+                            println!(
+                                "search.query = {}",
+                                decode_html_entities(&search.query)
+                            );
+
+                            search.suggestions
                         }
-                        search.suggestions
+                        Err(err) => {
+                            glib::g_warning!(
+                                "DewSearch",
+                                "no results: {:?}",
+                                err
+                            );
+                            vec![]
+                        }
                     }
-                    Err(err) => {
-                        glib::g_warning!("Dew", "no results: {:?}", err);
-                        vec![]
-                    }
-                }
+                });
+            let Ok(search_suggestions): Result<Vec<_>,_> =
+                search_suggestions.await else {return};
+            if query != entry.text() {
+                println!("query was {}, returning!", &query);
+                return;
+            }
+            let search_suggestions: Vec<_> = search_suggestions
                 .into_iter()
                 .map(|s| decode_html_entities(&s).into_owned())
                 .collect();
@@ -204,7 +219,7 @@ mod imp {
 
             row.set_from_params(
                 author,
-                id,
+                id.clone(),
                 length as u32,
                 published,
                 &thumbnails,
