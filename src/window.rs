@@ -154,7 +154,6 @@ mod imp {
                         "the instance used was {}",
                         invidious.instance
                     );
-                    ()
                 })
             })
             .await;
@@ -192,7 +191,7 @@ impl DewDuctWindow {
         let x = self.imp().invidious_client.borrow();
         invidious::ClientSync {
             instance: x.instance.clone(),
-            method: x.method.clone(),
+            method: x.method,
         }
     }
 }

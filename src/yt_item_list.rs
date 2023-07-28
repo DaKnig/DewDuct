@@ -93,12 +93,14 @@ mod imp {
                 .and_downcast()
                 .expect("The item needs to be a DewVideoRow");
 
+            let thumbnails = item.thumbnails().clone();
+
             row.set_from_params(
                 item.author(),
                 item.id(),
                 item.length() as u32,
                 item.published(),
-                &item.thumbnails(),
+                &thumbnails,
                 item.title(),
                 item.views(),
             )

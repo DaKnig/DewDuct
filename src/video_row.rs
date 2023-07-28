@@ -89,7 +89,7 @@ impl DewVideoRow {
         id: String,
         length: u32,
         published: u64,
-        thumbnails: &Vec<invidious::hidden::VideoThumbnail>,
+        thumbnails: &[invidious::hidden::VideoThumbnail],
         title: String,
         views: u64,
     ) -> anyhow::Result<()> {
