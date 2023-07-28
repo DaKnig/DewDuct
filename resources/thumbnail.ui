@@ -31,7 +31,11 @@
       </object>
     </child>
     <child>
-      <object class="GtkProgressBar" id="watched_progress"/>
+      <object class="GtkProgressBar" id="watched_progress">
+        <style>
+          <class name="osd"/>
+        </style>
+      </object>
     </child>
   </template>
 </interface>

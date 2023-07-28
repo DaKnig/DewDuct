@@ -10,6 +10,7 @@
     </child>
     <child>
       <object class="GtkBox">
+        <property name="margin-start">6</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="title">

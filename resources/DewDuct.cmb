@@ -124,6 +124,7 @@
 	(5,1,"GtkWidget","height-request","80",None,None,None,None,None,None,None,None,None),
 	(5,1,"GtkWidget","hexpand","True",None,None,None,None,None,None,None,None,None),
 	(5,3,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(5,3,"GtkWidget","margin-start","6",None,None,None,None,None,None,None,None,None),
 	(5,4,"GtkLabel","ellipsize","end",None,None,None,None,None,None,None,None,None),
 	(5,4,"GtkLabel","label","the amazing video that will change your life!",None,None,None,None,None,None,None,None,None),
 	(5,4,"GtkLabel","lines","2",None,None,None,None,None,None,None,None,None),
@@ -232,11 +233,14 @@
 	(6,33,"GtkWidget",2,2,None,1,None,None,None,None),
 	(6,42,"GtkWidget",1,1,None,None,None,None,None,None),
 	(6,42,"GtkWidget",2,2,None,1,None,None,None,None),
-	(6,42,"GtkWidget",2,3,None,1,None,None,None,None)
+	(6,42,"GtkWidget",2,3,None,1,None,None,None,None),
+	(4,3,"GtkWidget",1,1,None,None,None,None,None,None),
+	(4,3,"GtkWidget",2,2,None,1,None,None,None,None)
   </object_data>
   <object_data_arg>
 	(6,33,"GtkWidget",2,2,"name","header"),
 	(6,42,"GtkWidget",2,2,"name","body"),
-	(6,42,"GtkWidget",2,3,"name","link")
+	(6,42,"GtkWidget",2,3,"name","link"),
+	(4,3,"GtkWidget",2,2,"name","osd")
   </object_data_arg>
 </cambalache-project>
