@@ -7,12 +7,16 @@
     <child>
       <object class="GtkOverlay">
         <child>
-          <object class="GtkPicture" id="thumbnail"/>
+          <object class="GtkPicture" id="thumbnail">
+            <property name="vexpand">True</property>
+          </object>
         </child>
         <child type="overlay">
           <object class="GtkLabel" id="length">
             <property name="halign">end</property>
             <property name="label">0:00</property>
+            <property name="margin-bottom">5</property>
+            <property name="margin-end">5</property>
             <property name="valign">end</property>
             <!-- Custom fragments -->
             <attributes>
