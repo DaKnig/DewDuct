@@ -220,7 +220,7 @@ mod imp {
             row.set_from_params(
                 author,
                 id.clone(),
-                length as u32,
+                length,
                 published,
                 &thumbnails,
                 title,

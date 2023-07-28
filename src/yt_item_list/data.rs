@@ -135,7 +135,7 @@ impl From<SearchItem> for DewYtItem {
             let ret: Self = glib::Object::builder()
                 .property("author", author)
                 .property("id", id)
-                .property("length", length)
+                .property("length", length as u64)
                 .property("likes", 0)
                 .property("live", live)
                 .property("published", published)
