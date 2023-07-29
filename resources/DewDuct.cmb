@@ -88,7 +88,12 @@
 	(8,13,"GtkButton","back_button",9,None,"start",None,None,None),
 	(8,14,"GtkSearchEntry","search_entry",9,None,"title",None,2,None),
 	(8,15,"GtkSearchBar","search_bar",9,None,None,None,3,None),
-	(8,16,"DewYtItemList","results_page",5,None,None,None,None,None)
+	(8,16,"DewYtItemList","results_page",5,None,None,None,None,None),
+	(9,1,"GtkBox","DewChannelRow",None,None,None,None,None,None),
+	(9,3,"GtkBox",None,1,None,None,None,1,None),
+	(9,4,"GtkLabel","name",3,None,None,None,None,None),
+	(9,5,"GtkLabel","subs",3,None,None,None,1,None),
+	(9,6,"GtkImage","icon",1,None,None,None,None,None)
   </object>
   <object_property>
 	(1,1,"GtkWindow","default-height","294",None,None,None,None,None,None,None,None,None),
@@ -215,7 +220,23 @@
 	(8,12,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
 	(8,12,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
 	(8,13,"GtkActionable","action-name","win.back",None,None,None,None,None,None,None,None,None),
-	(8,13,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None)
+	(8,13,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None),
+	(9,1,"GtkBox","spacing","6",None,None,None,None,None,None,None,None,None),
+	(9,1,"GtkWidget","height-request","80",None,None,None,None,None,None,None,None,None),
+	(9,1,"GtkWidget","margin-bottom","3",None,None,None,None,None,None,None,None,None),
+	(9,1,"GtkWidget","margin-end","6",None,None,None,None,None,None,None,None,None),
+	(9,1,"GtkWidget","margin-start","6",None,None,None,None,None,None,None,None,None),
+	(9,1,"GtkWidget","margin-top","3",None,None,None,None,None,None,None,None,None),
+	(9,3,"GtkBox","spacing","10",None,None,None,None,None,None,None,None,None),
+	(9,3,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(9,4,"GtkLabel","label","cool channel",None,None,None,None,None,None,None,None,None),
+	(9,4,"GtkWidget","halign","start",None,None,None,None,None,None,None,None,None),
+	(9,4,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(9,5,"GtkLabel","label","100k subcsriptions",None,None,None,None,None,None,None,None,None),
+	(9,5,"GtkWidget","halign","start",None,None,None,None,None,None,None,None,None),
+	(9,5,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(9,6,"GtkImage","file","budy.svg",None,None,None,None,None,None,None,None,None),
+	(9,6,"GtkImage","pixel-size","80",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)
