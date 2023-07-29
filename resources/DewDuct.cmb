@@ -9,7 +9,8 @@
 	(6,1,None,"video_page.ui",None,None,None,None,None,None,None),
 	(7,7,None,"yt_item_list.ui",None,None,None,None,None,None,None),
 	(8,1,None,"search_page.ui",None,None,None,None,None,None,None),
-	(9,1,None,"channel_row.ui",None,None,None,None,None,None,None)
+	(9,1,None,"channel_row.ui",None,None,None,None,None,None,None),
+	(10,1,None,"yt_item_row.ui",None,None,None,None,None,None,None)
   </ui>
   <ui_library>
 	(1,"gtk","4.8",None),
@@ -93,7 +94,13 @@
 	(9,3,"GtkBox",None,1,None,None,None,1,None),
 	(9,4,"GtkLabel","name",3,None,None,None,None,None),
 	(9,5,"GtkLabel","subs",3,None,None,None,1,None),
-	(9,6,"GtkImage","icon",1,None,None,None,None,None)
+	(9,6,"GtkImage","icon",1,None,None,None,None,None),
+	(10,1,"AdwBin","DewYtItemRow",None,None,None,None,None,None),
+	(10,2,"GtkStack","stack",1,None,None,None,None,None),
+	(10,3,"GtkStackPage","chan",2,None,None,None,None,None),
+	(10,4,"GtkStackPage","vid",2,None,None,None,None,None),
+	(10,5,"DewVideoRow","video_row",4,None,None,None,None,None),
+	(10,6,"DewChannelRow","channel_row",3,None,None,None,None,None)
   </object>
   <object_property>
 	(1,1,"GtkWindow","default-height","294",None,None,None,None,None,None,None,None,None),
@@ -236,7 +243,13 @@
 	(9,5,"GtkWidget","halign","start",None,None,None,None,None,None,None,None,None),
 	(9,5,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
 	(9,6,"GtkImage","file","budy.svg",None,None,None,None,None,None,None,None,None),
-	(9,6,"GtkImage","pixel-size","80",None,None,None,None,None,None,None,None,None)
+	(9,6,"GtkImage","pixel-size","80",None,None,None,None,None,None,None,None,None),
+	(10,1,"AdwBin","child",None,None,None,None,None,2,None,None,None,None),
+	(10,2,"GtkStack","transition-duration","0",None,None,None,None,None,None,None,None,None),
+	(10,3,"GtkStackPage","child",None,None,None,None,None,6,None,None,None,None),
+	(10,3,"GtkStackPage","name","channel_row",None,None,None,None,None,None,None,None,None),
+	(10,4,"GtkStackPage","child",None,None,None,None,None,5,None,None,None,None),
+	(10,4,"GtkStackPage","name","video_row",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)

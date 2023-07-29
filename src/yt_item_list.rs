@@ -24,7 +24,7 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use crate::video_row::DewVideoRow;
+use crate::yt_item_row::DewYtItemRow;
 
 mod data;
 pub use data::*;
@@ -46,7 +46,7 @@ mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
-            DewVideoRow::ensure_type();
+            DewYtItemRow::ensure_type();
             klass.bind_template();
             klass.bind_template_callbacks();
         }
@@ -74,7 +74,7 @@ mod imp {
 
         #[template_callback(function)]
         fn setup_row(list_item: gtk::ListItem) {
-            let row = DewVideoRow::new();
+            let row = DewYtItemRow::new();
             list_item.set_child(Some(&row));
         }
 
@@ -88,10 +88,12 @@ mod imp {
 
             // let item = item.imp();
 
-            let row: DewVideoRow = list_item
+            let row: DewYtItemRow = list_item
                 .child()
                 .and_downcast()
                 .expect("The item needs to be a DewVideoRow");
+
+            let row = row.become_video();
 
             let thumbnails = item.thumbnails().clone();
 

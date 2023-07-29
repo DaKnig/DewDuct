@@ -1,4 +1,4 @@
-/* channel_row.rs
+/* yt_item_row.rs
  *
  * Copyright 2023 DaKnig
  *
@@ -20,33 +20,38 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib;
+use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use crate::util;
+use crate::channel_row::DewChannelRow;
+use crate::video_row::DewVideoRow;
 
 mod imp {
     use super::*;
 
     #[derive(Debug, Default, gtk::CompositeTemplate)]
-    #[template(resource = "/null/daknig/DewDuct/channel_row.ui")]
-    pub struct DewChannelRow {
+    #[template(resource = "/null/daknig/DewDuct/yt_item_row.ui")]
+    // #[properties(wrapper_type = super::YtItemRow)]
+    pub struct DewYtItemRow {
+        // Template widgets
         #[template_child]
-        pub(super) icon: TemplateChild<gtk::Image>,
+        pub(super) stack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub(super) name: TemplateChild<gtk::Label>,
+        pub(super) video_row: TemplateChild<DewVideoRow>,
         #[template_child]
-        pub(super) subs: TemplateChild<gtk::Label>,
+        pub(super) channel_row: TemplateChild<DewChannelRow>,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for DewChannelRow {
-        const NAME: &'static str = "DewChannelRow";
-        type Type = super::DewChannelRow;
-        type ParentType = gtk::Box;
+    impl ObjectSubclass for DewYtItemRow {
+        const NAME: &'static str = "DewYtItemRow";
+        type Type = super::DewYtItemRow;
+        type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
+            DewChannelRow::ensure_type();
+            DewVideoRow::ensure_type();
             klass.bind_template();
         }
 
@@ -55,26 +60,31 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewChannelRow {}
-    impl WidgetImpl for DewChannelRow {}
-    impl BoxImpl for DewChannelRow {}
+    impl ObjectImpl for DewYtItemRow {}
+    impl WidgetImpl for DewYtItemRow {}
+    impl BinImpl for DewYtItemRow {}
 }
 
 glib::wrapper! {
-    pub struct DewChannelRow(ObjectSubclass<imp::DewChannelRow>)
-        @extends gtk::Widget, gtk::Box,
-        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+    pub struct DewYtItemRow(ObjectSubclass<imp::DewYtItemRow>)
+        @extends gtk::Widget, adw::Bin,
+        @implements gio::ActionGroup, gio::ActionMap;
 }
 
-impl DewChannelRow {
-    pub fn set_from_params(&self, icon: &str, name: &str, subs: f32) {
-        self.imp().icon.set_from_file(Some(icon));
-        self.imp().name.set_text(name);
-        self.set_subs(subs);
+impl DewYtItemRow {
+    pub fn new() -> Self {
+        glib::Object::builder().build()
     }
-    fn set_subs(&self, subs: f32) {
-        self.imp().subs.set_text(
-            &(util::format_semi_engineering(subs as f32) + " subscribers"),
-        );
+
+    pub fn become_video(&self) -> DewVideoRow {
+        let vid = self.imp().video_row.get();
+        self.imp().stack.set_visible_child(&vid);
+        vid
+    }
+}
+
+impl Default for DewYtItemRow {
+    fn default() -> Self {
+        Self::new()
     }
 }

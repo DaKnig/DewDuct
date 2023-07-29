@@ -20,6 +20,7 @@
 
 mod application;
 mod cache;
+mod channel_row;
 mod config;
 mod search_page;
 mod thumbnail;
@@ -29,6 +30,7 @@ mod video_page;
 mod video_row;
 mod window;
 mod yt_item_list;
+mod yt_item_row;
 
 use self::application::DewDuctApplication;
 use self::window::DewDuctWindow;

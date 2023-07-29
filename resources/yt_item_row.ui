@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.13.1 -->
+<interface>
+  <requires lib="gtk" version="4.10"/>
+  <requires lib="libadwaita" version="1.3"/>
+  <template class="DewYtItemRow" parent="AdwBin">
+    <property name="child">
+      <object class="GtkStack" id="stack">
+        <property name="transition-duration">0</property>
+        <child>
+          <object class="GtkStackPage" id="chan">
+            <property name="child">
+              <object class="DewChannelRow" id="channel_row"/>
+            </property>
+            <property name="name">channel_row</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="vid">
+            <property name="child">
+              <object class="DewVideoRow" id="video_row"/>
+            </property>
+            <property name="name">video_row</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
