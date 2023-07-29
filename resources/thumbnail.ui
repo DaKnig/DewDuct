@@ -6,9 +6,18 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkOverlay">
+        <property name="height-request">80</property>
         <child>
           <object class="GtkPicture" id="thumbnail">
             <property name="vexpand">True</property>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="GtkProgressBar" id="watched_progress">
+            <property name="valign">end</property>
+            <style>
+              <class name="osd"/>
+            </style>
           </object>
         </child>
         <child type="overlay">
@@ -28,13 +37,6 @@
             </layout>
           </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkProgressBar" id="watched_progress">
-        <style>
-          <class name="osd"/>
-        </style>
       </object>
     </child>
   </template>

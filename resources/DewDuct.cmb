@@ -8,19 +8,20 @@
 	(5,1,None,"video_row.ui",None,None,None,None,None,None,None),
 	(6,1,None,"video_page.ui",None,None,None,None,None,None,None),
 	(7,7,None,"yt_item_list.ui",None,None,None,None,None,None,None),
-	(8,1,None,"search_page.ui",None,None,None,None,None,None,None)
+	(8,1,None,"search_page.ui",None,None,None,None,None,None,None),
+	(9,1,None,"channel_row.ui",None,None,None,None,None,None,None)
   </ui>
   <ui_library>
 	(1,"gtk","4.8",None),
 	(2,"gtk","4.0",None),
-	(2,"libadwaita","1.3",None),
+	(2,"libadwaita","1.2",None),
 	(4,"gtk","4.8",None),
 	(6,"gtk","4.8",None),
-	(6,"libadwaita","1.3",None),
+	(6,"libadwaita","1.2",None),
 	(7,"gtk","4.2",None),
-	(7,"libadwaita","1.3",None),
+	(7,"libadwaita","1.2",None),
 	(8,"gtk","4.8",None),
-	(8,"libadwaita","1.3",None)
+	(8,"libadwaita","1.2",None)
   </ui_library>
   <object>
 	(1,1,"AdwApplicationWindow","DewDuctWindow",None,None,None,None,None,None),
@@ -41,7 +42,7 @@
 	(2,19,"DewYtItemList","vid_list",1,None,None,None,1,None),
 	(4,1,"GtkBox","DewThumbnail",None,None,None,None,None,None),
 	(4,2,"GtkOverlay",None,1,None,None,None,None,None),
-	(4,3,"GtkProgressBar","watched_progress",1,None,None,None,1,None),
+	(4,3,"GtkProgressBar","watched_progress",2,None,"overlay",None,1,None),
 	(4,5,"GtkLabel","length",2,None,"overlay",None,1,"&lt;attributes&gt;\n  &lt;attribute name=\"background\" value= \"black\"/&gt;\n  &lt;attribute name=\"background-alpha\" value=\"0x8000\"/&gt;\n&lt;/attributes&gt;"),
 	(4,6,"GtkPicture","thumbnail",2,None,None,None,None,None),
 	(5,1,"GtkBox","DewVideoRow",None,None,None,None,None,None),
@@ -115,6 +116,8 @@
 	(2,17,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
 	(2,18,"GtkButton","icon-name","view-refresh-symbolic",None,None,None,None,None,None,None,None,None),
 	(4,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(4,2,"GtkWidget","height-request","80",None,None,None,None,None,None,None,None,None),
+	(4,3,"GtkWidget","valign","end",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkLabel","label","0:00",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkWidget","halign","end",None,None,None,None,None,None,None,None,None),
 	(4,5,"GtkWidget","margin-bottom","5",None,None,None,None,None,None,None,None,None),

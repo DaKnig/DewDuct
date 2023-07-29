@@ -2,7 +2,7 @@
 <!-- Created with Cambalache 0.13.1 -->
 <interface>
   <requires lib="gtk" version="4.8"/>
-  <requires lib="libadwaita" version="1.3"/>
+  <requires lib="libadwaita" version="1.2"/>
   <template class="DewSearchPage" parent="GtkBox">
     <property name="orientation">vertical</property>
     <child>
