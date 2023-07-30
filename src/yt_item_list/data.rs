@@ -30,9 +30,19 @@ use std::cell::{Cell, Ref, RefCell};
 mod imp_data {
     use super::*;
 
+    #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, glib::Enum)]
+    #[enum_type(name = "MyEnum")]
+    pub enum DewYtItemKind {
+        #[default]
+        Video,
+        Channel,
+    }
+
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::DewYtItem)]
     pub struct DewYtItem {
+        pub kind: RefCell<DewYtItemKind>,
+
         #[property(get, set)]
         pub title: RefCell<String>,
         #[property(get, set)]
@@ -147,6 +157,8 @@ impl From<SearchItem> for DewYtItem {
 
             ret.set_author_thumbnails(vec![]);
             ret.set_thumbnails(thumbnails);
+            ret.imp().kind.replace(imp_data::DewYtItemKind::Video);
+
             ret
         } else {
             todo!()
@@ -183,6 +195,7 @@ impl From<PopularItem> for DewYtItem {
 
         ret.set_author_thumbnails(vec![]);
         ret.set_thumbnails(thumbnails);
+        ret.imp().kind.replace(imp_data::DewYtItemKind::Video);
 
         ret
     }
@@ -222,6 +235,7 @@ impl From<Video> for DewYtItem {
 
         ret.set_author_thumbnails(author_thumbnails);
         ret.set_thumbnails(thumbnails);
+        ret.imp().kind.replace(imp_data::DewYtItemKind::Video);
 
         ret
     }
