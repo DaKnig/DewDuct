@@ -108,6 +108,7 @@ impl DewDuctApplication {
             .build();
         self.add_action_entries([quit_action, about_action]);
         self.set_accels_for_action("win.back", &["Escape"]);
+        self.set_accels_for_action("win.search_started", &["<Ctrl>f"]);
     }
 
     fn show_about(&self) {

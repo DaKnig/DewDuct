@@ -228,6 +228,7 @@
 	(8,12,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
 	(8,13,"GtkActionable","action-name","win.back",None,None,None,None,None,None,None,None,None),
 	(8,13,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None),
+	(8,14,"GtkWidget","hexpand","True",None,None,None,None,None,None,None,None,None),
 	(9,1,"GtkBox","spacing","6",None,None,None,None,None,None,None,None,None),
 	(9,1,"GtkWidget","height-request","80",None,None,None,None,None,None,None,None,None),
 	(9,1,"GtkWidget","margin-bottom","3",None,None,None,None,None,None,None,None,None),
