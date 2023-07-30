@@ -83,6 +83,7 @@ impl DewVideoRow {
         glib::Object::builder().build()
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub(crate) async fn set_from_params<'a>(
         &'a self,
         author: String,

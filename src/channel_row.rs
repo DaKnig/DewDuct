@@ -74,7 +74,7 @@ impl DewChannelRow {
     }
     fn set_subs(&self, subs: f32) {
         self.imp().subs.set_text(
-            &(util::format_semi_engineering(subs as f32) + " subscribers"),
+            &(util::format_semi_engineering(subs) + " subscribers"),
         );
     }
 }

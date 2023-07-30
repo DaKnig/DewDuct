@@ -190,51 +190,6 @@ mod imp {
                 });
             glib::g_warning!("DewSearch", "results: {}", for_display);
         }
-
-        #[template_callback(function)]
-        fn setup_row(list_item: gtk::ListItem) {
-            let row = DewVideoRow::new();
-            list_item.set_child(Some(&row));
-        }
-
-        #[template_callback(function)]
-        async fn bind_row(list_item: gtk::ListItem) {
-            let boxed: glib::BoxedAnyObject = list_item
-                .item()
-                .and_downcast()
-                .expect("The item has to be an `BoxedAnyObject`");
-            // get_type_of_value(&boxed);
-
-            let SearchItem::Video{title, author, views, published,
-				  id, length, thumbnails, ..} =
-                boxed.try_borrow::<SearchItem>().unwrap().clone()
-	    else {
-		todo!()
-	    };
-
-            let row: DewVideoRow = list_item
-                .child()
-                .and_downcast()
-                .expect("The item needs to be a DewVideoRow");
-
-            row.set_from_params(
-                author,
-                id.clone(),
-                length,
-                published,
-                &thumbnails,
-                title,
-                views,
-            )
-            .await
-            .unwrap_or_else(|err| {
-                glib::g_warning!(
-                    "DewSearch",
-                    "search result row :{id}: {:?}",
-                    err
-                );
-            });
-        }
     }
 }
 
