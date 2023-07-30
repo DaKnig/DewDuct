@@ -88,42 +88,50 @@ mod imp {
     impl ObjectImpl for DewVideoPage {
         fn constructed(&self) {
             self.id.take();
-            let click = gtk::GestureClick::new();
+            {
+                // let's spawn mpv when thumbnail is clicked!
+                let click = gtk::GestureClick::new();
 
-            let id = self.id.clone();
-            let mpv_child = self.mpv_child.clone();
-            // let's spawn mpv when thumbnail is clicked!
-            click.connect_pressed(move |_, _n, _x, _y| {
-                let tmp = id.borrow();
-                let Some(id) = tmp.as_ref() else {return};
+                let page = self.obj().clone();
+                click.connect_pressed(move |_, _n, _x, _y| {
+                    page.imp().play_mpv()
+                });
 
-                let url = format!("https://youtube.com/watch?v={}", id);
-                let mut mpv = Command::new("mpv");
-                mpv.arg(url).arg("--ytdl-format=best[height<=480]");
-                g_warning!(
-                    "Dew",
-                    "running... {:?} {:?}",
-                    mpv.get_program(),
-                    mpv.get_args().collect::<Vec<_>>()
-                );
-
-                // spawn child process
-                let mpv_process = mpv.spawn().expect("mpv not found");
-                let prev_mpv = mpv_child.replace(Some(mpv_process));
-
-                // if there was already a mpv instance running...
-                if let Some(mut prev_mpv) = prev_mpv {
-                    prev_mpv.kill().expect("error killing it");
-                }
-            });
-
-            self.vid_thumbnail.add_controller(click);
+                self.vid_thumbnail.add_controller(click);
+            }
         }
     }
     impl WidgetImpl for DewVideoPage {}
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
+        pub(crate) fn play_mpv(&self) {
+            let id = self.id.clone();
+            let mpv_child = self.mpv_child.clone();
+
+            let tmp = id.borrow();
+            let Some(id) = tmp.as_ref() else {return};
+
+            let url = format!("https://youtube.com/watch?v={}", id);
+            let mut mpv = Command::new("mpv");
+            mpv.arg(url).arg("--ytdl-format=best[height<=480]");
+            g_warning!(
+                "Dew",
+                "running... {:?} {:?}",
+                mpv.get_program(),
+                mpv.get_args().collect::<Vec<_>>()
+            );
+
+            // spawn child process
+            let mpv_process = mpv.spawn().expect("mpv not found");
+            let prev_mpv = mpv_child.replace(Some(mpv_process));
+
+            // if there was already a mpv instance running...
+            if let Some(mut prev_mpv) = prev_mpv {
+                prev_mpv.kill().expect("error killing it");
+            }
+        }
+
         pub(crate) async fn set_vid(&self, new_vid: Video) {
             if !self
                 .id
