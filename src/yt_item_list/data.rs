@@ -48,7 +48,7 @@ mod imp_data {
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::DewYtItem)]
     pub struct DewYtItem {
-        pub kind: Cell<DewYtItemKind>,
+        pub(super) kind: Cell<DewYtItemKind>,
 
         #[property(get, set)]
         pub title: RefCell<String>,
@@ -137,6 +137,9 @@ impl DewYtItem {
     pub fn kind(&self) -> DewYtItemKind {
         self.imp().kind.get()
     }
+    fn set_kind(&self, new_val: DewYtItemKind) {
+        self.imp().kind.set(new_val);
+    }
 }
 
 use invidious::hidden::SearchItem;
@@ -170,7 +173,7 @@ impl From<SearchItem> for DewYtItem {
 
                 ret.set_author_thumbnails(vec![]);
                 ret.set_thumbnails(thumbnails);
-                ret.imp().kind.replace(DewYtItemKind::Video);
+                ret.set_kind(DewYtItemKind::Video);
 
                 ret
             }
@@ -191,7 +194,7 @@ impl From<SearchItem> for DewYtItem {
                     .property("subscribers", subscribers as f32)
                     .build();
                 // ret.set_thumbnails(thumbnails);
-                ret.imp().kind.replace(DewYtItemKind::Channel);
+                ret.set_kind(DewYtItemKind::Channel);
                 // todo!()
                 ret
             }
@@ -230,7 +233,7 @@ impl From<PopularItem> for DewYtItem {
 
         ret.set_author_thumbnails(vec![]);
         ret.set_thumbnails(thumbnails);
-        ret.imp().kind.replace(DewYtItemKind::Video);
+        ret.set_kind(DewYtItemKind::Video);
 
         ret
     }
@@ -270,7 +273,7 @@ impl From<Video> for DewYtItem {
 
         ret.set_author_thumbnails(author_thumbnails);
         ret.set_thumbnails(thumbnails);
-        ret.imp().kind.replace(DewYtItemKind::Video);
+        ret.set_kind(DewYtItemKind::Video);
 
         ret
     }

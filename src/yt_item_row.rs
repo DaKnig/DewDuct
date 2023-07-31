@@ -95,7 +95,7 @@ impl DewYtItemRow {
         item: &DewYtItem,
     ) -> anyhow::Result<()> {
         use DewYtItemKind::*;
-        match item.imp().kind.get() {
+        match item.kind() {
             Video => {
                 self.become_video()
                     .set_from_params(
