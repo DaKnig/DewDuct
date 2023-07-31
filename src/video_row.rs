@@ -90,7 +90,7 @@ impl DewVideoRow {
         id: String,
         length: u64,
         published: u64,
-        thumbnails: &[invidious::hidden::VideoThumbnail],
+        thumbnails: &[crate::yt_item_list::Thumbnail],
         title: String,
         views: u64,
     ) -> anyhow::Result<()> {

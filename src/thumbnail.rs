@@ -107,7 +107,7 @@ impl DewThumbnail {
     pub(crate) async fn update_from_params(
         &self,
         id: String,
-        thumbnails: &[invidious::hidden::VideoThumbnail],
+        thumbnails: &[crate::yt_item_list::Thumbnail],
         length: u32,
         watched_progress: f64,
     ) -> anyhow::Result<()> {
@@ -122,7 +122,7 @@ impl DewThumbnail {
 
         // thumbnail_fname.push();
         let mut thumbnail_fname = cache_dir(Path::new(&id));
-        thumbnail_fname.push(&thumb.quality);
+        thumbnail_fname.push(&thumb.height.to_string());
         thumbnail_fname.set_extension("jpg");
 
         let fetcher = async {

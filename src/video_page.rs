@@ -172,6 +172,11 @@ mod imp {
                 // self.description.set_markup(&new_vid.description_html);
                 self.description.set_text(description);
                 *self.id.borrow_mut() = Some(id.clone());
+
+                let thumbnails: &Vec<_> = &thumbnails
+                    .iter()
+                    .map(|x| x.clone().into())
+                    .collect();
                 self.vid_thumbnail
                     .update_from_params(
                         id.clone(),

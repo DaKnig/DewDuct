@@ -42,6 +42,16 @@ pub struct Thumbnail {
     pub height: u32,
 }
 
+impl From<invidious::hidden::VideoThumbnail> for Thumbnail {
+    fn from(thumb: invidious::hidden::VideoThumbnail) -> Self {
+        Self {
+            url: thumb.url,
+            width: thumb.width,
+            height: thumb.height,
+        }
+    }
+}
+
 mod imp_data {
     use super::*;
 
@@ -62,7 +72,7 @@ mod imp_data {
         #[property(get, set)]
         pub length: Cell<u64>,
         // #[property(get, set)]
-        pub thumbnails: RefCell<Vec<invidious::hidden::VideoThumbnail>>,
+        pub thumbnails: RefCell<Vec<Thumbnail>>,
         #[property(get, set)]
         pub views: Cell<u64>,
         #[property(get, set)]
@@ -110,15 +120,10 @@ glib::wrapper! {
 }
 
 impl DewYtItem {
-    pub fn thumbnails(
-        &self,
-    ) -> Ref<Vec<invidious::hidden::VideoThumbnail>> {
+    pub fn thumbnails(&self) -> Ref<Vec<Thumbnail>> {
         self.imp().thumbnails.borrow()
     }
-    pub fn set_thumbnails(
-        &self,
-        thumbs: Vec<invidious::hidden::VideoThumbnail>,
-    ) {
+    pub fn set_thumbnails(&self, thumbs: Vec<Thumbnail>) {
         self.imp().thumbnails.replace(thumbs);
     }
 
@@ -172,6 +177,8 @@ impl From<SearchItem> for DewYtItem {
                     .build();
 
                 ret.set_author_thumbnails(vec![]);
+                let thumbnails: Vec<_> =
+                    thumbnails.into_iter().map(|x| x.into()).collect();
                 ret.set_thumbnails(thumbnails);
                 ret.set_kind(DewYtItemKind::Video);
 
@@ -232,6 +239,8 @@ impl From<PopularItem> for DewYtItem {
             .build();
 
         ret.set_author_thumbnails(vec![]);
+        let thumbnails: Vec<_> =
+            thumbnails.into_iter().map(|x| x.into()).collect();
         ret.set_thumbnails(thumbnails);
         ret.set_kind(DewYtItemKind::Video);
 
@@ -272,6 +281,8 @@ impl From<Video> for DewYtItem {
             .build();
 
         ret.set_author_thumbnails(author_thumbnails);
+        let thumbnails: Vec<_> =
+            thumbnails.into_iter().map(|x| x.into()).collect();
         ret.set_thumbnails(thumbnails);
         ret.set_kind(DewYtItemKind::Video);
 
