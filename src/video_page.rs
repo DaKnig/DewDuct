@@ -154,6 +154,7 @@ mod imp {
                     description,
                     likes,
                     views,
+                    sub_count_text,
                     ..
                 } = &new_vid;
 
@@ -165,10 +166,8 @@ mod imp {
                 self.views.set_text(
                     &(format_semi_engineering(*views as f32) + " views"),
                 );
-                self.sub_count.set_text(&format!(
-                    "{} subscribers",
-                    &new_vid.sub_count_text
-                ));
+                self.sub_count
+                    .set_text(&format!("{} subscribers", sub_count_text));
                 // self.description.set_markup(&new_vid.description_html);
                 self.description.set_text(description);
                 *self.id.borrow_mut() = Some(id.clone());
