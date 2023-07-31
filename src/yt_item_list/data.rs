@@ -27,21 +27,28 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use std::cell::{Cell, Ref, RefCell};
 
+#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, glib::Enum)]
+#[enum_type(name = "MyEnum")]
+pub enum DewYtItemKind {
+    #[default]
+    Video,
+    Channel,
+}
+
+#[derive(PartialEq, Eq)]
+pub struct Thumbnail {
+    pub url: String,
+    pub width: u32,
+    pub height: u32,
+}
+
 mod imp_data {
     use super::*;
-
-    #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, glib::Enum)]
-    #[enum_type(name = "MyEnum")]
-    pub enum DewYtItemKind {
-        #[default]
-        Video,
-        Channel,
-    }
 
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::DewYtItem)]
     pub struct DewYtItem {
-        pub kind: RefCell<DewYtItemKind>,
+        pub kind: Cell<DewYtItemKind>,
 
         #[property(get, set)]
         pub title: RefCell<String>,
@@ -68,6 +75,8 @@ mod imp_data {
         pub likes: Cell<i32>,
         #[property(get, set)]
         pub description: RefCell<Option<String>>,
+        #[property(get, set)]
+        pub subscribers: Cell<f32>,
     }
 
     #[glib::object_subclass]
@@ -124,44 +133,70 @@ impl DewYtItem {
     ) {
         self.imp().author_thumbnails.replace(author_thumbs);
     }
+
+    pub fn kind(&self) -> DewYtItemKind {
+        self.imp().kind.get()
+    }
 }
 
 use invidious::hidden::SearchItem;
 impl From<SearchItem> for DewYtItem {
     fn from(vid: SearchItem) -> Self {
-        if let SearchItem::Video {
-            author,
-            id,
-            length,
-            live,
-            published,
-            thumbnails,
-            title,
-            views,
-            description,
-            ..
-        } = vid
-        {
-            let ret: Self = glib::Object::builder()
-                .property("author", author)
-                .property("id", id)
-                .property("length", length as u64)
-                .property("likes", 0)
-                .property("live", live)
-                .property("published", published)
-                .property("sub-count-text", "")
-                .property("title", title)
-                .property("views", views)
-                .property("description", Some(description))
-                .build();
+        match vid {
+            SearchItem::Video {
+                author,
+                id,
+                length,
+                live,
+                published,
+                thumbnails,
+                title,
+                views,
+                description,
+                ..
+            } => {
+                let ret: Self = glib::Object::builder()
+                    .property("author", author)
+                    .property("id", id)
+                    .property("length", length as u64)
+                    .property("likes", 0)
+                    .property("live", live)
+                    .property("published", published)
+                    .property("sub-count-text", "")
+                    .property("title", title)
+                    .property("views", views)
+                    .property("description", Some(description))
+                    .build();
 
-            ret.set_author_thumbnails(vec![]);
-            ret.set_thumbnails(thumbnails);
-            ret.imp().kind.replace(imp_data::DewYtItemKind::Video);
+                ret.set_author_thumbnails(vec![]);
+                ret.set_thumbnails(thumbnails);
+                ret.imp().kind.replace(DewYtItemKind::Video);
 
-            ret
-        } else {
-            todo!()
+                ret
+            }
+
+            SearchItem::Channel {
+                description,
+                id,
+                name,
+                subscribers,
+                // thumbnails,
+                ..
+            } => {
+                let ret: Self = glib::Object::builder()
+                    .property("author", &name)
+                    .property("id", id)
+                    .property("title", name)
+                    .property("description", description)
+                    .property("subscribers", subscribers as f32)
+                    .build();
+                // ret.set_thumbnails(thumbnails);
+                ret.imp().kind.replace(DewYtItemKind::Channel);
+                // todo!()
+                ret
+            }
+
+            _ => todo!(),
         }
     }
 }
@@ -195,7 +230,7 @@ impl From<PopularItem> for DewYtItem {
 
         ret.set_author_thumbnails(vec![]);
         ret.set_thumbnails(thumbnails);
-        ret.imp().kind.replace(imp_data::DewYtItemKind::Video);
+        ret.imp().kind.replace(DewYtItemKind::Video);
 
         ret
     }
@@ -235,7 +270,7 @@ impl From<Video> for DewYtItem {
 
         ret.set_author_thumbnails(author_thumbnails);
         ret.set_thumbnails(thumbnails);
-        ret.imp().kind.replace(imp_data::DewYtItemKind::Video);
+        ret.imp().kind.replace(DewYtItemKind::Video);
 
         ret
     }

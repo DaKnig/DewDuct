@@ -18,19 +18,24 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::cell::RefCell;
+
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::Properties;
 use gtk::glib;
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
 use crate::util;
+use crate::yt_item_list::Thumbnail;
 
 mod imp {
     use super::*;
 
-    #[derive(Debug, Default, gtk::CompositeTemplate)]
+    #[derive(Debug, Default, gtk::CompositeTemplate, Properties)]
     #[template(resource = "/null/daknig/DewDuct/channel_row.ui")]
+    #[properties(wrapper_type=super::DewChannelRow)]
     pub struct DewChannelRow {
         #[template_child]
         pub(super) icon: TemplateChild<gtk::Image>,
@@ -38,6 +43,9 @@ mod imp {
         pub(super) name: TemplateChild<gtk::Label>,
         #[template_child]
         pub(super) subs: TemplateChild<gtk::Label>,
+
+        #[property(get, set)]
+        pub(super) id: RefCell<String>,
     }
 
     #[glib::object_subclass]
@@ -67,10 +75,16 @@ glib::wrapper! {
 }
 
 impl DewChannelRow {
-    pub fn set_from_params(&self, icon: &str, name: &str, subs: f32) {
-        self.imp().icon.set_from_file(Some(icon));
-        self.imp().name.set_text(name);
+    pub fn set_from_params(
+        &self,
+        name: String,
+        subs: f32,
+        _thumbnails: &[Thumbnail],
+    ) {
+        self.imp().name.set_text(&name);
         self.set_subs(subs);
+        // let icon: &str = todo!();
+        // self.imp().icon.set_from_file(Some(icon));
     }
     fn set_subs(&self, subs: f32) {
         self.imp().subs.set_text(

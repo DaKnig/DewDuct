@@ -26,6 +26,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use crate::channel_row::DewChannelRow;
 use crate::video_row::DewVideoRow;
+use crate::yt_item_list::Thumbnail;
 
 mod imp {
     use super::*;
@@ -71,6 +72,8 @@ glib::wrapper! {
         @implements gio::ActionGroup, gio::ActionMap;
 }
 
+use crate::yt_item_list::{DewYtItem, DewYtItemKind};
+
 impl DewYtItemRow {
     pub fn new() -> Self {
         glib::Object::builder().build()
@@ -80,6 +83,51 @@ impl DewYtItemRow {
         let vid = self.imp().video_row.get();
         self.imp().stack.set_visible_child(&vid);
         vid
+    }
+    pub fn become_channel(&self) -> DewChannelRow {
+        let chan = self.imp().channel_row.get();
+        self.imp().stack.set_visible_child(&chan);
+        chan
+    }
+
+    pub async fn set_from_yt_item(
+        &self,
+        item: &DewYtItem,
+    ) -> anyhow::Result<()> {
+        use DewYtItemKind::*;
+        match item.imp().kind.get() {
+            Video => {
+                self.become_video()
+                    .set_from_params(
+                        item.author(),
+                        item.id(),
+                        item.length(),
+                        item.published(),
+                        &item.thumbnails(),
+                        item.title(),
+                        item.views(),
+                    )
+                    .await?;
+                // todo!()
+            }
+            Channel => {
+                self.become_channel().set_from_params(
+                    item.title(),
+                    item.subscribers(),
+                    &item
+                        .thumbnails()
+                        .iter()
+                        .map(|x| Thumbnail {
+                            height: x.height,
+                            width: x.width,
+                            url: x.url.clone(),
+                        })
+                        .collect::<Vec<_>>(),
+                );
+                // todo!()
+            }
+        }
+        Ok(())
     }
 }
 

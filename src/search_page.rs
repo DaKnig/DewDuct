@@ -128,7 +128,11 @@ mod imp {
                 // actually putting in the items
                 let search_results: Vec<_> = search_results
                     .into_iter()
-                    .filter(|x| matches!(x, SearchItem::Video { .. }))
+                    .filter(|x| {
+                        // we only support these types for now...
+                        matches!(x, SearchItem::Channel { .. })
+                            || matches!(x, SearchItem::Video { .. })
+                    })
                     .map(|x| x.into())
                     .collect();
 

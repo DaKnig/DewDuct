@@ -88,7 +88,7 @@ impl DewVideoRow {
         &'a self,
         author: String,
         id: String,
-        length: u32,
+        length: u64,
         published: u64,
         thumbnails: &[invidious::hidden::VideoThumbnail],
         title: String,
@@ -103,7 +103,12 @@ impl DewVideoRow {
         // self.imp().thumbnail.update_from_vid_data(&vid_data).await
         self.imp()
             .thumbnail
-            .update_from_params(id, thumbnails, length, watched_progress)
+            .update_from_params(
+                id,
+                thumbnails,
+                length as u32,
+                watched_progress,
+            )
             .await?;
         Ok(())
     }

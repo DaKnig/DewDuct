@@ -20,6 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -64,12 +65,26 @@ mod imp {
     impl DewYtItemList {
         #[template_callback(function)]
         fn activate(index: u32, list_view: gtk::ListView) {
+            use data::DewYtItemKind::*;
+
             let Some(item) = list_view.model().unwrap().item(index)
                                                  else {return};
-            let id: String = item.downcast::<DewYtItem>().unwrap().id();
-            list_view
-                .activate_action("win.play", Some(&Some(id).to_variant()))
-                .expect("the action win.play does not exist");
+            let item: DewYtItem = item.downcast().unwrap();
+            let id: String = item.id();
+            match item.kind() {
+                Video => list_view
+                    .activate_action(
+                        "win.play",
+                        Some(&Some(id).to_variant()),
+                    )
+                    .expect("the action win.play does not exist"),
+                Channel => {
+                    g_warning!(
+                        "DewYtItemList",
+                        "oops, cant click channels yet!"
+                    );
+                }
+            }
         }
 
         #[template_callback(function)]
@@ -84,30 +99,13 @@ mod imp {
                 .item()
                 .and_downcast()
                 .expect("The item has to be an `DewYtItem`");
-            // get_type_of_value(&boxed);
-
-            // let item = item.imp();
 
             let row: DewYtItemRow = list_item
                 .child()
                 .and_downcast()
                 .expect("The item needs to be a DewVideoRow");
 
-            let row = row.become_video();
-
-            let thumbnails = item.thumbnails().clone();
-
-            row.set_from_params(
-                item.author(),
-                item.id(),
-                item.length() as u32,
-                item.published(),
-                &thumbnails,
-                item.title(),
-                item.views(),
-            )
-            .await
-            .unwrap_or_else(|err| {
+            row.set_from_yt_item(&item).await.unwrap_or_else(|err| {
                 glib::g_warning!(
                     "DewYtItemList",
                     "error binding row: {}",
