@@ -42,6 +42,16 @@ pub struct Thumbnail {
     pub height: u32,
 }
 
+impl From<invidious::hidden::AuthorThumbnail> for Thumbnail {
+    fn from(thumb: invidious::hidden::AuthorThumbnail) -> Self {
+        Self {
+            url: thumb.url,
+            width: thumb.width,
+            height: thumb.height,
+        }
+    }
+}
+
 impl From<invidious::hidden::VideoThumbnail> for Thumbnail {
     fn from(thumb: invidious::hidden::VideoThumbnail) -> Self {
         Self {
@@ -67,8 +77,7 @@ mod imp_data {
         #[property(construct, get, set)]
         pub author: RefCell<String>,
         // #[property(get, set)]
-        pub author_thumbnails:
-            RefCell<Vec<invidious::hidden::AuthorThumbnail>>,
+        pub author_thumbnails: RefCell<Vec<Thumbnail>>,
         #[property(get, set)]
         pub length: Cell<u64>,
         // #[property(get, set)]
@@ -127,15 +136,10 @@ impl DewYtItem {
         self.imp().thumbnails.replace(thumbs);
     }
 
-    pub fn author_thumbnails(
-        &self,
-    ) -> Ref<Vec<invidious::hidden::AuthorThumbnail>> {
+    pub fn author_thumbnails(&self) -> Ref<Vec<Thumbnail>> {
         self.imp().author_thumbnails.borrow()
     }
-    pub fn set_author_thumbnails(
-        &self,
-        author_thumbs: Vec<invidious::hidden::AuthorThumbnail>,
-    ) {
+    pub fn set_author_thumbnails(&self, author_thumbs: Vec<Thumbnail>) {
         self.imp().author_thumbnails.replace(author_thumbs);
     }
 
@@ -280,6 +284,8 @@ impl From<Video> for DewYtItem {
             .property("description", Some(description))
             .build();
 
+        let author_thumbnails: Vec<_> =
+            author_thumbnails.into_iter().map(|x| x.into()).collect();
         ret.set_author_thumbnails(author_thumbnails);
         let thumbnails: Vec<_> =
             thumbnails.into_iter().map(|x| x.into()).collect();

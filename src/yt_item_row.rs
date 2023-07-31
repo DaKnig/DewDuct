@@ -26,7 +26,6 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use crate::channel_row::DewChannelRow;
 use crate::video_row::DewVideoRow;
-use crate::yt_item_list::Thumbnail;
 
 mod imp {
     use super::*;
@@ -114,15 +113,7 @@ impl DewYtItemRow {
                 self.become_channel().set_from_params(
                     item.title(),
                     item.subscribers(),
-                    &item
-                        .thumbnails()
-                        .iter()
-                        .map(|x| Thumbnail {
-                            height: x.height,
-                            width: x.width,
-                            url: x.url.clone(),
-                        })
-                        .collect::<Vec<_>>(),
+                    &item.thumbnails(),
                 );
                 // todo!()
             }
