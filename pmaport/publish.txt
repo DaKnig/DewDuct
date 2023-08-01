@@ -1,0 +1,3 @@
+- lock on specific version by pointing source to the tar.gz
+- checksum
+- push

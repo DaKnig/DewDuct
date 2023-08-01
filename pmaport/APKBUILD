@@ -1,0 +1,30 @@
+# Contributor:
+# Maintainer: DaKnig <zannyknig@disroot.org>
+pkgname=dewduct
+pkgver=0.1.0
+pkgrel=0
+pkgdesc="A NewPipe clone."
+source="https://github.com/DaKnig/DewDuct/archive/refs/heads/master.zip"
+arch="all"
+license="GPL-3.0-or-later"
+depends="openssl gtk4.0 libadwaita mpv"
+makedepends="rust cargo openssl-dev gtk4.0-dev libadwaita-dev"
+checkdepends=""
+install=""
+subpackages=""
+url="https://github.com/DaKnig/DewDuct"
+giturl="https://github.com/DaKnig/DewDuct.git"
+builddir="$srcdir/"
+
+build() {
+	mv DewDuct*/* .
+	cargo build --release
+}
+
+options="!check"
+
+package() {
+	# Replace with proper package command(s)
+	install -D "$srcdir"/target/release/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
+}
+sha512sums=""
