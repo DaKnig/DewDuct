@@ -22,6 +22,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -126,7 +127,7 @@ impl DewVideoRow {
             })
         };
         let Ok(rel_upload_time) = rel_upload_time else {
-            println!("{}", rel_upload_time.unwrap_err());
+            g_warning!("DewVideoRow", "{}", rel_upload_time.unwrap_err());
             return;
         };
 

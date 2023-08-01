@@ -17,7 +17,7 @@ pub fn format_semi_engineering(value: f32) -> String {
         .zip(SUFFIXES)
         .filter(|x| value >= x.0 || x.1 == ' ')
         .last() else {
-	    eprintln!("wtf: cant format value {value}");
+	    gtk::glib::g_warning!("DewUtil", "wtf: cant format value {value}");
 	    return "".into();
 	};
 

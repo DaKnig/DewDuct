@@ -19,6 +19,7 @@
  */
 
 use adw::subclass::prelude::*;
+use glib::g_warning;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
@@ -63,7 +64,8 @@ mod imp {
                 window.upcast()
             };
 
-            println!(
+            g_warning!(
+                "DewApplication",
                 "instance used: {}",
                 window
                     .clone()

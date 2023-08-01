@@ -139,7 +139,8 @@ mod imp {
                 .as_ref()
                 .is_some_and(|id| id == &new_vid.id)
             {
-                println!(
+                g_warning!(
+                    "DewVideoPage",
                     "was {:?} became {:?}",
                     self.id.borrow().as_ref(),
                     Some(&new_vid.id)
@@ -183,20 +184,26 @@ mod imp {
                     )
                     .await
                     .unwrap_or_else(|err| {
-                        println!(
+                        g_warning!(
+                            "DewVideoPage",
                             "can't open video {} in the VideoPage: {}",
-                            id, err
+                            id,
+                            err
                         )
                     });
                 self.vid.replace(Some(new_vid));
             } else {
-                println!("clicked on the same vid...")
+                g_warning!("DewVideoPage", "clicked on the same vid...")
             }
             self.obj().set_visible(true);
         }
 
         pub(crate) fn reset_vid(&self) {
-            println!("was Some({:?}) became None", self.id.take());
+            g_warning!(
+                "DewVideoPage",
+                "was Some({:?}) became None",
+                self.id.take()
+            );
             *self.id.borrow_mut() = None;
             self.obj().set_visible(false);
             todo!() // reset the video and all stuffs

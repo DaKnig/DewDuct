@@ -138,7 +138,7 @@ mod imp {
 
             // Update label with new state
             let Some(id) = parameter else {
-                println!("stop playing...");
+                g_warning!("DewWindow", "stop playing...");
                 self.video_page.imp().reset_vid();
                 return
             };

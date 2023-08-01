@@ -20,6 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use glib::g_warning;
 use gtk::SearchEntry;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
@@ -94,7 +95,7 @@ mod imp {
         pub(crate) async fn search_activate(&self, entry: &SearchEntry) {
             glib::g_warning!("Dew", "search activated");
             let query = entry.text();
-            eprintln!("searching {}...", query);
+            g_warning!("DewSearchPage", "searching {}...", query);
 
             // qeury for search results
             let query_transformed = format!("q={}", encode(&query));
@@ -158,7 +159,8 @@ mod imp {
                         .search_suggestions(Some(&query_transformed))
                     {
                         Ok(search) => {
-                            println!(
+                            g_warning!(
+                                "DewSearch",
                                 "search.query = {}",
                                 decode_html_entities(&search.query)
                             );
@@ -166,7 +168,7 @@ mod imp {
                             search.suggestions
                         }
                         Err(err) => {
-                            glib::g_warning!(
+                            g_warning!(
                                 "DewSearch",
                                 "no results: {:?}",
                                 err
@@ -178,7 +180,11 @@ mod imp {
             let Ok(search_suggestions): Result<Vec<_>,_> =
                 search_suggestions.await else {return};
             if query != entry.text() {
-                println!("query was {}, returning!", &query);
+                g_warning!(
+                    "DewSearchPage",
+                    "query was {}, returning!",
+                    &query
+                );
                 return;
             }
             let search_suggestions: Vec<_> = search_suggestions
