@@ -20,7 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::g_warning;
+use glib::{g_warning, MainContext, PRIORITY_LOW};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -61,7 +61,17 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewUpdatePage {}
+    impl ObjectImpl for DewUpdatePage {
+        fn constructed(&self) {
+            self.parent_constructed();
+
+            let page = self.obj().clone();
+            MainContext::default()
+                .spawn_local_with_priority(PRIORITY_LOW, async move {
+                    page.imp().update_vids().await
+                });
+        }
+    }
     impl WidgetImpl for DewUpdatePage {}
     impl BoxImpl for DewUpdatePage {}
 
@@ -81,18 +91,18 @@ mod imp {
             let Ok(Some(popular)) =
                 tokio::task::spawn_blocking(move || {
                     match invidious.popular(None) {
-			Err(err) => {
-			    g_warning!("DewUpdatePage",
-				       "cant update page: {:#?}", err);
-			    None
-			},
-			Ok(ok) => Some(ok),
-		    }
+                        Err(err) => {
+                            g_warning!("DewUpdatePage",
+                                       "cant update page: {:#?}", err);
+                            None
+                        },
+                        Ok(ok) => Some(ok),
+                    }
                 })
                 .await
-	    else {
+            else {
                 self.update_button.add_css_class("error");
-		return
+                return
             };
             self.update_button.remove_css_class("error");
 

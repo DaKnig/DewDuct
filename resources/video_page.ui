@@ -5,6 +5,7 @@
   <requires lib="libadwaita" version="1.2"/>
   <template class="DewVideoPage" parent="GtkBox">
     <property name="orientation">vertical</property>
+    <property name="width-request">280</property>
     <child>
       <object class="AdwHeaderBar">
         <property name="hexpand">True</property>
