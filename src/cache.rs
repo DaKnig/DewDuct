@@ -4,6 +4,7 @@ use std::fs::File;
 use std::future::Future;
 use std::path::{Path, PathBuf};
 
+use glib::g_warning;
 use gtk::glib;
 
 use crate::config;
@@ -21,15 +22,46 @@ impl DewCache {
     /// cache: the cache with the directory where the info should be stored.
     /// fname: file we are looking for, relative to the cache.
     /// fetcher: function for fetching said file, if it is not in cache.
-    pub(crate) async fn fetch_file<E>(
+    pub(crate) async fn fetch_file<Fetcher, Err, Fut>(
         cache: &Self,
-        fname: &Path,
-        fetcher: impl Future<Output = Result<(), E>>,
-    ) -> Result<(), E> {
-        let path = cache.dir().join(fname);
+        fname: PathBuf,
+        fetcher: Fetcher,
+    ) -> Result<(), Err>
+    where
+        Fetcher: Fn(&Path) -> Fut,
+        Fut: Future<Output = Result<(), Err>>,
+    {
+        let path = cache.dir().join(&fname);
         match File::open(&path).ok() {
-            Some(_) => Ok(()),
-            None => fetcher.await,
+            Some(_) => {
+                g_warning!(
+                    "DewCache",
+                    "opening cached file at {}",
+                    &path.display()
+                );
+                Ok(())
+            }
+            None => {
+                g_warning!(
+                    "DewCache",
+                    "fetching item to {}",
+                    &path.display()
+                );
+
+                let mut ret = fetcher(&fname).await;
+                for i in 0..3 {
+                    if ret.is_ok() {
+                        break;
+                    }
+                    g_warning!(
+                        "DewCache",
+                        "retrying {} now {i} times...",
+                        fname.display()
+                    );
+                    ret = fetcher(&fname).await;
+                }
+                ret
+            }
         }
     }
 }

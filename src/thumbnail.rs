@@ -29,6 +29,7 @@ use anyhow::Context;
 use isahc::AsyncReadResponseExt;
 
 use std::fs::File;
+use std::future::Future;
 use std::io::Write;
 use std::path::Path;
 
@@ -125,37 +126,57 @@ impl DewThumbnail {
         thumbnail_fname.push(&thumb.height.to_string());
         thumbnail_fname.set_extension("jpg");
 
-        let fetcher = async {
-            let mut dest: File = {
-                // can safely unwrap since I crafted the directory right
-                let parent = thumbnail_fname.parent().unwrap();
-                std::fs::create_dir_all(parent)?;
-                File::create(&thumbnail_fname)
-                    .with_context(|| {
-                        format!("{}", thumbnail_fname.display())
-                    })
-                    .unwrap()
-                //?
-            };
+        fn fetcher(
+            fname: &Path,
+            url: String,
+        ) -> impl Future<Output = anyhow::Result<()>> {
+            let fname = fname.to_owned();
+            async move {
+                let mut dest: File = {
+                    // can safely unwrap since I crafted the directory
+                    let parent = fname.parent().unwrap();
+                    std::fs::create_dir_all(parent)?;
+                    File::create(&fname)
+                        .with_context(|| format!("{}", fname.display()))
+                        .unwrap()
+                    //?
+                };
 
-            let target = &thumb.url;
-            g_warning!("DewThumbnail", "url: {}", &target);
-            let mut response = isahc::get_async(target).await?;
+                let target = url;
+                let mut response = isahc::get_async(target).await?;
 
-            let content: &[u8] = &response.bytes().await?;
-            if content.is_empty() {
-                Err(Err::NoThumbnails { id })?;
+                let content: &[u8] = &response.bytes().await?;
+                if content.is_empty() {
+                    Err(Err::NoThumbnails {
+                        id: fname
+                            .file_name()
+                            .unwrap()
+                            .to_owned()
+                            .into_string()
+                            .unwrap(),
+                    })?;
+                } else {
+                    g_warning!(
+                        "DewThumbnail",
+                        "writing {} bytes to {}",
+                        content.len(),
+                        fname.display()
+                    );
+                }
+                dest.write(content).with_context(|| {
+                    format!("error writing to {}", fname.display())
+                })?;
+
+                // now it is time to load that jpg into the thumbnail
+
+                anyhow::Ok(())
             }
-            dest.write(content).with_context(|| {
-                format!("error writing to {}", thumbnail_fname.display())
-            })?;
+        }
 
-            // now it is time to load that jpg into the thumbnail
-
-            anyhow::Ok(())
-        };
-
-        DewCache::fetch_file(cache(), &thumbnail_fname, fetcher).await?;
+        DewCache::fetch_file(cache(), thumbnail_fname.clone(), |fname| {
+            fetcher(fname, thumb.url.clone())
+        })
+        .await?;
         self.imp()
             .thumbnail
             .set_filename(Some(thumbnail_fname.as_path()));
