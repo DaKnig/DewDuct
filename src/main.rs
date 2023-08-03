@@ -20,6 +20,7 @@
 
 mod application;
 mod cache;
+mod channel_header;
 mod channel_row;
 mod config;
 mod search_page;

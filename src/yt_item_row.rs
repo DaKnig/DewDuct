@@ -117,6 +117,7 @@ impl DewYtItemRow {
                 );
                 // todo!()
             }
+	    Header => unreachable!()
         }
         Ok(())
     }

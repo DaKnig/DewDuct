@@ -25,6 +25,7 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use crate::channel_header::DewChannelHeader;
 use crate::yt_item_row::DewYtItemRow;
 
 mod data;
@@ -84,6 +85,7 @@ mod imp {
                         "oops, cant click channels yet!"
                     );
                 }
+                Header => {}
             }
         }
 
@@ -100,18 +102,29 @@ mod imp {
                 .and_downcast()
                 .expect("The item has to be an `DewYtItem`");
 
-            let row: DewYtItemRow = list_item
-                .child()
-                .and_downcast()
-                .expect("The item needs to be a DewVideoRow");
+            if item.kind() == DewYtItemKind::Header {
+                let header = DewChannelHeader::new();
+                list_item.set_child(Some(&header));
+            } else {
+                let row: DewYtItemRow =
+                    list_item.child().and_downcast().unwrap_or_default();
 
-            row.set_from_yt_item(&item).await.unwrap_or_else(|err| {
-                glib::g_warning!(
-                    "DewYtItemList",
-                    "error binding row: {}",
-                    err
-                );
-            });
+                row.set_from_yt_item(&item).await.unwrap_or_else(|err| {
+                    glib::g_warning!(
+                        "DewYtItemList",
+                        "error binding row: {}",
+                        err
+                    );
+                });
+
+                // in case it was used as a header a moment ago...
+                if !list_item
+                    .child()
+                    .is_some_and(|x| x.is::<DewYtItemRow>())
+                {
+                    list_item.set_child(Some(&row));
+                }
+            }
         }
     }
 }
@@ -129,6 +142,8 @@ impl DewYtItemList {
 
     pub fn set_from_vec(&self, vec: Vec<DewYtItem>) {
         self.remove_all();
+        // let header = DewYtItem::header();
+        // self.imp().list_store.append(&header);
         self.imp().list_store.extend_from_slice(&vec);
     }
 }

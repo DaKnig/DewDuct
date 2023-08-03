@@ -33,6 +33,9 @@ pub enum DewYtItemKind {
     #[default]
     Video,
     Channel,
+    // header because of the limitation of ListView, you cant have it as a
+    // separate widget on top of the list... sad.
+    Header,
 }
 
 #[derive(PartialEq, Eq)]
@@ -74,7 +77,7 @@ mod imp_data {
         pub title: RefCell<String>,
         #[property(get, set)]
         pub id: RefCell<String>,
-        #[property(construct, get, set)]
+        #[property(get, set)]
         pub author: RefCell<String>,
         // #[property(get, set)]
         pub author_thumbnails: RefCell<Vec<Thumbnail>>,
@@ -148,6 +151,12 @@ impl DewYtItem {
     }
     fn set_kind(&self, new_val: DewYtItemKind) {
         self.imp().kind.set(new_val);
+    }
+
+    pub fn header() -> Self {
+        let ret: Self = glib::Object::builder().build();
+        ret.set_kind(DewYtItemKind::Header);
+        ret
     }
 }
 

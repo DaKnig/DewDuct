@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.13.1 -->
+<interface>
+  <requires lib="gtk" version="4.10"/>
+  <requires lib="libadwaita" version="1.3"/>
+  <object class="GtkBox">
+    <property name="height-request">150</property>
+    <property name="orientation">vertical</property>
+    <property name="width-request">300</property>
+    <child>
+      <object class="GtkOverlay">
+        <property name="child">
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkPicture" id="banner">
+                <property name="content-fit">cover</property>
+                <property name="file">channel_banner_mobild.svg</property>
+                <property name="height-request">50</property>
+                <property name="valign">start</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCenterBox"/>
+            </child>
+          </object>
+        </property>
+        <property name="height-request">120</property>
+        <child type="overlay">
+          <object class="AdwAvatar" id="thumbnail">
+            <property name="halign">start</property>
+            <property name="margin-bottom">10</property>
+            <property name="margin-start">10</property>
+            <property name="size">80</property>
+            <property name="valign">end</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkButton">
+            <property name="child">
+              <object class="AdwButtonContent">
+                <property name="icon-name">audio-headphones-symbolic</property>
+                <property name="label">Background</property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="child">
+              <object class="AdwButtonContent">
+                <property name="icon-name">media-playback-start-symbolic</property>
+                <property name="label">Play All</property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="child">
+              <object class="AdwButtonContent">
+                <property name="icon-name">send-to-symbolic</property>
+                <property name="label">Popup</property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
