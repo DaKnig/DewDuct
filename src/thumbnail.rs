@@ -108,7 +108,7 @@ impl DewThumbnail {
     pub(crate) async fn update_from_params(
         &self,
         id: String,
-        thumbnails: &[crate::yt_item_list::Thumbnail],
+        thumbnails: impl Iterator<Item = crate::yt_item_list::Thumbnail>,
         length: u32,
         watched_progress: f64,
     ) -> anyhow::Result<()> {
@@ -116,7 +116,6 @@ impl DewThumbnail {
         self.set_progress(watched_progress);
 
         let thumb = thumbnails
-            .iter()
             .filter(|thumb| thumb.width >= 320)
             .min_by_key(|thumb| thumb.width)
             .ok_or(Err::NoThumbnails { id: id.clone() })?;

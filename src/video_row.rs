@@ -91,7 +91,7 @@ impl DewVideoRow {
         id: String,
         length: u64,
         published: u64,
-        thumbnails: &[crate::yt_item_list::Thumbnail],
+        thumbnails: impl Iterator<Item = crate::yt_item_list::Thumbnail>,
         title: String,
         views: u64,
     ) -> anyhow::Result<()> {

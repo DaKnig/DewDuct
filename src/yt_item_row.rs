@@ -96,13 +96,14 @@ impl DewYtItemRow {
         use DewYtItemKind::*;
         match item.kind() {
             Video => {
+                let thumbs = item.thumbnails();
                 self.become_video()
                     .set_from_params(
                         item.author(),
                         item.id(),
                         item.length(),
                         item.published(),
-                        &item.thumbnails(),
+                        thumbs.iter().map(|thumb| thumb.clone().into()),
                         item.title(),
                         item.views(),
                     )
@@ -117,7 +118,7 @@ impl DewYtItemRow {
                 );
                 // todo!()
             }
-	    Header => unreachable!()
+            Header => unreachable!(),
         }
         Ok(())
     }

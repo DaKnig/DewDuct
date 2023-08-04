@@ -38,7 +38,7 @@ pub enum DewYtItemKind {
     Header,
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 pub struct Thumbnail {
     pub url: String,
     pub width: u32,
