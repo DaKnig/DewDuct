@@ -86,6 +86,8 @@ mod imp {
         async fn update_vids(&self) {
             let invidious = self.invidious_client();
 
+            self.update_button.set_sensitive(false);
+
             let Ok(Some(popular)) =
                 tokio::task::spawn_blocking(move || {
                     match invidious.popular(None) {
@@ -100,9 +102,11 @@ mod imp {
                 .await
             else {
                 self.update_button.add_css_class("error");
+		self.update_button.set_sensitive(true);
                 return
             };
             self.update_button.remove_css_class("error");
+            self.update_button.set_sensitive(true);
 
             // let mut store = self.new_vids_store.clone();
             let vids =
