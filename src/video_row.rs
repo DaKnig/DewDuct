@@ -107,7 +107,7 @@ impl DewVideoRow {
             .update_from_params(
                 id,
                 thumbnails,
-                length as u32,
+                length,
                 watched_progress,
             )
             .await?;

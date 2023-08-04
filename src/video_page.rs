@@ -177,7 +177,7 @@ mod imp {
                     .update_from_params(
                         id.clone(),
                         thumbnails.iter().map(|x| x.clone().into()),
-                        *length,
+                        *length as u64,
                         0.0f64,
                     )
                     .await

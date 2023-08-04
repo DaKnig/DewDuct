@@ -84,7 +84,7 @@ glib::wrapper! {
 }
 
 impl DewThumbnail {
-    fn set_length(&self, length: u32) {
+    fn set_length(&self, length: u64) {
         let (hrs, mins, secs) =
             (length / 3600, (length / 60) % 60, length % 60);
 
@@ -109,7 +109,7 @@ impl DewThumbnail {
         &self,
         id: String,
         thumbnails: impl Iterator<Item = crate::yt_item_list::Thumbnail>,
-        length: u32,
+        length: u64,
         watched_progress: f64,
     ) -> anyhow::Result<()> {
         self.set_length(length);
