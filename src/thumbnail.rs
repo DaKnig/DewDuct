@@ -105,13 +105,23 @@ impl DewThumbnail {
             .set_fraction(watched_progress);
     }
 
-    pub(crate) async fn update_from_params(
-        &self,
+    pub(crate) async fn update_from_params<'a, T>(
+        &'a self,
         id: String,
-        thumbnails: impl Iterator<Item = crate::yt_item_list::Thumbnail>,
+        thumbnails: impl Iterator<Item = &'a T>,
         length: u64,
         watched_progress: f64,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<()>
+    where
+        T: Clone + 'a,
+        crate::yt_item_list::Thumbnail: From<T>,
+    {
+        let thumbnails: std::iter::Map<_, _> = thumbnails.map(|thumb| {
+            let thumb: crate::yt_item_list::Thumbnail =
+                thumb.clone().into();
+            thumb
+        });
+
         self.set_length(length);
         self.set_progress(watched_progress);
 

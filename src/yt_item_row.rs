@@ -96,14 +96,13 @@ impl DewYtItemRow {
         use DewYtItemKind::*;
         match item.kind() {
             Video => {
-                let thumbs = item.thumbnails();
                 self.become_video()
                     .set_from_params(
                         item.author(),
                         item.id(),
                         item.length(),
                         item.published(),
-                        thumbs.iter().map(|thumb| thumb.clone().into()),
+                        item.thumbnails().iter(),
                         item.title(),
                         item.views(),
                     )

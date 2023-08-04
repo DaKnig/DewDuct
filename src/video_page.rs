@@ -176,7 +176,7 @@ mod imp {
                 self.vid_thumbnail
                     .update_from_params(
                         id.clone(),
-                        thumbnails.iter().map(|x| x.clone().into()),
+                        thumbnails.iter(),
                         *length as u64,
                         0.0f64,
                     )

@@ -85,23 +85,26 @@ impl DewVideoRow {
     }
 
     #[allow(clippy::too_many_arguments)]
-    pub(crate) async fn set_from_params<'a>(
+    pub(crate) async fn set_from_params<'a, T>(
         &'a self,
         author: String,
         id: String,
         length: u64,
         published: u64,
-        thumbnails: impl Iterator<Item = crate::yt_item_list::Thumbnail>,
+        thumbnails: impl Iterator<Item = &'a T>,
         title: String,
         views: u64,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<()>
+    where
+        T: Clone + 'a,
+        crate::yt_item_list::Thumbnail: From<T>,
+    {
         let watched_progress: f64 = 0.; // todo!
 
         self.imp().title.set_text(&title);
         self.imp().channel.set_text(&author);
         self.set_views(views);
         self.set_published(published);
-        // self.imp().thumbnail.update_from_vid_data(&vid_data).await
         self.imp()
             .thumbnail
             .update_from_params(
