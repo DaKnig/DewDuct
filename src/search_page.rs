@@ -104,7 +104,7 @@ mod imp {
                 match client.search(Some(&query_transformed)) {
                     Ok(search) => search.items,
                     Err(err) => {
-                        glib::g_warning!(
+                        g_warning!(
                             "Dew",
                             "instance {}; no results: {:?}",
                             &client.instance,

@@ -64,8 +64,8 @@ mod imp {
         fn background_clicked(&self) {}
         #[template_callback]
         fn play_all_clicked(&self) {}
-	#[template_callback]
-	fn poppup_clicked(&self) {}
+        #[template_callback]
+        fn poppup_clicked(&self) {}
     }
 }
 

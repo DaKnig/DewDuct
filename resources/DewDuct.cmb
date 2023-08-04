@@ -123,7 +123,8 @@
 	(11,1,"GtkBox","DewChannelPage",None,None,None,None,None,None),
 	(11,2,"AdwHeaderBar",None,1,None,None,None,None,None),
 	(11,5,"DewYtItemList","vid_list",1,None,None,None,1,None),
-	(11,6,"GtkToggleButton","search_button",2,None,"end",None,None,None)
+	(11,6,"GtkToggleButton","search_button",2,None,"end",None,None,None),
+	(11,7,"GtkButton","back_button",2,None,"start",None,1,None)
   </object>
   <object_property>
 	(1,1,"GtkWindow","default-height","294",None,None,None,None,None,None,None,None,None),
@@ -326,7 +327,9 @@
 	(10,4,"GtkStackPage","name","video_row",None,None,None,None,None,None,None,None,None),
 	(11,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
 	(11,6,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
-	(11,6,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None)
+	(11,6,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
+	(11,7,"GtkActionable","action-name","win.back",None,None,None,None,None,None,None,None,None),
+	(11,7,"GtkButton","icon-name","go-previous-symbolic",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)

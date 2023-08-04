@@ -107,12 +107,7 @@ impl DewVideoRow {
         self.set_published(published);
         self.imp()
             .thumbnail
-            .update_from_params(
-                id,
-                thumbnails,
-                length,
-                watched_progress,
-            )
+            .update_from_params(id, thumbnails, length, watched_progress)
             .await?;
         Ok(())
     }
