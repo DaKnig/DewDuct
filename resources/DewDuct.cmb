@@ -11,7 +11,8 @@
 	(7,7,None,"yt_item_list.ui",None,None,None,None,None,None,None),
 	(8,1,None,"search_page.ui",None,None,None,None,None,None,None),
 	(9,1,None,"channel_row.ui",None,None,None,None,None,None,None),
-	(10,1,None,"yt_item_row.ui",None,None,None,None,None,None,None)
+	(10,1,None,"yt_item_row.ui",None,None,None,None,None,None,None),
+	(11,1,None,"channel_page.ui",None,None,None,None,None,None,None)
   </ui>
   <ui_library>
 	(1,"gtk","4.8",None),
@@ -37,6 +38,8 @@
 	(1,47,"GtkSearchBar","search_bar",2,None,None,None,None,None),
 	(1,48,"DewUpdatePage","update_page",36,None,None,None,None,None),
 	(1,49,"AdwViewSwitcher",None,2,None,None,None,2,None),
+	(1,50,"AdwViewStackPage",None,35,None,None,None,3,None),
+	(1,51,"DewChannelPage","channel_page",50,None,None,None,None,None),
 	(2,1,"GtkBox","DewUpdatePage",None,None,None,None,None,None),
 	(2,12,"AdwHeaderBar",None,1,None,None,None,None,None),
 	(2,17,"GtkToggleButton","search_button",12,None,"end",None,3,None),
@@ -116,7 +119,11 @@
 	(10,3,"GtkStackPage","chan",2,None,None,None,None,None),
 	(10,4,"GtkStackPage","vid",2,None,None,None,None,None),
 	(10,5,"DewVideoRow","video_row",4,None,None,None,None,None),
-	(10,6,"DewChannelRow","channel_row",3,None,None,None,None,None)
+	(10,6,"DewChannelRow","channel_row",3,None,None,None,None,None),
+	(11,1,"GtkBox","DewChannelPage",None,None,None,None,None,None),
+	(11,2,"AdwHeaderBar",None,1,None,None,None,None,None),
+	(11,5,"DewYtItemList","vid_list",1,None,None,None,1,None),
+	(11,6,"GtkToggleButton","search_button",2,None,"end",None,None,None)
   </object>
   <object_property>
 	(1,1,"GtkWindow","default-height","294",None,None,None,None,None,None,None,None,None),
@@ -138,6 +145,12 @@
 	(1,44,"AdwViewStackPage","visible","False",None,None,None,None,None,45,"GtkWidget","visible","bidirectional | sync-create"),
 	(1,45,"GtkWidget","visible","False",None,None,None,None,None,None,None,None,None),
 	(1,49,"AdwViewSwitcher","stack","35",None,None,None,None,None,None,None,None,None),
+	(1,50,"AdwViewStackPage","child",None,None,None,None,None,51,None,None,None,None),
+	(1,50,"AdwViewStackPage","icon-name","preferences-desktop-remote-desktop-symbolic",None,None,None,None,None,None,None,None,None),
+	(1,50,"AdwViewStackPage","name","channel_page",None,None,None,None,None,None,None,None,None),
+	(1,50,"AdwViewStackPage","title","Channel",None,None,None,None,None,None,None,None,None),
+	(1,50,"AdwViewStackPage","visible","False",None,None,None,None,None,51,"GtkWidget","visible","bidirectional | default | sync-create"),
+	(1,51,"GtkWidget","visible","False",None,None,None,None,None,None,None,None,None),
 	(2,1,"GtkOrientable","orientation","1",None,None,None,None,None,None,None,None,None),
 	(2,1,"GtkWidget","width-request","280",None,None,None,None,None,None,None,None,None),
 	(2,17,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
@@ -310,7 +323,10 @@
 	(10,3,"GtkStackPage","child",None,None,None,None,None,6,None,None,None,None),
 	(10,3,"GtkStackPage","name","channel_row",None,None,None,None,None,None,None,None,None),
 	(10,4,"GtkStackPage","child",None,None,None,None,None,5,None,None,None,None),
-	(10,4,"GtkStackPage","name","video_row",None,None,None,None,None,None,None,None,None)
+	(10,4,"GtkStackPage","name","video_row",None,None,None,None,None,None,None,None,None),
+	(11,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(11,6,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
+	(11,6,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)

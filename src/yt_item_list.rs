@@ -80,6 +80,11 @@ mod imp {
                     )
                     .expect("the action win.play does not exist"),
                 Channel => {
+                    let window: crate::window::DewDuctWindow =
+                        list_view.root().and_downcast().unwrap();
+
+                    window.show_channel_yt_item(&item);
+
                     g_warning!(
                         "DewYtItemList",
                         "oops, cant click channels yet!"
@@ -142,8 +147,6 @@ impl DewYtItemList {
 
     pub fn set_from_vec(&self, vec: Vec<DewYtItem>) {
         self.remove_all();
-        // let header = DewYtItem::header();
-        // self.imp().list_store.append(&header);
         self.imp().list_store.extend_from_slice(&vec);
     }
 }

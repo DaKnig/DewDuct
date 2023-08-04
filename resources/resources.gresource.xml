@@ -7,6 +7,7 @@
     <file compressed="true" preprocess="xml-stripblanks">search_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">video_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">channel_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">channel_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">thumbnail.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">yt_item_list.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">yt_item_row.ui</file>

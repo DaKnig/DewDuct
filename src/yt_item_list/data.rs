@@ -153,8 +153,13 @@ impl DewYtItem {
         self.imp().kind.set(new_val);
     }
 
-    pub fn header() -> Self {
-        let ret: Self = glib::Object::builder().build();
+    pub fn header(channel: &invidious::channel::Channel) -> Self {
+        let ret: Self = glib::Object::builder()
+            .property("id", &channel.id)
+            .property("author", &channel.name)
+            .property("title", &channel.name)
+            .property("subscribers", channel.sub_count as f32)
+            .build();
         ret.set_kind(DewYtItemKind::Header);
         ret
     }
@@ -298,6 +303,43 @@ impl From<Video> for DewYtItem {
         ret.set_author_thumbnails(author_thumbnails);
         let thumbnails: Vec<_> =
             thumbnails.into_iter().map(|x| x.into()).collect();
+        ret.set_thumbnails(thumbnails);
+        ret.set_kind(DewYtItemKind::Video);
+
+        ret
+    }
+}
+
+use invidious::hidden::ChannelVideo;
+impl From<&ChannelVideo> for DewYtItem {
+    fn from(vid: &ChannelVideo) -> Self {
+        let ChannelVideo {
+            author,
+            description,
+            id,
+            length,
+            live,
+            published,
+            thumbnails,
+            title,
+            view_count,
+            ..
+        } = vid;
+
+        let ret: Self = glib::Object::builder()
+            .property("author", author)
+            .property("description", Some(description))
+            .property("id", id)
+            .property("length", *length as u64)
+            .property("live", live)
+            .property("published", published)
+            .property("title", title)
+            .property("views", view_count)
+            .build();
+
+        // let thumbnails: Vec<invidious::hidden::VideoThumbnail> = thumbnails;
+        let thumbnails: Vec<_> =
+            thumbnails.iter().map(|x| x.clone().into()).collect();
         ret.set_thumbnails(thumbnails);
         ret.set_kind(DewYtItemKind::Video);
 

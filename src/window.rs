@@ -28,9 +28,10 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use crate::search_page::DewSearchPage;
-use crate::update_page::DewUpdatePage;
-use crate::video_page::DewVideoPage;
+use crate::{
+    channel_page::DewChannelPage, search_page::DewSearchPage,
+    update_page::DewUpdatePage, video_page::DewVideoPage,
+};
 
 use invidious::{ClientSync, ClientSyncTrait};
 
@@ -43,6 +44,8 @@ mod imp {
         // Template widgets
         #[template_child]
         video_page: TemplateChild<DewVideoPage>,
+        #[template_child]
+        channel_page: TemplateChild<DewChannelPage>,
         #[template_child]
         search_page: TemplateChild<DewSearchPage>,
         #[template_child]
@@ -128,7 +131,12 @@ mod imp {
             self.screen_stack.set_visible_child_name("updates_page");
             self.search_page.search_entry().emit_stop_search();
         }
-
+        pub(super) fn show_channel(&self, id: &str) {
+            let channel_page = self.channel_page.get();
+            channel_page.set_channel_id(id);
+            channel_page.set_visible(true);
+            self.screen_stack.set_visible_child(&channel_page);
+        }
         pub(super) async fn play(&self, _: String, param: Option<Variant>) {
             // Get param
             let parameter: Option<String> = param
@@ -193,5 +201,11 @@ impl DewDuctWindow {
             instance: x.instance.clone(),
             method: x.method,
         }
+    }
+    pub fn show_channel_yt_item(
+        &self,
+        channel: &crate::yt_item_list::DewYtItem,
+    ) {
+        self.imp().show_channel(&channel.id())
     }
 }

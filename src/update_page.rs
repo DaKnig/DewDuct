@@ -39,8 +39,6 @@ mod imp {
         #[template_child]
         update_button: TemplateChild<gtk::Button>,
         #[template_child]
-        pub(crate) search_button: TemplateChild<gtk::ToggleButton>,
-        #[template_child]
         vid_list: TemplateChild<DewYtItemList>,
     }
 
