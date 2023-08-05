@@ -38,19 +38,6 @@
             <child>
               <object class="AdwViewStackPage">
                 <property name="child">
-                  <object class="DewVideoPage" id="video_page">
-                    <property name="visible">False</property>
-                  </object>
-                </property>
-                <property name="icon-name">audio-headphones-symbolic</property>
-                <property name="name">video_page</property>
-                <property name="title">Player</property>
-                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwViewStackPage">
-                <property name="child">
                   <object class="DewChannelPage" id="channel_page">
                     <property name="visible">False</property>
                   </object>
@@ -59,6 +46,19 @@
                 <property name="name">channel_page</property>
                 <property name="title">Channel</property>
                 <property name="visible" bind-source="channel_page" bind-property="visible" bind-flags="bidirectional | default | sync-create">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="child">
+                  <object class="DewVideoPage" id="video_page">
+                    <property name="visible">False</property>
+                  </object>
+                </property>
+                <property name="icon-name">audio-headphones-symbolic</property>
+                <property name="name">video_page</property>
+                <property name="title">Player</property>
+                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
               </object>
             </child>
           </object>
