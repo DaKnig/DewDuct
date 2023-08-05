@@ -104,10 +104,12 @@ mod imp {
                 .expect("The item has to be an `DewYtItem`");
 
             if item.kind() == DewYtItemKind::Header {
+                list_item.set_activatable(false);
                 let header = DewChannelHeader::new();
                 list_item.set_child(Some(&header));
                 header.set_from_yt_item(&item);
             } else {
+                list_item.set_activatable(true);
                 let row: DewYtItemRow =
                     list_item.child().and_downcast().unwrap_or_default();
 
