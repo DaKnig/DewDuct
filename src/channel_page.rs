@@ -77,9 +77,8 @@ mod imp {
                     ))
                     .collect::<Vec<_>>(),
             );
+	    g_warning!("DewChannelPage", "changed to id {}", &channel.id);
             self.channel.replace(Some(channel));
-
-            // todo!()
         }
     }
 }

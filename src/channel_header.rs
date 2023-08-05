@@ -18,12 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::cell::RefCell;
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-// use glib::g_warning;
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
+
+use crate::yt_item_list::DewYtItem;
 
 mod imp {
     use super::*;
@@ -32,8 +35,10 @@ mod imp {
     #[template(resource = "/null/daknig/DewDuct/channel_header.ui")]
     pub struct DewChannelHeader {
         // Template widgets
-        // #[template_child]
-        // pub(super) title: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub(super) channel: TemplateChild<adw::WindowTitle>,
+
+        pub(super) id: RefCell<String>,
     }
 
     #[glib::object_subclass]
@@ -59,13 +64,46 @@ mod imp {
     #[gtk::template_callbacks]
     impl DewChannelHeader {
         #[template_callback]
-        fn subscribe_clicked(&self) {}
+        fn subscribe_clicked(&self) {
+            g_warning!(
+                "DewChannel",
+                "subscribe to {} clicked!",
+                self.id.borrow()
+            );
+        }
         #[template_callback]
-        fn background_clicked(&self) {}
+        fn background_clicked(&self) {
+            g_warning!(
+                "DewChannel",
+                "background {} clicked!",
+                self.id.borrow()
+            );
+        }
         #[template_callback]
-        fn play_all_clicked(&self) {}
+        fn play_all_clicked(&self) {
+            g_warning!(
+                "DewChannel",
+                "play_all {} clicked!",
+                self.id.borrow()
+            );
+        }
         #[template_callback]
-        fn poppup_clicked(&self) {}
+        fn poppup_clicked(&self) {
+            g_warning!(
+                "DewChannel",
+                "poppup {} clicked!",
+                self.id.borrow()
+            );
+        }
+
+        pub fn set_from_yt_item(&self, item: &DewYtItem) {
+            self.channel.set_title(&item.title());
+            self.channel.set_subtitle(&format!(
+                "{} subscribers",
+                crate::format_semi_engineering(item.subscribers())
+            ));
+            self.id.replace(item.id());
+        }
     }
 }
 
@@ -78,6 +116,10 @@ glib::wrapper! {
 impl DewChannelHeader {
     pub fn new() -> Self {
         glib::Object::builder().build()
+    }
+
+    pub fn set_from_yt_item(&self, item: &DewYtItem) {
+        self.imp().set_from_yt_item(item);
     }
 }
 

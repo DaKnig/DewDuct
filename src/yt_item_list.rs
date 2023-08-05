@@ -20,7 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::g_warning;
+// use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -84,12 +84,8 @@ mod imp {
                         list_view.root().and_downcast().unwrap();
 
                     window.show_channel_yt_item(&item);
-
-                    g_warning!(
-                        "DewYtItemList",
-                        "oops, cant click channels yet!"
-                    );
                 }
+                // clicking on the header outside buttons- does nothing.
                 Header => {}
             }
         }
@@ -110,6 +106,7 @@ mod imp {
             if item.kind() == DewYtItemKind::Header {
                 let header = DewChannelHeader::new();
                 list_item.set_child(Some(&header));
+                header.set_from_yt_item(&item);
             } else {
                 let row: DewYtItemRow =
                     list_item.child().and_downcast().unwrap_or_default();
