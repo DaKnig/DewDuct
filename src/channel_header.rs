@@ -66,7 +66,7 @@ mod imp {
         #[template_callback]
         fn subscribe_clicked(&self) {
             g_warning!(
-                "DewChannel",
+                "DewChannelHeader",
                 "subscribe to {} clicked!",
                 self.id.borrow()
             );
@@ -74,7 +74,7 @@ mod imp {
         #[template_callback]
         fn background_clicked(&self) {
             g_warning!(
-                "DewChannel",
+                "DewChannelHeader",
                 "background {} clicked!",
                 self.id.borrow()
             );
@@ -82,7 +82,7 @@ mod imp {
         #[template_callback]
         fn play_all_clicked(&self) {
             g_warning!(
-                "DewChannel",
+                "DewChannelHeader",
                 "play_all {} clicked!",
                 self.id.borrow()
             );
