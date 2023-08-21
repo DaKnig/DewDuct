@@ -233,6 +233,7 @@
 	(5,9,"GtkWidget","sensitive","False",None,None,None,None,None,None,None,None,None),
 	(5,10,"GtkLabel","label","   ",None,None,None,None,None,None,None,None,None),
 	(6,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(6,1,"GtkWidget","height-request","320",None,None,None,None,None,None,None,None,None),
 	(6,1,"GtkWidget","width-request","280",None,None,None,None,None,None,None,None,None),
 	(6,15,"AdwViewSwitcherBar","reveal","True",None,None,None,None,None,None,None,None,None),
 	(6,28,"GtkScrolledWindow","child",None,None,None,None,None,29,None,None,None,None),

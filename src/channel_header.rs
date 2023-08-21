@@ -18,13 +18,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::RefCell;
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
+use std::cell::RefCell;
 
 use crate::yt_item_list::DewYtItem;
 

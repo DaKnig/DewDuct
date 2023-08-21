@@ -14,7 +14,7 @@ what works!
 
 [] Video page, with description, download and other buttons.
 
-[] Popular videos page.
+[x] Popular videos page.
 
 [] Make downloads work with yt-dlp or so... or maybe make it myself?
 

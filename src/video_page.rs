@@ -63,8 +63,7 @@ mod imp {
         description: TemplateChild<gtk::Label>,
         // #[template_child]
         // bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
-        vid: Rc<RefCell<Option<Video>>>,
-        id: Rc<RefCell<Option<String>>>,
+        vid: RefCell<Option<Video>>,
         mpv_child: Rc<RefCell<Option<Child>>>,
     }
 
@@ -87,7 +86,7 @@ mod imp {
 
     impl ObjectImpl for DewVideoPage {
         fn constructed(&self) {
-            self.id.take();
+            self.vid.take();
             {
                 // let's spawn mpv when thumbnail is clicked!
                 let click = gtk::GestureClick::new();
@@ -105,12 +104,17 @@ mod imp {
     impl BoxImpl for DewVideoPage {}
 
     impl DewVideoPage {
-        pub(crate) fn play_mpv(&self) {
-            let id = self.id.clone();
+        fn id(&self) -> Option<String> {
+            self.vid
+                .try_borrow()
+                .ok()
+                .and_then(|x| x.as_ref().map(|vid| vid.id.clone()))
+        }
+        fn play_mpv(&self) {
+            let id = self.id();
             let mpv_child = self.mpv_child.clone();
 
-            let tmp = id.borrow();
-            let Some(id) = tmp.as_ref() else {return};
+            let Some(id) = id.as_ref() else {return};
 
             let url = format!("https://youtube.com/watch?v={}", id);
             let mut mpv = Command::new("mpv");
@@ -134,15 +138,15 @@ mod imp {
 
         pub(crate) async fn set_vid(&self, new_vid: Video) {
             if !self
-                .id
+                .vid
                 .borrow()
                 .as_ref()
-                .is_some_and(|id| id == &new_vid.id)
+                .is_some_and(|vid| vid.id == new_vid.id)
             {
                 g_warning!(
                     "DewVideoPage",
                     "was {:?} became {:?}",
-                    self.id.borrow().as_ref(),
+                    self.id(),
                     Some(&new_vid.id)
                 );
 
@@ -171,7 +175,6 @@ mod imp {
                     .set_text(&format!("{} subscribers", sub_count_text));
                 // self.description.set_markup(&new_vid.description_html);
                 self.description.set_text(description);
-                *self.id.borrow_mut() = Some(id.clone());
 
                 self.vid_thumbnail
                     .update_from_params(
@@ -200,9 +203,9 @@ mod imp {
             g_warning!(
                 "DewVideoPage",
                 "was Some({:?}) became None",
-                self.id.take()
+                self.id()
             );
-            *self.id.borrow_mut() = None;
+            *self.vid.borrow_mut() = None;
             self.obj().set_visible(false);
             todo!() // reset the video and all stuffs
         }
