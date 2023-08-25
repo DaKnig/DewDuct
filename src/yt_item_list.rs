@@ -20,7 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-// use glib::g_warning;
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -107,7 +107,13 @@ mod imp {
                 list_item.set_activatable(false);
                 let header = DewChannelHeader::new();
                 list_item.set_child(Some(&header));
-                header.set_from_yt_item(&item);
+                if let Err(err) = header.set_from_yt_item(&item).await {
+                    g_warning!(
+                        "DewYtItemList",
+                        "can't bind header row: {}",
+                        err
+                    );
+                }
             } else {
                 list_item.set_activatable(true);
                 let row: DewYtItemRow =

@@ -160,6 +160,14 @@ impl DewYtItem {
             .property("title", &channel.name)
             .property("subscribers", channel.sub_count as f32)
             .build();
+
+        ret.set_thumbnails(
+            channel
+                .thumbnails
+                .iter()
+                .map(|thumb| thumb.clone().into())
+                .collect::<Vec<_>>(),
+        );
         ret.set_kind(DewYtItemKind::Header);
         ret
     }
