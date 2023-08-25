@@ -4,6 +4,7 @@
   <requires lib="gtk" version="4.8"/>
   <requires lib="libadwaita" version="1.2"/>
   <template class="DewVideoPage" parent="GtkBox">
+    <property name="height-request">320</property>
     <property name="orientation">vertical</property>
     <property name="width-request">280</property>
     <child>

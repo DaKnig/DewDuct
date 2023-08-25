@@ -64,7 +64,8 @@
           </object>
         </child>
         <child>
-          <object class="AdwViewSwitcher">
+          <object class="AdwViewSwitcherBar">
+            <property name="reveal">True</property>
             <property name="stack">screen_stack</property>
           </object>
         </child>
