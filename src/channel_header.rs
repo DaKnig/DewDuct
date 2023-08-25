@@ -18,15 +18,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::{fs::File, io::Write, path::Path};
+use std::{cell::RefCell, fs::File, io::Write, path::Path};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use glib::g_warning;
-use gtk::{gio, glib};
+use gtk::{gdk, gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
-use std::cell::RefCell;
 
 use anyhow::Context;
 
@@ -210,12 +209,8 @@ mod imp {
             })
             .unwrap();
 
-            let fname = thumbnail_fname.to_str();
-
-            // TODO! THIS IS SYMBOL NAME! not filename!
-            // let paintable = gdk::Texture::from_file;
-
-            self.thumbnail.set_icon_name(fname);
+            let paintable = gdk::Texture::from_filename(thumbnail_fname)?;
+            self.thumbnail.set_custom_image(Some(&paintable));
 
             Ok(())
         }
