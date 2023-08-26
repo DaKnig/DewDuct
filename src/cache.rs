@@ -19,6 +19,67 @@ impl DewCache {
     pub(crate) fn dir(&self) -> &PathBuf {
         &self.dir
     }
+    pub(crate) async fn fetch_remote(
+        cache: &Self,
+        fname: PathBuf,
+        url: &str,
+    ) -> Result<(), anyhow::Error> {
+        DewCache::fetch_file(cache, fname, move |fname| {
+            Self::fetcher(fname, &url)
+        })
+        .await
+    }
+    fn fetcher(
+        fname: &Path,
+        url: &str,
+    ) -> impl std::future::Future<Output = anyhow::Result<()>> {
+        use anyhow::Context;
+        use isahc::AsyncReadResponseExt;
+        use std::io::Write;
+
+        let fname = fname.to_owned();
+        let url = url.to_owned();
+        async move {
+            let mut dest: std::fs::File = {
+                // can safely unwrap since I crafted the directory
+                let parent = fname.parent().unwrap();
+                std::fs::create_dir_all(parent)?;
+                File::create(&fname)
+                    .with_context(|| format!("{}", fname.display()))
+                    .unwrap()
+                //?
+            };
+
+            let target = url;
+            let mut response = isahc::get_async(target).await?;
+
+            let content: &[u8] = &response.bytes().await?;
+            if content.is_empty() {
+                Err(Err::NoThumbnails {
+                    id: fname
+                        .file_name()
+                        .unwrap()
+                        .to_owned()
+                        .into_string()
+                        .unwrap(),
+                })?;
+            } else {
+                g_warning!(
+                    "DewThumbnail",
+                    "writing {} bytes to {}",
+                    content.len(),
+                    fname.display()
+                );
+            }
+            dest.write(content).with_context(|| {
+                format!("error writing to {}", fname.display())
+            })?;
+
+            // now it is time to load that jpg into the thumbnail
+
+            anyhow::Ok(())
+        }
+    }
     /// cache: the cache with the directory where the info should be stored.
     /// fname: file we are looking for, relative to the cache.
     /// fetcher: function for fetching said file, if it is not in cache.
@@ -73,4 +134,11 @@ impl Default for DewCache {
 
         DewCache { dir }
     }
+}
+
+use thiserror::Error;
+#[derive(Error, Debug)]
+pub enum Err {
+    #[error("no thumbnails found for vid ID {id} video")]
+    NoThumbnails { id: String },
 }

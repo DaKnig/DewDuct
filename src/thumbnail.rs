@@ -18,20 +18,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::path::Path;
+
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
-
-use anyhow::Context;
-use isahc::AsyncReadResponseExt;
-
-use std::fs::File;
-use std::future::Future;
-use std::io::Write;
-use std::path::Path;
 
 use crate::cache::DewCache;
 use crate::util::{cache, cache_dir};
@@ -135,56 +128,11 @@ impl DewThumbnail {
         thumbnail_fname.push(&thumb.height.to_string());
         thumbnail_fname.set_extension("jpg");
 
-        fn fetcher(
-            fname: &Path,
-            url: String,
-        ) -> impl Future<Output = anyhow::Result<()>> {
-            let fname = fname.to_owned();
-            async move {
-                let mut dest: File = {
-                    // can safely unwrap since I crafted the directory
-                    let parent = fname.parent().unwrap();
-                    std::fs::create_dir_all(parent)?;
-                    File::create(&fname)
-                        .with_context(|| format!("{}", fname.display()))
-                        .unwrap()
-                    //?
-                };
-
-                let target = url;
-                let mut response = isahc::get_async(target).await?;
-
-                let content: &[u8] = &response.bytes().await?;
-                if content.is_empty() {
-                    Err(Err::NoThumbnails {
-                        id: fname
-                            .file_name()
-                            .unwrap()
-                            .to_owned()
-                            .into_string()
-                            .unwrap(),
-                    })?;
-                } else {
-                    g_warning!(
-                        "DewThumbnail",
-                        "writing {} bytes to {}",
-                        content.len(),
-                        fname.display()
-                    );
-                }
-                dest.write(content).with_context(|| {
-                    format!("error writing to {}", fname.display())
-                })?;
-
-                // now it is time to load that jpg into the thumbnail
-
-                anyhow::Ok(())
-            }
-        }
-
-        DewCache::fetch_file(cache(), thumbnail_fname.clone(), |fname| {
-            fetcher(fname, thumb.url.clone())
-        })
+        DewCache::fetch_remote(
+            cache(),
+            thumbnail_fname.clone(),
+            &thumb.url,
+        )
         .await?;
         self.imp()
             .thumbnail
