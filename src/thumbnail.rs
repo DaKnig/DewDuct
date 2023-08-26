@@ -22,7 +22,7 @@ use std::path::Path;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gio, glib};
+use gtk::{gdk, gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
@@ -134,9 +134,10 @@ impl DewThumbnail {
             &thumb.url,
         )
         .await?;
-        self.imp()
-            .thumbnail
-            .set_filename(Some(thumbnail_fname.as_path()));
+
+        let paintable = gdk::Texture::from_filename(thumbnail_fname)?;
+
+        self.imp().thumbnail.set_paintable(Some(&paintable));
         Ok(())
     }
 }
