@@ -107,15 +107,16 @@ impl DewYtItemRow {
                         item.views(),
                     )
                     .await?;
-                // todo!()
             }
             Channel => {
-                self.become_channel().set_from_params(
-                    item.title(),
-                    item.subscribers(),
-                    &item.thumbnails(),
-                );
-                // todo!()
+                self.become_channel()
+                    .set_from_params(
+                        item.title(),
+                        item.subscribers(),
+                        &item.thumbnails(),
+                        item.id(),
+                    )
+                    .await?;
             }
             Header => unreachable!(),
         }

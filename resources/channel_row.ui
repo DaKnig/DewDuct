@@ -10,9 +10,9 @@
     <property name="margin-top">3</property>
     <property name="spacing">6</property>
     <child>
-      <object class="GtkImage" id="icon">
-        <property name="file">budy.svg</property>
-        <property name="pixel-size">80</property>
+      <object class="AdwAvatar" id="thumbnail">
+        <property name="size">80</property>
+        <property name="text" bind-source="name" bind-property="label" bind-flags="bidirectional | sync-create"></property>
       </object>
     </child>
     <child>

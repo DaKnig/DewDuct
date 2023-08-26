@@ -216,7 +216,7 @@ impl From<SearchItem> for DewYtItem {
                 id,
                 name,
                 subscribers,
-                // thumbnails,
+                thumbnails,
                 ..
             } => {
                 let ret: Self = glib::Object::builder()
@@ -226,9 +226,11 @@ impl From<SearchItem> for DewYtItem {
                     .property("description", description)
                     .property("subscribers", subscribers as f32)
                     .build();
-                // ret.set_thumbnails(thumbnails);
+                let thumbnails: Vec<_> =
+                    thumbnails.into_iter().map(|x| x.into()).collect();
+                ret.set_thumbnails(thumbnails);
                 ret.set_kind(DewYtItemKind::Channel);
-                // todo!()
+
                 ret
             }
 

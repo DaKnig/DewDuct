@@ -18,17 +18,21 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::RefCell;
+use std::{cell::RefCell, path::Path};
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::Properties;
-use gtk::glib;
+use glib::{g_warning, Properties};
+use gtk::{gdk, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use anyhow::Context;
+
+use crate::cache::DewCache;
 use crate::util;
 use crate::yt_item_list::Thumbnail;
+use crate::{cache, cache_dir};
 
 mod imp {
     use super::*;
@@ -38,7 +42,7 @@ mod imp {
     #[properties(wrapper_type=super::DewChannelRow)]
     pub struct DewChannelRow {
         #[template_child]
-        pub(super) icon: TemplateChild<gtk::Image>,
+        pub(super) thumbnail: TemplateChild<adw::Avatar>,
         #[template_child]
         pub(super) name: TemplateChild<gtk::Label>,
         #[template_child]
@@ -75,20 +79,67 @@ glib::wrapper! {
 }
 
 impl DewChannelRow {
-    pub fn set_from_params(
+    pub async fn set_from_params(
         &self,
         name: String,
         subs: f32,
-        _thumbnails: &[Thumbnail],
-    ) {
+        thumbnails: &[Thumbnail],
+        id: String,
+    ) -> anyhow::Result<()> {
         self.imp().name.set_text(&name);
         self.set_subs(subs);
-        // let icon: &str = todo!();
-        // self.imp().icon.set_from_file(Some(icon));
+
+        if thumbnails.is_empty() {
+            g_warning!(
+                "DewChannelRow",
+                "No thumbnails for channel row of {}!",
+                id
+            );
+            Err(Err::NoThumbnails { id: id.clone() })?;
+        }
+        let thumb = thumbnails
+            .iter()
+            .filter(|thumb| thumb.width >= 160)
+            .min_by_key(|thumb| thumb.width)
+            .or(thumbnails.iter().max_by_key(|thumb| thumb.width))
+            .with_context(|| {
+                format!("error fetching channel {} thumbnail", &name)
+            })?;
+
+        let mut thumbnail_fname = cache_dir(Path::new(&id));
+        thumbnail_fname.push(&thumb.height.to_string());
+        thumbnail_fname.set_extension("jpg");
+
+        DewCache::fetch_remote(
+            cache(),
+            thumbnail_fname.clone(),
+            &thumb.url,
+        )
+        .await
+        .map_err(|err| {
+            g_warning!(
+                "DewChannelRow",
+                "could not fetch file {}: {err}",
+                thumbnail_fname.clone().display()
+            )
+        })
+        .unwrap();
+
+        let paintable = gdk::Texture::from_filename(thumbnail_fname)?;
+        self.imp().thumbnail.set_custom_image(Some(&paintable));
+
+        Ok(())
     }
     fn set_subs(&self, subs: f32) {
         self.imp().subs.set_text(
             &(util::format_semi_engineering(subs) + " subscribers"),
         );
     }
+}
+
+use thiserror::Error;
+#[derive(Error, Debug)]
+pub enum Err {
+    #[error("no thumbnails found for vid ID {id} video")]
+    NoThumbnails { id: String },
 }
