@@ -10,12 +10,22 @@ what works!
 
 ** Road map:
 
+For version 1.0 : 
+
+[x] Popular videos page.
+
 [x] Cache for thumbnails.
 
-[] Video page, with description, download and other buttons.
+[-] Video page, with description, download and other buttons. (everything but download functionality works)
 
 [x] Popular videos page.
 
 [] Make downloads work with yt-dlp or so... or maybe make it myself?
 
-... many more missing features!
+[x] Search for videos and channels.
+
+[] Subscribe to channels.
+
+[] Subscription list page.
+
+[] Subscription video list, with a button for updating the list.
