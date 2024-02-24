@@ -120,7 +120,7 @@ mod imp {
             let mut mpv = Command::new("mpv");
             mpv.arg(url).arg("--ytdl-format=best[height<=480]");
             g_warning!(
-                "Dew",
+                "DewVideoPage",
                 "running... {:?} {:?}",
                 mpv.get_program(),
                 mpv.get_args().collect::<Vec<_>>()

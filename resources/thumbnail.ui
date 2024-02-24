@@ -24,8 +24,8 @@
           <object class="GtkLabel" id="length">
             <property name="halign">end</property>
             <property name="label">0:00</property>
-            <property name="margin-bottom">5</property>
-            <property name="margin-end">5</property>
+            <property name="margin-bottom">7</property>
+            <property name="margin-end">7</property>
             <property name="valign">end</property>
             <!-- Custom fragments -->
             <attributes>

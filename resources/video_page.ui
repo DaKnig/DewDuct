@@ -76,6 +76,7 @@
                 </child>
                 <child>
                   <object class="GtkBox">
+                    <property name="margin-end">7</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="views">
