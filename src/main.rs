@@ -26,7 +26,7 @@ mod channel_row;
 mod config;
 mod search_page;
 mod thumbnail;
-mod update_page;
+mod popular_page;
 mod util;
 mod video_page;
 mod video_row;

@@ -30,7 +30,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use crate::{
     channel_page::DewChannelPage, search_page::DewSearchPage,
-    update_page::DewUpdatePage, video_page::DewVideoPage,
+    popular_page::DewPopularPage, video_page::DewVideoPage,
 };
 
 use invidious::{ClientSync, ClientSyncTrait};
@@ -51,7 +51,7 @@ mod imp {
         #[template_child]
         screen_stack: TemplateChild<adw::ViewStack>,
         #[template_child]
-        update_page: TemplateChild<DewUpdatePage>,
+        popular_page: TemplateChild<DewPopularPage>,
         #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
         last_visible_page: Rc<RefCell<Option<GString>>>,
@@ -65,7 +65,7 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
-            DewUpdatePage::ensure_type();
+            DewPopularPage::ensure_type();
             DewVideoPage::ensure_type();
             DewSearchPage::ensure_type();
             klass.bind_template();
@@ -103,7 +103,7 @@ mod imp {
                     @weak self as win => move |_| {
                     win.search_started()
                 }));
-            // self.update_page.imp().search_button.connect_whitespace
+            // self.popular_page.imp().search_button.connect_whitespace
             // self.search_bar.connect_search_mode_enabled_notify(
             //     clone!(@weak self as win =>
             //         move |_| win.toggle_search_mode()

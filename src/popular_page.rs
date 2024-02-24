@@ -1,4 +1,4 @@
-/* update_page.rs
+/* popular_page.rs
  *
  * Copyright 2023 DaKnig
  *
@@ -33,8 +33,8 @@ mod imp {
     use super::*;
 
     #[derive(Default, gtk::CompositeTemplate)]
-    #[template(resource = "/null/daknig/DewDuct/update_page.ui")]
-    pub struct DewUpdatePage {
+    #[template(resource = "/null/daknig/DewDuct/popular_page.ui")]
+    pub struct DewPopularPage {
         // Template widgets
         #[template_child]
         update_button: TemplateChild<gtk::Button>,
@@ -43,9 +43,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for DewUpdatePage {
-        const NAME: &'static str = "DewUpdatePage";
-        type Type = super::DewUpdatePage;
+    impl ObjectSubclass for DewPopularPage {
+        const NAME: &'static str = "DewPopularPage";
+        type Type = super::DewPopularPage;
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
@@ -59,7 +59,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DewUpdatePage {
+    impl ObjectImpl for DewPopularPage {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -70,11 +70,11 @@ mod imp {
                 });
         }
     }
-    impl WidgetImpl for DewUpdatePage {}
-    impl BoxImpl for DewUpdatePage {}
+    impl WidgetImpl for DewPopularPage {}
+    impl BoxImpl for DewPopularPage {}
 
     #[gtk::template_callbacks]
-    impl DewUpdatePage {
+    impl DewPopularPage {
         fn invidious_client(&self) -> invidious::ClientSync {
             self.obj()
                 .root()
@@ -92,7 +92,7 @@ mod imp {
                 tokio::task::spawn_blocking(move || {
                     match invidious.popular(None) {
                         Err(err) => {
-                            g_warning!("DewUpdatePage",
+                            g_warning!("DewPopularPage",
                                        "cant update page: {:#?}", err);
                             None
                         },
@@ -121,7 +121,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct DewUpdatePage(ObjectSubclass<imp::DewUpdatePage>)
+    pub struct DewPopularPage(ObjectSubclass<imp::DewPopularPage>)
         @extends gtk::Widget, gtk::Box,
         @implements gio::ActionGroup, gio::ActionMap;
 }

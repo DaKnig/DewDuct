@@ -18,11 +18,11 @@
             <child>
               <object class="AdwViewStackPage" id="updates-page">
                 <property name="child">
-                  <object class="DewUpdatePage" id="update_page"/>
+                  <object class="DewPopularPage" id="popular_page"/>
                 </property>
-                <property name="icon-name">video-display-symbolic</property>
+                <property name="icon-name">camera-video-symbolic</property>
                 <property name="name">updates_page</property>
-                <property name="title">Home</property>
+                <property name="title">Popular</property>
               </object>
             </child>
             <child>

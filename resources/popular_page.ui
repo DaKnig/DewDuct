@@ -3,7 +3,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <requires lib="libadwaita" version="1.2"/>
-  <template class="DewUpdatePage" parent="GtkBox">
+  <template class="DewPopularPage" parent="GtkBox">
     <property name="orientation">1</property>
     <property name="width-request">280</property>
     <child>
