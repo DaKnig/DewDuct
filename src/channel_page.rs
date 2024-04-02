@@ -73,7 +73,7 @@ mod imp {
                 Some(header)
                     .into_iter()
                     .chain(channel.lastest_videos.iter().map(
-                        |x: &invidious::hidden::ChannelVideo| x.into(),
+			|x: &invidious::CommonVideo| x.into(),
                     ))
                     .collect::<Vec<_>>(),
             );

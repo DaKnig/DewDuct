@@ -45,8 +45,8 @@ pub struct Thumbnail {
     pub height: u32,
 }
 
-impl From<invidious::hidden::AuthorThumbnail> for Thumbnail {
-    fn from(thumb: invidious::hidden::AuthorThumbnail) -> Self {
+impl From<invidious::CommonThumbnail> for Thumbnail {
+    fn from(thumb: invidious::CommonThumbnail) -> Self {
         Self {
             url: thumb.url,
             width: thumb.width,
@@ -55,8 +55,8 @@ impl From<invidious::hidden::AuthorThumbnail> for Thumbnail {
     }
 }
 
-impl From<invidious::hidden::VideoThumbnail> for Thumbnail {
-    fn from(thumb: invidious::hidden::VideoThumbnail) -> Self {
+impl From<invidious::CommonImage> for Thumbnail {
+    fn from(thumb: invidious::CommonImage) -> Self {
         Self {
             url: thumb.url,
             width: thumb.width,
@@ -158,7 +158,7 @@ impl DewYtItem {
             .property("id", &channel.id)
             .property("author", &channel.name)
             .property("title", &channel.name)
-            .property("subscribers", channel.sub_count as f32)
+            .property("subscribers", channel.subscribers as f32)
             .build();
 
         ret.set_thumbnails(
@@ -177,7 +177,7 @@ use invidious::hidden::SearchItem;
 impl From<SearchItem> for DewYtItem {
     fn from(vid: SearchItem) -> Self {
         match vid {
-            SearchItem::Video {
+            SearchItem::Video(CommonVideo {
                 author,
                 id,
                 length,
@@ -188,7 +188,7 @@ impl From<SearchItem> for DewYtItem {
                 views,
                 description,
                 ..
-            } => {
+            }) => {
                 let ret: Self = glib::Object::builder()
                     .property("author", author)
                     .property("id", id)
@@ -211,14 +211,14 @@ impl From<SearchItem> for DewYtItem {
                 ret
             }
 
-            SearchItem::Channel {
+            SearchItem::Channel(CommonChannel {
                 description,
                 id,
                 name,
                 subscribers,
                 thumbnails,
                 ..
-            } => {
+            }) => {
                 let ret: Self = glib::Object::builder()
                     .property("author", &name)
                     .property("id", id)
@@ -320,10 +320,10 @@ impl From<Video> for DewYtItem {
     }
 }
 
-use invidious::hidden::ChannelVideo;
-impl From<&ChannelVideo> for DewYtItem {
-    fn from(vid: &ChannelVideo) -> Self {
-        let ChannelVideo {
+use invidious::{CommonChannel, CommonVideo};
+impl From<&CommonVideo> for DewYtItem {
+    fn from(vid: &CommonVideo) -> Self {
+        let CommonVideo {
             author,
             description,
             id,
@@ -332,7 +332,7 @@ impl From<&ChannelVideo> for DewYtItem {
             published,
             thumbnails,
             title,
-            view_count,
+            views,
             ..
         } = vid;
 
@@ -344,7 +344,7 @@ impl From<&ChannelVideo> for DewYtItem {
             .property("live", live)
             .property("published", published)
             .property("title", title)
-            .property("views", view_count)
+            .property("views", views)
             .build();
 
         // let thumbnails: Vec<invidious::hidden::VideoThumbnail> = thumbnails;
