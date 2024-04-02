@@ -1,6 +1,6 @@
 /* application.rs
  *
- * Copyright 2023 DaKnig
+ * Copyright 2023-2024 DaKnig
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ impl DewDuctApplication {
             .developer_name("DaKnig")
             .version(VERSION)
             .developers(vec!["DaKnig"])
-            .copyright("© 2023 DaKnig")
+            .copyright("© 2023-2024 DaKnig")
             .build();
 
         about.present();
