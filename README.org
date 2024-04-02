@@ -10,13 +10,15 @@ what works!
 
 ** Road map:
 
-For version 1.0 : 
+For version 1.0 :
 
 [x] Popular videos page.
 
 [x] Cache for thumbnails.
 
-[-] Video page, with description, download and other buttons. (everything but download functionality works)
+[x] Video page, with description, where you could press to play video.
+
+[] Select quality of video.
 
 [x] Popular videos page.
 
