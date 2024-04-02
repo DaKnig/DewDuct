@@ -16,7 +16,7 @@
         <child>
           <object class="AdwViewStack" id="screen_stack">
             <child>
-              <object class="AdwViewStackPage" id="updates-page">
+              <object class="AdwViewStackPage">
                 <property name="child">
                   <object class="DewPopularPage" id="popular_page"/>
                 </property>
@@ -59,6 +59,16 @@
                 <property name="name">video_page</property>
                 <property name="title">Player</property>
                 <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="child">
+                  <object class="DewSubscriptionsPage" id="subscriptions_page"/>
+                </property>
+                <property name="icon-name">system-users-symbolic</property>
+                <property name="name">subs</property>
+                <property name="title">Subscriptions</property>
               </object>
             </child>
           </object>

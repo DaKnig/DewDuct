@@ -11,7 +11,8 @@
     <file compressed="true" preprocess="xml-stripblanks">thumbnail.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">yt_item_list.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">yt_item_row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">channel_header.ui</file>    
+    <file compressed="true" preprocess="xml-stripblanks">channel_header.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">subscriptions_page.ui</file>
     <file>dummi_thumbnail.svg</file>
   </gresource>
 </gresources>

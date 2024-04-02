@@ -225,6 +225,7 @@ dependencies = [
  "humantime",
  "invidious",
  "isahc",
+ "lazy_static",
  "libadwaita",
  "once_cell",
  "thiserror",

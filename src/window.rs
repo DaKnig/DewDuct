@@ -31,6 +31,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 use crate::{
     channel_page::DewChannelPage, search_page::DewSearchPage,
     popular_page::DewPopularPage, video_page::DewVideoPage,
+    subscriptions_page::DewSubscriptionsPage
 };
 
 use invidious::{ClientSync, ClientSyncTrait};
@@ -52,6 +53,8 @@ mod imp {
         screen_stack: TemplateChild<adw::ViewStack>,
         #[template_child]
         popular_page: TemplateChild<DewPopularPage>,
+        #[template_child]
+        subscriptions_page: TemplateChild<DewSubscriptionsPage>,
         #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
         last_visible_page: Rc<RefCell<Option<GString>>>,

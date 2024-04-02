@@ -27,6 +27,7 @@ mod config;
 mod search_page;
 mod thumbnail;
 mod popular_page;
+mod subscriptions_page;
 mod util;
 mod video_page;
 mod video_row;
