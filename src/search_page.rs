@@ -177,8 +177,11 @@ mod imp {
                         }
                     }
                 });
-            let Ok(search_suggestions): Result<Vec<_>,_> =
-                search_suggestions.await else {return};
+            let Ok(search_suggestions): Result<Vec<_>, _> =
+                search_suggestions.await
+            else {
+                return;
+            };
             if query != entry.text() {
                 g_warning!(
                     "DewSearchPage",

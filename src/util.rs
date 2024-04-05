@@ -16,10 +16,11 @@ pub fn format_semi_engineering(value: f32) -> String {
         .map(|x| 1000f32.powi(x))
         .zip(SUFFIXES)
         .filter(|x| value >= x.0 || x.1 == ' ')
-        .last() else {
-	    gtk::glib::g_warning!("DewUtil", "wtf: cant format value {value}");
-	    return "".into();
-	};
+        .last()
+    else {
+        gtk::glib::g_warning!("DewUtil", "wtf: cant format value {value}");
+        return "".into();
+    };
 
     // explain with an example: value = 15942
     let normalized = value / suffix.0; // normalized = 15.942

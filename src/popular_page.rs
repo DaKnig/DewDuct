@@ -92,18 +92,21 @@ mod imp {
                 tokio::task::spawn_blocking(move || {
                     match invidious.popular(None) {
                         Err(err) => {
-                            g_warning!("DewPopularPage",
-                                       "cant update page: {:#?}", err);
+                            g_warning!(
+                                "DewPopularPage",
+                                "cant update page: {:#?}",
+                                err
+                            );
                             None
-                        },
+                        }
                         Ok(ok) => Some(ok),
                     }
                 })
                 .await
             else {
                 self.update_button.add_css_class("error");
-		self.update_button.set_sensitive(true);
-                return
+                self.update_button.set_sensitive(true);
+                return;
             };
             self.update_button.remove_css_class("error");
             self.update_button.set_sensitive(true);

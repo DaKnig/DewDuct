@@ -29,9 +29,9 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, subclass::prelude::*};
 
 use crate::{
-    channel_page::DewChannelPage, search_page::DewSearchPage,
-    popular_page::DewPopularPage, video_page::DewVideoPage,
-    subscriptions_page::DewSubscriptionsPage
+    channel_page::DewChannelPage, popular_page::DewPopularPage,
+    search_page::DewSearchPage, subscriptions_page::DewSubscriptionsPage,
+    video_page::DewVideoPage,
 };
 
 use invidious::{ClientSync, ClientSyncTrait};
@@ -151,7 +151,7 @@ mod imp {
             let Some(id) = parameter else {
                 g_warning!("DewWindow", "stop playing...");
                 self.video_page.imp().reset_vid();
-                return
+                return;
             };
 
             let vid_page = &self.video_page;
@@ -169,7 +169,7 @@ mod imp {
             })
             .await;
 
-            let Ok(Ok(vid)) = vid else {return};
+            let Ok(Ok(vid)) = vid else { return };
 
             vid_page.imp().set_vid(vid).await;
             self.screen_stack.set_visible_child_name("video_page");

@@ -114,7 +114,7 @@ mod imp {
             let id = self.id();
             let mpv_child = self.mpv_child.clone();
 
-            let Some(id) = id.as_ref() else {return};
+            let Some(id) = id.as_ref() else { return };
 
             let url = format!("https://youtube.com/watch?v={}", id);
             let mut mpv = Command::new("mpv");

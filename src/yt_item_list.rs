@@ -68,8 +68,9 @@ mod imp {
         async fn activate(index: u32, list_view: gtk::ListView) {
             use data::DewYtItemKind::*;
 
-            let Some(item) = list_view.model().unwrap().item(index)
-                                                 else {return};
+            let Some(item) = list_view.model().unwrap().item(index) else {
+                return;
+            };
             let item: DewYtItem = item.downcast().unwrap();
             let id: String = item.id();
             match item.kind() {
