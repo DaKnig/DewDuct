@@ -24,7 +24,7 @@ use std::path::PathBuf;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{g_warning, user_cache_dir, MainContext, PRIORITY_LOW};
+use glib::{g_warning, user_cache_dir, MainContext};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};

@@ -134,9 +134,9 @@ mod imp {
             self.screen_stack.set_visible_child_name("updates_page");
             self.search_page.search_entry().emit_stop_search();
         }
-        pub(super) fn show_channel(&self, id: &str) {
+        pub(super) async fn show_channel(&self, id: &str) {
             let channel_page = self.channel_page.get();
-            channel_page.set_channel_id(id);
+            channel_page.set_channel_id(id).await;
             channel_page.set_visible(true);
             self.screen_stack.set_visible_child(&channel_page);
         }
@@ -184,7 +184,7 @@ glib::wrapper! {
 }
 
 impl DewDuctWindow {
-    pub fn new<P: glib::IsA<gtk::Application>>(application: &P) -> Self {
+    pub fn new<P: IsA<gtk::Application>>(application: &P) -> Self {
         glib::Object::builder()
             .property("application", application)
             .build()
@@ -205,10 +205,10 @@ impl DewDuctWindow {
             method: x.method,
         }
     }
-    pub fn show_channel_yt_item(
+    pub async fn show_channel_yt_item(
         &self,
         channel: &crate::yt_item_list::DewYtItem,
     ) {
-        self.imp().show_channel(&channel.id())
+        self.imp().show_channel(&channel.id()).await
     }
 }

@@ -20,7 +20,7 @@
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{g_warning, MainContext, PRIORITY_LOW};
+use glib::{g_warning, MainContext, Priority};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -65,7 +65,7 @@ mod imp {
 
             let page = self.obj().clone();
             MainContext::default()
-                .spawn_local_with_priority(PRIORITY_LOW, async move {
+                .spawn_local_with_priority(Priority::LOW, async move {
                     page.imp().update_vids().await
                 });
         }

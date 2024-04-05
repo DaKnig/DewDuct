@@ -65,7 +65,7 @@ mod imp {
     #[gtk::template_callbacks]
     impl DewYtItemList {
         #[template_callback(function)]
-        fn activate(index: u32, list_view: gtk::ListView) {
+        async fn activate(index: u32, list_view: gtk::ListView) {
             use data::DewYtItemKind::*;
 
             let Some(item) = list_view.model().unwrap().item(index)
@@ -83,7 +83,7 @@ mod imp {
                     let window: crate::window::DewDuctWindow =
                         list_view.root().and_downcast().unwrap();
 
-                    window.show_channel_yt_item(&item);
+                    window.show_channel_yt_item(&item).await;
                 }
                 // clicking on the header outside buttons- does nothing.
                 Header => {}

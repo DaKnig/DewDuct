@@ -22,7 +22,7 @@ use std::cell::RefCell;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{g_warning, MainContext, Priority};
+use glib::g_warning;
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -72,9 +72,12 @@ mod imp {
             self.vid_list.set_from_vec(
                 Some(header)
                     .into_iter()
-                    .chain(channel.lastest_videos.iter().map(
-			|x: &invidious::CommonVideo| x.into(),
-                    ))
+                    .chain(
+                        channel
+                            .lastest_videos
+                            .iter()
+                            .map(|x: &invidious::CommonVideo| x.into()),
+                    )
                     .collect::<Vec<_>>(),
             );
             g_warning!("DewChannelPage", "changed to id {}", &channel.id);
@@ -98,31 +101,26 @@ impl DewChannelPage {
         self.imp().set_channel(channel)
     }
 
-    pub fn set_channel_id(&self, id: &str) {
-        let (sender, receiver) = MainContext::channel(Priority::default());
-
+    pub async fn set_channel_id(&self, id: &str) {
         let id = id.to_owned();
         let invidious = self.invidious_client();
-        tokio::task::spawn_blocking(move || {
-            let Ok(channel) = invidious.channel(&id, None).map_err(|err| {
+        let Ok(channel) = tokio::task::spawn_blocking(move || {
+            invidious.channel(&id, None).map_err(|err| {
                 g_warning!("DewChannelPage", "cant load {id}: {err:#?}");
                 g_warning!(
                     "DewChannelPage",
                     "the instance used was {}",
                     invidious.instance
                 );
-            }) else {return};
+            })
+        })
+        .await
+        .unwrap() else {
+            // if we get fetch error
+            return;
+        };
 
-            sender
-                .send(channel)
-                .expect("Could not send through channel");
-        });
-
-        let page = self.clone();
-        receiver.attach(None, move |channel| {
-            page.set_channel(channel);
-            glib::source::Continue(true)
-        });
+        self.set_channel(channel);
     }
 
     pub fn invidious_client(&self) -> invidious::ClientSync {
