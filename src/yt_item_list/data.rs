@@ -177,39 +177,7 @@ use invidious::hidden::SearchItem;
 impl From<SearchItem> for DewYtItem {
     fn from(vid: SearchItem) -> Self {
         match vid {
-            SearchItem::Video(CommonVideo {
-                author,
-                id,
-                length,
-                live,
-                published,
-                thumbnails,
-                title,
-                views,
-                description,
-                ..
-            }) => {
-                let ret: Self = glib::Object::builder()
-                    .property("author", author)
-                    .property("id", id)
-                    .property("length", length as u64)
-                    .property("likes", 0)
-                    .property("live", live)
-                    .property("published", published)
-                    .property("sub-count-text", "")
-                    .property("title", title)
-                    .property("views", views)
-                    .property("description", Some(description))
-                    .build();
-
-                ret.set_author_thumbnails(vec![]);
-                let thumbnails: Vec<_> =
-                    thumbnails.into_iter().map(|x| x.into()).collect();
-                ret.set_thumbnails(thumbnails);
-                ret.set_kind(DewYtItemKind::Video);
-
-                ret
-            }
+            SearchItem::Video(ref x) => x.into(),
 
             SearchItem::Channel(CommonChannel {
                 description,
@@ -341,15 +309,17 @@ impl From<&CommonVideo> for DewYtItem {
             .property("description", Some(description))
             .property("id", id)
             .property("length", *length as u64)
+            .property("likes", 0)
             .property("live", live)
             .property("published", published)
+            .property("sub-count-text", "")
             .property("title", title)
             .property("views", views)
             .build();
 
-        // let thumbnails: Vec<invidious::hidden::VideoThumbnail> = thumbnails;
+        ret.set_author_thumbnails(vec![]);
         let thumbnails: Vec<_> =
-            thumbnails.iter().map(|x| x.clone().into()).collect();
+            thumbnails.into_iter().map(|x| x.clone().into()).collect();
         ret.set_thumbnails(thumbnails);
         ret.set_kind(DewYtItemKind::Video);
 
