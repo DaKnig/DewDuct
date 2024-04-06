@@ -199,11 +199,7 @@ impl DewDuctWindow {
         self.imp().search_started();
     }
     pub fn invidious_client(&self) -> invidious::ClientSync {
-        let x = self.imp().invidious_client.borrow();
-        invidious::ClientSync {
-            instance: x.instance.clone(),
-            method: x.method,
-        }
+        self.imp().invidious_client.borrow().clone()
     }
     pub async fn show_channel_yt_item(
         &self,

@@ -177,33 +177,36 @@ use invidious::hidden::SearchItem;
 impl From<SearchItem> for DewYtItem {
     fn from(vid: SearchItem) -> Self {
         match vid {
-            SearchItem::Video(ref x) => x.into(),
-
-            SearchItem::Channel(CommonChannel {
-                description,
-                id,
-                name,
-                subscribers,
-                thumbnails,
-                ..
-            }) => {
-                let ret: Self = glib::Object::builder()
-                    .property("author", &name)
-                    .property("id", id)
-                    .property("title", name)
-                    .property("description", description)
-                    .property("subscribers", subscribers as f32)
-                    .build();
-                let thumbnails: Vec<_> =
-                    thumbnails.into_iter().map(|x| x.into()).collect();
-                ret.set_thumbnails(thumbnails);
-                ret.set_kind(DewYtItemKind::Channel);
-
-                ret
-            }
-
+            SearchItem::Video(ref vid) => vid.into(),
+            SearchItem::Channel(chan) => chan.into(),
             _ => todo!(),
         }
+    }
+}
+
+impl From<CommonChannel> for DewYtItem {
+    fn from(chan: CommonChannel) -> Self {
+        let CommonChannel {
+            name,
+            id,
+            description,
+            subscribers,
+            thumbnails,
+            ..
+        } = chan;
+        let ret: Self = glib::Object::builder()
+            .property("author", &name)
+            .property("id", id)
+            .property("title", name)
+            .property("description", description)
+            .property("subscribers", subscribers as f32)
+            .build();
+        let thumbnails: Vec<_> =
+            thumbnails.into_iter().map(|x| x.into()).collect();
+        ret.set_thumbnails(thumbnails);
+        ret.set_kind(DewYtItemKind::Channel);
+
+        ret
     }
 }
 
