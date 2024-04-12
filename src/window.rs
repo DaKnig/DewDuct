@@ -201,6 +201,13 @@ impl DewDuctWindow {
     pub fn invidious_client(&self) -> invidious::ClientSync {
         self.imp().invidious_client.borrow().clone()
     }
+    pub fn async_invidious_client(&self) -> invidious::ClientAsync {
+        let inv = self.imp().invidious_client.borrow();
+        invidious::ClientAsync {
+            instance: inv.instance.clone(),
+            ..Default::default()
+        }
+    }
     pub async fn show_channel_yt_item(
         &self,
         channel: &crate::yt_item_list::DewYtItem,

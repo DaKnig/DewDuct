@@ -7,6 +7,12 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="AdwHeaderBar">
+        <child>
+          <object class="GtkButton">
+            <property name="icon-name">list-add-symbolic</property>
+            <signal name="clicked" handler="import_newpipe_subs" swapped="yes"/>
+          </object>
+        </child>
         <child type="end">
           <object class="GtkToggleButton" id="search_button">
             <property name="action-name">win.search_started</property>

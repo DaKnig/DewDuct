@@ -19,19 +19,19 @@
  */
 
 use std::fs::read;
-use std::io::BufReader;
 use std::path::PathBuf;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{g_warning, user_cache_dir, MainContext};
+use glib::{g_warning, user_data_dir, MainContext};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious::ClientSyncTrait;
-
+use futures::{stream::FuturesUnordered, StreamExt};
+use invidious::{channel::Channel, ClientAsyncTrait};
 use lazy_static::lazy_static;
+use serde::Deserialize;
 
 use crate::yt_item_list::*;
 
@@ -66,10 +66,6 @@ mod imp {
     impl ObjectImpl for DewSubscriptionsPage {
         fn constructed(&self) {
             self.parent_constructed();
-
-            let page = self.obj().clone();
-            MainContext::default()
-                .spawn_local(async move { page.imp().read_subs().await });
         }
     }
     impl WidgetImpl for DewSubscriptionsPage {}
@@ -84,36 +80,98 @@ mod imp {
                 .unwrap()
                 .invidious_client()
         }
-        async fn read_subs(&self) {
-            let invidious = self.invidious_client();
-
+        fn async_invidious_client(&self) -> invidious::ClientAsync {
+            self.obj()
+                .root()
+                .and_downcast::<crate::window::DewDuctWindow>()
+                .unwrap()
+                .async_invidious_client()
+        }
+        #[template_callback]
+        async fn import_newpipe_subs(&self) {
             lazy_static! {
-                static ref CACHE: PathBuf =
-                    user_cache_dir().join("dewduct/").join("subs.toml");
+                static ref SUBS: PathBuf =
+                    user_data_dir().join("DewDuct/").join("subs.json");
             }
 
-            dbg!(CACHE.display());
+            dbg!(SUBS.display());
 
-            tokio::task::spawn_blocking(move || {
-                // PLAN:
-                // - get info from cache dir
-                let contents =
-                    std::fs::read(CACHE.as_path()).unwrap_or_default();
-
-                // - - if none exists, create and store
-                // - display it
-            })
-            .await
-            .unwrap_or_else(|err| {
-                g_warning!(
-                    "DewSubscriptions",
-                    "unable to open `{}`: {}",
-                    // cache.display(),
-                    "",
-                    err
-                );
-            });
+            fn sync_import_subs() -> Vec<String> {
+                // - get info from subs file
+                let contents = read(SUBS.as_path()).unwrap_or_default();
+                let contents: &str =
+                    std::str::from_utf8(&contents).unwrap_or_default();
+                let subs: Vec<_> = serde_json::from_str(contents)
+                    .unwrap_or_else(|_| {
+                        g_warning!(
+                            "DewSubscriptionsPage",
+                            "malformed subscriptions file!"
+                        );
+                        SubscriptionList {
+                            subscriptions: vec![],
+                        }
+                    })
+                    .subscriptions
+                    .into_iter()
+                    .filter_map(|sub| {
+                        dbg!(&sub);
+                        if sub.service_id != 0 {
+                            return None;
+                        }
+                        let url = sub.url;
+                        let stripped = url.strip_prefix(
+                            "https://www.youtube.com/channel/",
+                        );
+                        stripped.map(|id| id.into())
+                    })
+                    .collect();
+                assert!(subs.len() != 0);
+                subs
+            }
+            let subs: Vec<String> =
+                tokio::task::spawn_blocking(sync_import_subs)
+                    .await
+                    .unwrap_or_else(|err| {
+                        g_warning!(
+                            "DewSubscriptions",
+                            "this should not crash: {}",
+                            err
+                        );
+                        vec![]
+                    });
+            let invidious =
+                std::sync::Arc::new(self.async_invidious_client());
+            let channels_or_errors: Vec<_> = futures::stream::iter(subs)
+                .map(|id| {
+                    let invidious = invidious.clone();
+                    async move {
+                        println!("fetch {}", &id);
+                        invidious.channel(&id, None).await
+                    }
+                })
+                .buffer_unordered(10)
+                .collect()
+                .await;
+            // if error fetching, then skip
+            let channels =
+                channels_or_errors.into_iter().filter_map(|x| x.ok());
+            let dew_yt_items: Vec<DewYtItem> =
+                channels.map(|chan| chan.into()).collect();
+            // - display it
+            self.subs_list.set_from_vec(dew_yt_items);
         }
+    }
+
+    #[derive(Deserialize)]
+    pub(super) struct SubscriptionList {
+        subscriptions: Vec<Subscription>,
+    }
+
+    #[derive(Deserialize, Debug)]
+    pub(super) struct Subscription {
+        url: String,
+        name: String,
+        service_id: u8,
     }
 }
 

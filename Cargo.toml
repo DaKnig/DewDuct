@@ -15,10 +15,13 @@ urlencoding = "2.1"
 html-escape = "0.2"
 tokio = { version = "1.37", features = ["rt", "rt-multi-thread", "macros"] }
 lazy_static = "1.4.0"
+serde = "1.0"
+serde_json = "1.0"
+futures = "0.3.30"
 
 [dependencies.invidious]
 version = "0.7"
-features = ["async", "reqwest_async"]
+features = ["async", "isahc_async"]
 
 [build-dependencies]
 glib-build-tools = "0.19"

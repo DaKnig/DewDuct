@@ -132,7 +132,8 @@
 	(12,2,"GtkLabel",None,1,None,None,None,2,None),
 	(12,3,"DewYtItemList","subs_list",1,None,None,None,3,None),
 	(12,6,"AdwHeaderBar",None,1,None,None,None,None,None),
-	(12,7,"GtkToggleButton","search_button",6,None,"end",None,None,None)
+	(12,7,"GtkToggleButton","search_button",6,None,"end",None,None,None),
+	(12,8,"GtkButton",None,6,None,None,None,-1,None)
   </object>
   <object_property>
 	(1,1,"GtkWindow","default-height","294",None,None,None,None,None,None,None,None,None),
@@ -352,7 +353,8 @@
 	(12,2,"GtkWidget","margin-start","5",None,None,None,None,None,None,None,None,None),
 	(12,2,"GtkWidget","margin-top","5",None,None,None,None,None,None,None,None,None),
 	(12,7,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
-	(12,7,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None)
+	(12,7,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
+	(12,8,"GtkButton","icon-name","list-add-symbolic",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)
@@ -369,7 +371,8 @@
 	(20,3,16,"GtkButton","clicked","subscribe_clicked",None,None,1,None,None),
 	(24,3,19,"GtkButton","clicked","background_clicked",None,None,"yes",None,None),
 	(25,3,21,"GtkButton","clicked","play_all_clicked",None,None,"yes",None,None),
-	(26,3,23,"GtkButton","clicked","poppup_clicked",None,None,"yes",None,None)
+	(26,3,23,"GtkButton","clicked","poppup_clicked",None,None,"yes",None,None),
+	(27,12,8,"GtkButton","clicked","import_newpipe_subs",None,None,1,None,None)
   </object_signal>
   <object_data>
 	(5,5,"GtkWidget",2,2,None,1,None,None,None,None),

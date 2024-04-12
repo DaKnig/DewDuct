@@ -27,6 +27,8 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use std::cell::{Cell, Ref, RefCell};
 
+use invidious::channel::Channel;
+
 #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, glib::Enum)]
 #[enum_type(name = "MyEnum")]
 pub enum DewYtItemKind {
@@ -207,6 +209,13 @@ impl From<CommonChannel> for DewYtItem {
         ret.set_kind(DewYtItemKind::Channel);
 
         ret
+    }
+}
+
+impl From<Channel> for DewYtItem {
+    fn from(chan: Channel) -> Self {
+        let cc: CommonChannel = chan.into();
+        cc.into()
     }
 }
 
