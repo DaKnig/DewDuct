@@ -8,6 +8,28 @@
 and I dont know how to make custom widgets, or make nice UI, so I just copy
 what works!
 
+** Installing
+
+*** Dependencies
+
+Run time dependencies:
+
+openssl gtk4.0 libadwaita mpv
+
+Compile time dependencies:
+
+rust cargo openssl-dev gtk4.0-dev libadwaita-dev
+
+*** Building and installing
+
+**** PostmarketOS and Alpine linux:
+
+```
+apk add rust cargo openssl-dev gtk4.0-dev libadwaita-dev openssl gtk4.0 libadwaita mpv
+
+cargo install --git https://github.com/DaKnig/DewDuct
+```
+
 ** Road map:
 
 For version 1.0 :
