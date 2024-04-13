@@ -22,4 +22,4 @@ pmbootstrap build --arch aarch64 dewduct
 echo sideload...
 scp ~/.local/var/pmbootstrap/packages/edge/aarch64/dewduct*.apk \
     $1:/tmp
-ssh $1 -t doas apk add /tmp/dewduct*.apk --allow-untrusted
+ssh $1 -t sudo apk add /tmp/dewduct*.apk --allow-untrusted

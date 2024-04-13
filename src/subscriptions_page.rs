@@ -29,7 +29,7 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, subclass::prelude::*};
 
 use futures::{stream::FuturesUnordered, StreamExt};
-use invidious::{channel::Channel, ClientAsyncTrait};
+use invidious::ClientAsyncTrait;
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
@@ -122,6 +122,15 @@ mod imp {
                         let stripped = url.strip_prefix(
                             "https://www.youtube.com/channel/",
                         );
+                        if url.starts_with("https://www.youtube.com/user/")
+                        {
+                            g_warning!(
+                                "DewSubscriptionPage",
+                                "problem with importing channel {}: \
+					can't use /user/ api!",
+                                url
+                            );
+                        }
                         stripped.map(|id| id.into())
                     })
                     .collect();

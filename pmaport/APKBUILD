@@ -1,13 +1,13 @@
 # Contributor:
 # Maintainer: DaKnig <zannyknig@disroot.org>
 pkgname=dewduct
-pkgver=0.1.0
+pkgver=0.2.0
 pkgrel=0
 pkgdesc="A NewPipe clone."
-source="https://github.com/DaKnig/DewDuct/archive/refs/heads/master.zip"
+source="https://github.com/DaKnig/DewDuct/archive/refs/tags/v0.2.zip"
 arch="all"
 license="GPL-3.0-or-later"
-depends="openssl gtk4.0 libadwaita mpv"
+depends="openssl gtk4.0 libadwaita mpv yt-dlp"
 makedepends="rust cargo openssl-dev gtk4.0-dev libadwaita-dev"
 checkdepends=""
 install=""
