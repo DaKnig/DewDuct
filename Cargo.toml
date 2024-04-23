@@ -1,11 +1,11 @@
 [package]
 name = "dewduct"
-version = "0.1.0"
+version = "0.2.1"
 edition = "2021"
 
 [dependencies]
 adw = { version = "0.6", package = "libadwaita", features = ["v1_3"] }
-gtk = { version = "0.8", package = "gtk4", features = ["v4_6"] }
+gtk = { version = "0.8", package = "gtk4", features = ["v4_10"] }
 anyhow = "1.0"
 thiserror = "1.0"
 isahc = "1.7"

@@ -155,4 +155,13 @@ impl DewYtItemList {
         self.remove_all();
         self.imp().list_store.extend_from_slice(&vec);
     }
+
+    pub fn get_vec(&self) -> Vec<DewYtItem> {
+        let list_store = &self.imp().list_store;
+        list_store
+            .into_iter()
+            .filter_map(|x| x.ok())
+            .filter_map(|x| x.downcast().ok())
+            .collect()
+    }
 }

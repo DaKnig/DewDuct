@@ -5,11 +5,13 @@
   <requires lib="libadwaita" version="1.0"/>
   <template class="DewSubscriptionsPage" parent="GtkBox">
     <property name="orientation">vertical</property>
+    <signal name="map" handler="load_state" swapped="yes"/>
     <child>
       <object class="AdwHeaderBar">
         <child>
           <object class="GtkButton">
             <property name="icon-name">list-add-symbolic</property>
+            <property name="tooltip-text">Import subscriptions</property>
             <signal name="clicked" handler="import_newpipe_subs" swapped="yes"/>
           </object>
         </child>

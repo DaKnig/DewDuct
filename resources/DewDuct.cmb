@@ -347,7 +347,8 @@
 	(12,1,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
 	(12,7,"GtkActionable","action-name","win.search_started",None,None,None,None,None,None,None,None,None),
 	(12,7,"GtkButton","icon-name","edit-find-symbolic",None,None,None,None,None,None,None,None,None),
-	(12,8,"GtkButton","icon-name","list-add-symbolic",None,None,None,None,None,None,None,None,None)
+	(12,8,"GtkButton","icon-name","list-add-symbolic",None,None,None,None,None,None,None,None,None),
+	(12,8,"GtkWidget","tooltip-text","Import subscriptions",None,None,None,None,None,None,None,None,None)
   </object_property>
   <object_layout_property>
 	(4,2,5,"GtkOverlayLayoutChild","measure","True",None,None,None,None)
@@ -365,7 +366,8 @@
 	(24,3,19,"GtkButton","clicked","background_clicked",None,None,1,None,None),
 	(25,3,21,"GtkButton","clicked","play_all_clicked",None,None,1,None,None),
 	(26,3,23,"GtkButton","clicked","poppup_clicked",None,None,1,None,None),
-	(27,12,8,"GtkButton","clicked","import_newpipe_subs",None,None,1,None,None)
+	(27,12,8,"GtkButton","clicked","import_newpipe_subs",None,None,1,None,None),
+	(28,12,1,"GtkWidget","map","load_state",None,None,1,None,None)
   </object_signal>
   <object_data>
 	(5,5,"GtkWidget",2,2,None,1,None,None,None,None),
