@@ -167,7 +167,6 @@ mod imp {
                         stripped.map(|id| id.into())
                     })
                     .collect();
-                assert!(subs.len() != 0);
                 subs
             }
             let fetch_file = move || sync_import_subs(file);

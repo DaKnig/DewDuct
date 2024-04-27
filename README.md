@@ -1,6 +1,6 @@
 # DewDuct
 
-... tries to be a NewPipe clone for Linux on desktop and mobile.
+... is a Youtube player for Linux on desktop and mobile.
 
 ## Screenshots
 

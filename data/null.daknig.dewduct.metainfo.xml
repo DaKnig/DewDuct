@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>null.daknig.dewduct</id>
+
+  <name>DewDuct</name>
+  <summary>A YouTube player</summary>
+
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <recommends>
+    <display_length compare="ge">294</display_length>
+  </recommends>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <description>
+    <p>
+      YouTube client for Linux mobile and desktop devices. Based on GTK, using Invidious as a backend.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">null.daknig.dewduct.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://private-user-images.githubusercontent.com/37626476/325948567-4ea8957e-99d4-4ebc-aaf6-8893784d6df8.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQyMjA1MTYsIm5iZiI6MTcxNDIyMDIxNiwicGF0aCI6Ii8zNzYyNjQ3Ni8zMjU5NDg1NjctNGVhODk1N2UtOTlkNC00ZWJjLWFhZjYtODg5Mzc4NGQ2ZGY4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI3VDEyMTY1NlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWIxYjM0MmVjMDYyYWYzNTMyMjM0OTg2OGNiOGY1ODQzZjdmMmFhN2Y2Nzg2MWQ3OWIxZDlkMmIyYmFjY2EzNDEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.77CYusPqt19C2RgQlx6xq3L6Eu-80YzCl-Rrcgdml0k</image>
+    </screenshot>
+    <screenshot>
+      <image>https://private-user-images.githubusercontent.com/37626476/325923951-a48193cf-ebe0-44ef-ae89-8163a668b595.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQyMjA1MTYsIm5iZiI6MTcxNDIyMDIxNiwicGF0aCI6Ii8zNzYyNjQ3Ni8zMjU5MjM5NTEtYTQ4MTkzY2YtZWJlMC00NGVmLWFlODktODE2M2E2NjhiNTk1LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI3VDEyMTY1NlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWIyNWE0OGFlNzA5YWQxMzJiZTM3MThkYTQ0YTZmOTk3ODljODE2NTE4OWM0MmUyNWRkMGU4YTcyYjk2Y2JiYWMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.uAgguPmv4gMHiWwjcu7bT0EwwpD62TiPKICZU2G6nD8</image>
+    </screenshot>
+    <screenshot>
+      <image>https://private-user-images.githubusercontent.com/37626476/325927805-aced4e7b-5f76-4035-bdc5-54c6754fd794.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQyMjA1MTYsIm5iZiI6MTcxNDIyMDIxNiwicGF0aCI6Ii8zNzYyNjQ3Ni8zMjU5Mjc4MDUtYWNlZDRlN2ItNWY3Ni00MDM1LWJkYzUtNTRjNjc1NGZkNzk0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI3VDEyMTY1NlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTYzZmQ4N2E3MDU5ZWU3YTg2NTRiZDhhNzhjMGFjZWM0Y2YwYzkyYTkzYTViMjMzMzY1YjA1MWQ2ZDZlOTU3ZWUmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.SCXVdqZ-5LxrArNeSKUTgxOE1AF9iTeQKXbjcNwQ8Ss</image>
+    </screenshot>
+  </screenshots>
+
+  <icon type="stock">dewduct</icon>
+
+  <categories>
+    <category>AudioVideo</category>
+    <category>Player</category>
+  </categories>
+
+  <provides>
+    <binary>dewduct</binary>
+  </provides>
+</component>

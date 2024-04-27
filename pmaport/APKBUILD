@@ -1,30 +1,29 @@
-# Contributor:
+# Contributor: DaKnig <zannyknig@disroot.org>
 # Maintainer: DaKnig <zannyknig@disroot.org>
 pkgname=dewduct
-pkgver=0.2.0
+pkgver=0.2.1
 pkgrel=0
-pkgdesc="A NewPipe clone."
-source="https://github.com/DaKnig/DewDuct/archive/refs/tags/v0.2.zip"
+pkgdesc="A privacy-focused and mobile-friendly YouTube player, a NewPipe clone for GNOME, in Rust and GTK, based on Invidious"
+source="$pkgname-$pkgver.zip::https://github.com/DaKnig/DewDuct/archive/refs/tags/v$pkgver.zip"
 arch="all"
 license="GPL-3.0-or-later"
-depends="openssl gtk4.0 libadwaita mpv yt-dlp"
-makedepends="rust cargo openssl-dev gtk4.0-dev libadwaita-dev"
-checkdepends=""
-install=""
-subpackages=""
+depends="libadwaita mpv openssl yt-dlp"
+makedepends="cargo-auditable libadwaita-dev openssl-dev rust"
 url="https://github.com/DaKnig/DewDuct"
-giturl="https://github.com/DaKnig/DewDuct.git"
-builddir="$srcdir/"
+builddir="$srcdir/DewDuct-$pkgver"
+
+appid=null.daknig.dewduct
+
+options="!check" # currently, no tests available.
 
 build() {
-	mv DewDuct*/* .
-	cargo build --release
+	appstreamcli make-desktop-file data/"$appid".metainfo.xml "$appid".desktop
+	cargo build --release --frozen
 }
 
-options="!check"
-
 package() {
-	# Replace with proper package command(s)
-	install -D "$srcdir"/target/release/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
+	install -D "$builddir"/target/release/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
+	install -D "$builddir"/data/"$appid".metainfo.xml -t "$pkgdir"/usr/share/metainfo/
+	install -D "$appid".desktop "$pkgdir"/usr/share/applications/"$appid".desktop
 }
 sha512sums=""
