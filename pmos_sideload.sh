@@ -16,6 +16,7 @@ cp pmaport/APKBUILD ~/.local/var/pmbootstrap/cache_git/pmaports/testing/dewduct
 # prepare the apk
 echo checksum...
 pmbootstrap checksum dewduct
+cp ~/.local/var/pmbootstrap/cache_git/pmaports/testing/dewduct/APKBUILD pmaport/
 echo build...
 pmbootstrap build --arch aarch64 dewduct --force
 # push it
