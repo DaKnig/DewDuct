@@ -4,6 +4,12 @@
 
   <name>DewDuct</name>
   <summary>A YouTube player</summary>
+  <developer id="null.daknig">
+    <name>DaKnig</name>
+  </developer>
+  <developer_name>DaKnig</developer_name>
+  <url type="homepage">https://github.com/DaKnig/DewDuct</url>
+  <url type="bugtracker">https://github.com/DaKnig/DewDuct/issues</url>
 
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -46,4 +52,8 @@
   <provides>
     <binary>dewduct</binary>
   </provides>
+
+  <releases>
+    <release version="0.2.2" type="development" date="2024-05-04"/>
+  </releases>
 </component>

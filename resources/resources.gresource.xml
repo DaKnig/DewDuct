@@ -14,5 +14,6 @@
     <file compressed="true" preprocess="xml-stripblanks">channel_header.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">subscriptions_page.ui</file>
     <file>dummi_thumbnail.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="null.daknig.dewduct.metainfo.xml">../data/null.daknig.dewduct.metainfo.xml</file>
   </gresource>
 </gresources>

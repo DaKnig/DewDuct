@@ -114,16 +114,12 @@ impl DewDuctApplication {
     }
 
     fn show_about(&self) {
-        let window = self.active_window().unwrap();
-        let about = adw::AboutWindow::builder()
-            .transient_for(&window)
-            .application_name("DewDuct")
-            .application_icon("null.daknig.DewDuct")
-            .developer_name("DaKnig")
-            .version(VERSION)
-            .developers(vec!["DaKnig"])
-            .copyright("© 2023-2024 DaKnig")
-            .build();
+        let about = adw::AboutWindow::from_appdata(
+            "/null/daknig/DewDuct/null.daknig.dewduct.metainfo.xml",
+            None,
+        );
+        about.set_copyright("© 2023-2024 DaKnig");
+        about.set_developers(&["DaKnig"]);
 
         about.present();
     }
