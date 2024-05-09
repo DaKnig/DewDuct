@@ -5,7 +5,6 @@
   <requires lib="libadwaita" version="1.0"/>
   <template class="DewSubscriptionsPage" parent="GtkBox">
     <property name="orientation">vertical</property>
-    <signal name="map" handler="load_state" swapped="yes"/>
     <child>
       <object class="AdwHeaderBar">
         <child>

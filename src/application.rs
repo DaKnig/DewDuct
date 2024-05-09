@@ -23,7 +23,6 @@ use glib::g_warning;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
-use crate::config::VERSION;
 use crate::DewDuctWindow;
 
 mod imp {

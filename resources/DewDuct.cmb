@@ -366,8 +366,7 @@
 	(24,3,19,"GtkButton","clicked","background_clicked",None,None,1,None,None),
 	(25,3,21,"GtkButton","clicked","play_all_clicked",None,None,1,None,None),
 	(26,3,23,"GtkButton","clicked","poppup_clicked",None,None,1,None,None),
-	(27,12,8,"GtkButton","clicked","import_newpipe_subs",None,None,1,None,None),
-	(28,12,1,"GtkWidget","map","load_state",None,None,1,None,None)
+	(27,12,8,"GtkButton","clicked","import_newpipe_subs",None,None,1,None,None)
   </object_signal>
   <object_data>
 	(5,5,"GtkWidget",2,2,None,1,None,None,None,None),

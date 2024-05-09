@@ -62,8 +62,13 @@ mod imp {
             obj.init_template();
         }
     }
-
-    impl ObjectImpl for DewSubscriptionsPage {}
+    impl ObjectImpl for DewSubscriptionsPage {
+        fn constructed(&self) {
+            self.parent_constructed();
+            glib::spawn_future_local(glib::clone!(@weak self as page =>
+			     async move {page.load_state().await}));
+        }
+    }
     impl WidgetImpl for DewSubscriptionsPage {}
     impl BoxImpl for DewSubscriptionsPage {}
 
