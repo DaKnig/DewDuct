@@ -101,8 +101,10 @@ mod imp {
         async fn bind_row(list_item: gtk::ListItem) {
             let item: DewYtItem = list_item
                 .item()
-                .and_downcast()
-                .expect("The item has to be an `DewYtItem`");
+                .expect("bind_row without an item")
+                .downcast()
+                .unwrap_or_else(|obj| panic!("{}", obj.type_().name()));
+            // .expect("The item has to be an `DewYtItem`");
 
             if item.kind() == DewYtItemKind::Header {
                 list_item.set_activatable(false);

@@ -64,10 +64,12 @@ mod imp {
             self.parent_constructed();
 
             let page = self.obj().clone();
-            MainContext::default()
-                .spawn_local_with_priority(Priority::LOW, async move {
-                    page.imp().update_vids().await
-                });
+            MainContext::default().spawn_local_with_priority(
+                Priority::LOW,
+                async move {
+                    page.imp().update_vids().await;
+                },
+            );
         }
     }
     impl WidgetImpl for DewPopularPage {}
@@ -75,12 +77,14 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewPopularPage {
-        fn invidious_client(&self) -> invidious::ClientSync {
+        fn window(&self) -> crate::window::DewDuctWindow {
             self.obj()
                 .root()
                 .and_downcast::<crate::window::DewDuctWindow>()
                 .unwrap()
-                .invidious_client()
+        }
+        fn invidious_client(&self) -> invidious::ClientSync {
+            self.window().invidious_client()
         }
         #[template_callback]
         async fn update_vids(&self) {
@@ -119,6 +123,12 @@ mod imp {
             // let n_items = store.n_items();
             // store.splice(0, n_items, &[]); // empty
             // store.extend(vids);
+
+            let page = self.obj().clone();
+            glib::idle_add_local(move || {
+                page.imp().window().close();
+                glib::ControlFlow::Break
+            });
         }
     }
 }
