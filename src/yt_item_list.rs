@@ -152,12 +152,13 @@ impl DewYtItemList {
         list_store.splice(0, list_store.n_items(), &vec);
     }
 
-    pub fn get_vec(&self) -> Vec<DewYtItem> {
+    pub fn get_vec<'a>(
+        &'a self,
+    ) -> impl IntoIterator<Item = DewYtItem> + 'a {
         let list_store = &self.imp().list_store;
         list_store
             .into_iter()
             .filter_map(|x| x.ok())
-            .filter_map(|x| x.downcast().ok())
-            .collect()
+            .filter_map(|x| x.downcast::<DewYtItem>().ok())
     }
 }
