@@ -147,13 +147,9 @@ glib::wrapper! {
 }
 
 impl DewYtItemList {
-    pub fn remove_all(&self) {
-        self.imp().list_store.remove_all()
-    }
-
     pub fn set_from_vec(&self, vec: Vec<DewYtItem>) {
-        self.remove_all();
-        self.imp().list_store.extend_from_slice(&vec);
+        let list_store = &self.imp().list_store;
+        list_store.splice(0, list_store.n_items(), &vec);
     }
 
     pub fn get_vec(&self) -> Vec<DewYtItem> {
