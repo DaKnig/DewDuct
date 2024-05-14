@@ -1,6 +1,6 @@
 // use invidious::video::Video;
 
-use std::fs::File;
+use std::fs::metadata;
 use std::future::Future;
 use std::path::{Path, PathBuf};
 
@@ -35,20 +35,13 @@ impl DewCache {
     ) -> impl std::future::Future<Output = anyhow::Result<()>> {
         use anyhow::Context;
         use isahc::AsyncReadResponseExt;
-        use std::io::Write;
 
         let fname = fname.to_owned();
         let url = url.to_owned();
         async move {
-            let mut dest: std::fs::File = {
-                // can safely unwrap since I crafted the directory
-                let parent = fname.parent().unwrap();
-                std::fs::create_dir_all(parent)?;
-                File::create(&fname)
-                    .with_context(|| format!("{}", fname.display()))
-                    .unwrap()
-                //?
-            };
+            // can safely unwrap since I crafted the directory
+            let parent = fname.parent().unwrap();
+            std::fs::create_dir_all(parent)?;
 
             let target = url;
             let mut response = isahc::get_async(target).await?;
@@ -71,7 +64,8 @@ impl DewCache {
                     fname.display()
                 );
             }
-            dest.write(content).with_context(|| {
+
+            std::fs::write(&fname, content).with_context(|| {
                 format!("error writing to {}", fname.display())
             })?;
 
@@ -93,8 +87,8 @@ impl DewCache {
         Fut: Future<Output = Result<(), Err>>,
     {
         let path = cache.dir().join(&fname);
-        match File::open(&path).ok() {
-            Some(_) => {
+        match metadata(&path) {
+            Ok(m) if m.len() != 0 => {
                 g_warning!(
                     "DewCache",
                     "opening cached file at {}",
@@ -102,7 +96,7 @@ impl DewCache {
                 );
                 Ok(())
             }
-            None => {
+            _ => {
                 g_warning!(
                     "DewCache",
                     "fetching item to {}",

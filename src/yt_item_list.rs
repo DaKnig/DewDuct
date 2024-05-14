@@ -123,7 +123,8 @@ mod imp {
                 row.set_from_yt_item(&item).await.unwrap_or_else(|err| {
                     glib::g_warning!(
                         "DewYtItemList",
-                        "error binding row: {}",
+                        "error binding row id {}: {}",
+                        item.id(),
                         err
                     );
                 });
