@@ -50,8 +50,6 @@ mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
-            DewChannelRow::ensure_type();
-            DewVideoRow::ensure_type();
             klass.bind_template();
         }
 

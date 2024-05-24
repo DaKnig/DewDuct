@@ -50,12 +50,6 @@ async fn main() -> glib::ExitCode {
     // Load resources
     gio::resources_register_include!("dewduct.gresource")
         .expect("Failed to register resources.");
-    glib::BoxedAnyObject::static_type();
-    yt_item_list::DewYtItem::static_type();
-    // let resources = gio::Resource::load(PKGDATADIR.to_owned() + "/dewduct.gresource")
-    //     .expect("Could not load resources");
-    // gio::resources_register(&resources);
-
     // Create a new GtkApplication. The application manages our main loop,
     // application windows, integration with the window manager/compositor, and
     // desktop features such as file opening and single-instance applications.

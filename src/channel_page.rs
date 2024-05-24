@@ -51,7 +51,6 @@ mod imp {
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
-            DewYtItemList::ensure_type();
             klass.bind_template();
         }
 

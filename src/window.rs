@@ -68,9 +68,6 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
-            DewPopularPage::ensure_type();
-            DewVideoPage::ensure_type();
-            DewSearchPage::ensure_type();
             klass.bind_template();
             klass.bind_template_callbacks();
             klass.install_action("win.back", None, Self::Type::back);

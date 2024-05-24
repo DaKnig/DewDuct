@@ -60,7 +60,6 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
-            DewThumbnail::ensure_type();
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
