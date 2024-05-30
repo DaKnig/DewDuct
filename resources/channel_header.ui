@@ -69,6 +69,7 @@
             </property>
             <property name="hexpand">True</property>
             <property name="margin-end">3</property>
+            <property name="sensitive">False</property>
             <signal name="clicked" handler="background_clicked" swapped="yes"/>
           </object>
         </child>
@@ -83,6 +84,7 @@
             <property name="hexpand">True</property>
             <property name="margin-end">3</property>
             <property name="margin-start">3</property>
+            <property name="sensitive">False</property>
             <signal name="clicked" handler="play_all_clicked" swapped="yes"/>
           </object>
         </child>
@@ -96,6 +98,7 @@
             </property>
             <property name="hexpand">True</property>
             <property name="margin-start">3</property>
+            <property name="sensitive">False</property>
             <signal name="clicked" handler="poppup_clicked" swapped="yes"/>
           </object>
         </child>
