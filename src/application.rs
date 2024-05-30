@@ -68,7 +68,7 @@ mod imp {
                 "instance used: {}",
                 window
                     .clone()
-                    .downcast::<DewDuctWindow>()
+                    .downcast_ref::<DewDuctWindow>()
                     .unwrap()
                     .invidious_client()
                     .instance

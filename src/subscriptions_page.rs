@@ -83,7 +83,7 @@ mod imp {
         fn async_invidious_client(&self) -> invidious::ClientAsync {
             self.obj()
                 .root()
-                .and_downcast::<crate::window::DewDuctWindow>()
+                .and_downcast_ref::<crate::window::DewDuctWindow>()
                 .unwrap()
                 .async_invidious_client()
         }

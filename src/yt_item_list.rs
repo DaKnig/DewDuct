@@ -72,7 +72,7 @@ mod imp {
             let Some(item) = list_view.model().unwrap().item(index) else {
                 return;
             };
-            let item: DewYtItem = item.downcast().unwrap();
+            let item: &DewYtItem = item.downcast_ref().unwrap();
             let id: String = item.id();
             match item.kind() {
                 Video => list_view
@@ -100,16 +100,16 @@ mod imp {
 
         #[template_callback(function)]
         async fn bind_row(list_item: gtk::ListItem) {
-            let item: DewYtItem = list_item
-                .item()
-                .and_downcast()
+	    let item = list_item.item();
+            let item: &DewYtItem = item
+                .and_downcast_ref()
                 .expect("The item has to be an `DewYtItem`");
 
             if item.kind() == DewYtItemKind::Header {
                 list_item.set_activatable(false);
                 let header = DewChannelHeader::new();
                 list_item.set_child(Some(&header));
-                if let Err(err) = header.set_from_yt_item(&item).await {
+                if let Err(err) = header.set_from_yt_item(item).await {
                     g_warning!(
                         "DewYtItemList",
                         "can't bind header row: {}",
@@ -121,7 +121,7 @@ mod imp {
                 let row: DewYtItemRow =
                     list_item.child().and_downcast().unwrap_or_default();
 
-                row.set_from_yt_item(&item).await.unwrap_or_else(|err| {
+                row.set_from_yt_item(item).await.unwrap_or_else(|err| {
                     glib::g_warning!(
                         "DewYtItemList",
                         "error binding row id {}: {}",
@@ -183,8 +183,7 @@ impl DewYtItemList {
         let list_store = &self.imp().list_store;
         list_store
             .into_iter()
-            .filter_map(|x| x.ok())
-            .filter_map(|x| x.downcast::<DewYtItem>().ok())
+            .filter_map(|x| x.ok().and_downcast::<DewYtItem>())
     }
 
     pub fn connect_items_changed(
