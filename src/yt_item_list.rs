@@ -49,6 +49,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             DewYtItemRow::ensure_type();
+            DewYtItem::ensure_type();
             klass.bind_template();
             klass.bind_template_callbacks();
         }
@@ -148,6 +149,29 @@ glib::wrapper! {
 }
 
 impl DewYtItemList {
+    pub fn insert_sorted(
+        &self,
+        item: &DewYtItem,
+        mut f: impl FnMut(&DewYtItem, &DewYtItem) -> std::cmp::Ordering,
+    ) {
+        self.imp().list_store.insert_sorted(item, move |a, b| {
+            let (Some(a), Some(b)) = (a.downcast_ref(), b.downcast_ref())
+            else {
+                g_warning!("DewYtItemList", "wrong item type!");
+                return std::cmp::Ordering::Less;
+            };
+            f(a, b)
+        });
+    }
+    pub fn del_item_with_id(&self, id: String) {
+        let list_store = &self.imp().list_store;
+        list_store.retain(|obj| {
+            let Some(item) = obj.downcast_ref::<DewYtItem>() else {
+                return false;
+            };
+            &*item.id() != &*id
+        });
+    }
     pub fn set_from_vec(&self, vec: Vec<DewYtItem>) {
         let list_store = &self.imp().list_store;
         list_store.splice(0, list_store.n_items(), &vec);
@@ -161,5 +185,15 @@ impl DewYtItemList {
             .into_iter()
             .filter_map(|x| x.ok())
             .filter_map(|x| x.downcast::<DewYtItem>().ok())
+    }
+
+    pub fn connect_items_changed(
+        &self,
+        f: impl Fn(&gio::ListStore) + 'static,
+    ) -> glib::signal::SignalHandlerId {
+        let list_store = &self.imp().list_store;
+        f(list_store); // to update immediately
+                       // to update from now on
+        list_store.connect_items_changed(move |list, _, _, _| f(list))
     }
 }

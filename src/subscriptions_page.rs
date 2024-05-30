@@ -23,6 +23,7 @@ use std::path::PathBuf;
 
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
+use gio::ListStore;
 use glib::{g_warning, user_data_dir};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
@@ -73,6 +74,12 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewSubscriptionsPage {
+        pub fn connect_subs_changed(
+            &self,
+            f: impl Fn(&ListStore) + 'static,
+        ) -> glib::signal::SignalHandlerId {
+            self.subs_list.connect_items_changed(f)
+        }
         fn async_invidious_client(&self) -> invidious::ClientAsync {
             self.obj()
                 .root()
@@ -92,6 +99,39 @@ mod imp {
             };
             serde_json::to_writer(file, &subscription_list_serialization)
                 .unwrap();
+        }
+        pub fn del_subscription(&self, id: String) {
+            self.subs_list.del_item_with_id(id);
+        }
+        pub async fn add_subscription(
+            &self,
+            id: String,
+        ) -> anyhow::Result<()> {
+            let v = self.subs_list.get_vec();
+            if let Some(_) = v.into_iter().find(|vid: &DewYtItem| {
+                vid.imp().id.borrow().as_str() == &id
+            }) {
+                return Ok(());
+            }
+
+            let item: _ =
+                self.async_invidious_client().channel(&id, None).await;
+
+            match item {
+                Ok(item) => {
+                    self.subs_list.insert_sorted(&item.into(), |a, b| {
+                        a.title().cmp(&b.title())
+                    });
+                    self.store_state();
+                    return anyhow::Ok(());
+                }
+                Err(e) => {
+                    let e_str =
+                        format!("Unable to subscribe to {}: {}", &id, e);
+                    g_warning!("DewSubscriptionsPage", "{}", e_str);
+                    anyhow::bail!(e_str);
+                }
+            }
         }
         #[template_callback]
         async fn import_newpipe_subs(&self) {

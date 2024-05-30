@@ -44,8 +44,12 @@ mod imp {
         pub(super) channel: TemplateChild<adw::WindowTitle>,
         #[template_child]
         pub(super) thumbnail: TemplateChild<adw::Avatar>,
+        #[template_child]
+        pub(super) subscribe: TemplateChild<gtk::Button>,
 
         pub(super) id: RefCell<String>,
+        pub(super) is_subscribed: RefCell<bool>,
+        subscribed_handle: RefCell<Option<glib::signal::SignalHandlerId>>,
     }
 
     #[glib::object_subclass]
@@ -71,12 +75,19 @@ mod imp {
     #[gtk::template_callbacks]
     impl DewChannelHeader {
         #[template_callback]
-        fn subscribe_clicked(&self) {
-            g_warning!(
-                "DewChannelHeader",
-                "subscribe to {} clicked!",
-                self.id.borrow()
-            );
+        async fn subscribe_clicked(&self, button: &gtk::Button) {
+            let win = self.win();
+            let res: Result<(), _> = if !*self.is_subscribed.borrow() {
+                win.subscribe(self.id.borrow().clone()).await
+            } else {
+                win.unsubscribe(self.id.borrow().clone());
+                Ok(())
+            };
+            if let Err(_) = res {
+                button.add_css_class("error");
+            } else {
+                button.remove_css_class("error");
+            }
         }
         #[template_callback]
         fn background_clicked(&self) {
@@ -105,6 +116,42 @@ mod imp {
     }
 
     impl DewChannelHeader {
+        fn win(&self) -> crate::window::DewDuctWindow {
+            self.obj().root().and_downcast().unwrap()
+        }
+        fn is_subbed(&self, list_store: &gio::ListStore) -> bool {
+            list_store.into_iter().flatten().any(|item| {
+                item.downcast_ref::<DewYtItem>().is_some_and(|item| {
+                    item.id() == self.id.borrow().as_str()
+                })
+            })
+        }
+        fn set_is_subscribed(&self, is_subscribed: bool) {
+            self.is_subscribed.replace(is_subscribed);
+            self.subscribe.get().set_label(if is_subscribed {
+                "SUBSCRIBED"
+            } else {
+                "SUBSCRIBE"
+            });
+        }
+        fn set_id(&self, new: String) {
+            self.id.replace(new);
+            // if not yet connected to update with the list of subscriptions,
+            if self.subscribed_handle.borrow().is_none() {
+                let header = self.downgrade();
+                let check_is_subbed = move |list_store: &gio::ListStore| {
+                    let Some(header) = header.upgrade() else {
+                        return;
+                    };
+                    let is_subbed = header.is_subbed(list_store);
+                    header.set_is_subscribed(is_subbed);
+                };
+
+                let handle =
+                    self.win().connect_subs_changed(check_is_subbed);
+                self.subscribed_handle.replace(Some(handle));
+            }
+        }
         pub async fn set_from_yt_item(
             &self,
             item: &DewYtItem,
@@ -137,7 +184,7 @@ mod imp {
                         item.id()
                     )
                 })?;
-            self.id.replace(item.id());
+            self.set_id(item.id());
 
             // thumbnail_fname.push();
             let mut thumbnail_fname = cache_dir(Path::new(&item.id()));

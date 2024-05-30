@@ -171,6 +171,24 @@ mod imp {
             vid_page.imp().set_vid(vid).await;
             self.screen_stack.set_visible_child_name("video_page");
         }
+        pub fn connect_subs_changed(
+            &self,
+            f: impl Fn(&gio::ListStore) + 'static,
+        ) -> glib::signal::SignalHandlerId {
+            self.subscriptions_page.imp().connect_subs_changed(f)
+        }
+        pub async fn subscribe(
+            &self,
+            channel_id: String,
+        ) -> anyhow::Result<()> {
+            self.subscriptions_page
+                .imp()
+                .add_subscription(channel_id)
+                .await
+        }
+        pub fn unsubscribe(&self, channel_id: String) {
+            self.subscriptions_page.imp().del_subscription(channel_id)
+        }
     }
 }
 
@@ -210,5 +228,20 @@ impl DewDuctWindow {
         channel: &crate::yt_item_list::DewYtItem,
     ) {
         self.imp().show_channel(&channel.id()).await
+    }
+    pub async fn subscribe(
+        &self,
+        channel_id: String,
+    ) -> anyhow::Result<()> {
+        self.imp().subscribe(channel_id).await
+    }
+    pub fn unsubscribe(&self, channel_id: String) {
+        self.imp().unsubscribe(channel_id)
+    }
+    pub fn connect_subs_changed(
+        &self,
+        f: impl Fn(&gio::ListStore) + 'static,
+    ) -> glib::signal::SignalHandlerId {
+        self.imp().connect_subs_changed(f)
     }
 }

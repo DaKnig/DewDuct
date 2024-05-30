@@ -31,7 +31,6 @@ use invidious::hidden::SearchItem;
 use invidious::ClientSyncTrait;
 use urlencoding::encode;
 
-use crate::video_row::DewVideoRow;
 use crate::yt_item_list::DewYtItemList;
 
 #[allow(unused_imports)]
