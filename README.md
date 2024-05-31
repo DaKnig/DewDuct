@@ -17,23 +17,36 @@ what works!
 
 ## Installing
 
+### Alpine linux and PostmarketOS
+
+If you are on edge, run:
+
+```bash
+apk add dewduct
+```
+
+## Building
+
 ### Dependencies
 
 Run time dependencies:
 
-`openssl gtk4.0 libadwaita mpv yt-dlp`
+`openssl libadwaita mpv yt-dlp`
 
 Compile time dependencies:
 
 `rust cargo openssl-dev gtk4.0-dev libadwaita-dev`
 
-### Building and installing
+To compile, run:
 
-#### PostmarketOS and Alpine linux:
+```bash
+cargo install --git https://github.com/DaKnig/DewDuct
+```
+
+### PostmarketOS and Alpine linux:
 
 ```bash
 apk add rust cargo openssl-dev gtk4.0-dev libadwaita-dev openssl gtk4.0 libadwaita mpv
-
 cargo install --git https://github.com/DaKnig/DewDuct
 ```
 
@@ -59,7 +72,7 @@ For version 1.0 :
 
 - [x] Subscription list page.
 
-- [ ] Subscription video list, with a button for updating the list.
+- [ ] "What's New", for videos from subscriptions, with a button for updating the list.
 
 ## Get in contact!
 
