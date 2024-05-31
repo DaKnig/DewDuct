@@ -2,81 +2,91 @@
 <!-- Created with Cambalache 0.90.2 -->
 <interface>
   <requires lib="gtk" version="4.8"/>
-  <requires lib="libadwaita" version="1.0"/>
+  <requires lib="libadwaita" version="1.4"/>
   <template class="DewDuctWindow" parent="AdwApplicationWindow">
     <property name="default-height">294</property>
     <property name="default-width">360</property>
     <property name="title">DewDuct</property>
     <child>
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
+      <object class="AdwNavigationView" id="nav_view">
         <child>
-          <object class="GtkSearchBar" id="search_bar"/>
-        </child>
-        <child>
-          <object class="AdwViewStack" id="screen_stack">
-            <child>
-              <object class="AdwViewStackPage">
-                <property name="child">
-                  <object class="DewPopularPage" id="popular_page"/>
-                </property>
-                <property name="icon-name">camera-video-symbolic</property>
-                <property name="name">updates_page</property>
-                <property name="title">Popular</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwViewStackPage">
-                <property name="child">
-                  <object class="DewSearchPage" id="search_page"/>
-                </property>
-                <property name="icon-name">system-search-symbolic</property>
-                <property name="name">search_page</property>
-                <property name="title">Search</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwViewStackPage">
-                <property name="child">
-                  <object class="DewChannelPage" id="channel_page">
-                    <property name="visible">False</property>
+          <object class="AdwNavigationPage">
+            <property name="can-pop">false</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSearchBar" id="search_bar"/>
+                </child>
+                <child>
+                  <object class="AdwViewStack" id="screen_stack">
+                    <child>
+                      <object class="AdwViewStackPage">
+                        <property name="child">
+                          <object class="DewPopularPage" id="popular_page"/>
+                        </property>
+                        <property name="icon-name">camera-video-symbolic</property>
+                        <property name="name">updates_page</property>
+                        <property name="title">Popular</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwViewStackPage">
+                        <property name="child">
+                          <object class="DewChannelPage" id="channel_page">
+                            <property name="visible">False</property>
+                          </object>
+                        </property>
+                        <property name="icon-name">preferences-desktop-remote-desktop-symbolic</property>
+                        <property name="name">channel_page</property>
+                        <property name="title">Channel</property>
+                        <property name="visible" bind-source="channel_page" bind-property="visible" bind-flags="bidirectional | default | sync-create">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwViewStackPage">
+                        <property name="child">
+                          <object class="DewVideoPage" id="video_page">
+                            <property name="visible">False</property>
+                          </object>
+                        </property>
+                        <property name="icon-name">audio-headphones-symbolic</property>
+                        <property name="name">video_page</property>
+                        <property name="title">Player</property>
+                        <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwViewStackPage">
+                        <property name="child">
+                          <object class="DewSubscriptionsPage" id="subscriptions_page"/>
+                        </property>
+                        <property name="icon-name">system-users-symbolic</property>
+                        <property name="name">subs</property>
+                        <property name="title">Subscriptions</property>
+                      </object>
+                    </child>
                   </object>
-                </property>
-                <property name="icon-name">preferences-desktop-remote-desktop-symbolic</property>
-                <property name="name">channel_page</property>
-                <property name="title">Channel</property>
-                <property name="visible" bind-source="channel_page" bind-property="visible" bind-flags="bidirectional | default | sync-create">False</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwViewStackPage">
-                <property name="child">
-                  <object class="DewVideoPage" id="video_page">
-                    <property name="visible">False</property>
+                </child>
+                <child>
+                  <object class="AdwViewSwitcherBar">
+                    <property name="reveal">True</property>
+                    <property name="stack">screen_stack</property>
                   </object>
-                </property>
-                <property name="icon-name">audio-headphones-symbolic</property>
-                <property name="name">video_page</property>
-                <property name="title">Player</property>
-                <property name="visible" bind-source="video_page" bind-property="visible" bind-flags="bidirectional | sync-create">False</property>
+                </child>
               </object>
-            </child>
-            <child>
-              <object class="AdwViewStackPage">
-                <property name="child">
-                  <object class="DewSubscriptionsPage" id="subscriptions_page"/>
-                </property>
-                <property name="icon-name">system-users-symbolic</property>
-                <property name="name">subs</property>
-                <property name="title">Subscriptions</property>
-              </object>
-            </child>
+            </property>
+            <property name="tag">main_view</property>
+            <property name="title">DewDuct</property>
           </object>
         </child>
         <child>
-          <object class="AdwViewSwitcherBar">
-            <property name="reveal">True</property>
-            <property name="stack">screen_stack</property>
+          <object class="AdwNavigationPage">
+            <property name="child">
+              <object class="DewSearchPage" id="search_page"/>
+            </property>
+            <property name="tag">search_page</property>
+            <property name="title">Search</property>
           </object>
         </child>
       </object>

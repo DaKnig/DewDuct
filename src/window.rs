@@ -57,6 +57,8 @@ mod imp {
         subscriptions_page: TemplateChild<DewSubscriptionsPage>,
         #[template_child]
         search_bar: TemplateChild<gtk::SearchBar>,
+        #[template_child]
+        nav_view: TemplateChild<adw::NavigationView>,
         last_visible_page: Rc<RefCell<Option<GString>>>,
         pub(super) invidious_client: Rc<RefCell<ClientSync>>,
     }
@@ -120,15 +122,12 @@ mod imp {
     impl DewDuctWindow {
         #[template_callback]
         pub(super) fn search_started(&self) {
-            let screen_stack = &self.screen_stack;
-            let last_visible_page = &self.last_visible_page;
-
             // search_bar.set_search_mode(true);
-            last_visible_page.replace(screen_stack.visible_child_name());
-            self.screen_stack.set_visible_child(&self.search_page.get());
+            self.nav_view.push_by_tag("search_page");
         }
         pub(super) fn back(&self) {
             self.screen_stack.set_visible_child_name("updates_page");
+            self.nav_view.pop_to_tag("main_view");
             self.search_page.search_entry().emit_stop_search();
         }
         pub(super) async fn show_channel(&self, id: &str) {
@@ -136,6 +135,8 @@ mod imp {
             channel_page.set_channel_id(id).await;
             channel_page.set_visible(true);
             self.screen_stack.set_visible_child(&channel_page);
+            self.nav_view.pop_to_tag("main_view");
+            self.search_page.search_entry().emit_stop_search();
         }
         pub(super) async fn play(&self, _: String, param: Option<Variant>) {
             // Get param
@@ -170,6 +171,8 @@ mod imp {
 
             vid_page.imp().set_vid(vid).await;
             self.screen_stack.set_visible_child_name("video_page");
+            self.nav_view.pop_to_tag("main_view");
+            self.search_page.search_entry().emit_stop_search();
         }
         pub fn connect_subs_changed(
             &self,
