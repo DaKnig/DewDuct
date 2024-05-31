@@ -32,5 +32,5 @@ package() {
 	install -D "$_appid".desktop "$pkgdir"/usr/share/applications/"$_appid".desktop
 }
 sha512sums="
-a4411150f1f42efc9c32efe6aeaf085e0f2a44d61b8d74427b89bda9467b9943b919fbf43e5d73f706b5e80b519871f270c1b80fa2093c8fa6121e0f8abf8d18  dewduct-0.2.1.zip
+8169a816e0872147f46efc082c583893490fed9954f4bbde6f3658fe962eebed064e41e9ed37637b413a870cf1d56be58d9e99503cfbb51265e25f1391fe8ec0  dewduct-0.2.2.zip
 "
