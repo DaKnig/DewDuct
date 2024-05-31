@@ -5,9 +5,8 @@ use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 pub(crate) fn format_rel_time(duration: Duration) -> String {
-    let mut s: String = format_duration(duration).to_string();
-    s = s.split_whitespace().next().unwrap().to_owned();
-    s
+    let s: String = format_duration(duration).to_string();
+    s.split_whitespace().next().unwrap().to_owned()
 }
 
 pub fn format_semi_engineering(value: f32) -> String {

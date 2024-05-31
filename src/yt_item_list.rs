@@ -85,7 +85,7 @@ mod imp {
                     let window: crate::window::DewDuctWindow =
                         list_view.root().and_downcast().unwrap();
 
-                    window.show_channel_yt_item(&item).await;
+                    window.show_channel_yt_item(item).await;
                 }
                 // clicking on the header outside buttons- does nothing.
                 Header => {}
@@ -100,7 +100,7 @@ mod imp {
 
         #[template_callback(function)]
         async fn bind_row(list_item: gtk::ListItem) {
-	    let item = list_item.item();
+            let item = list_item.item();
             let item: &DewYtItem = item
                 .and_downcast_ref()
                 .expect("The item has to be an `DewYtItem`");
@@ -169,7 +169,7 @@ impl DewYtItemList {
             let Some(item) = obj.downcast_ref::<DewYtItem>() else {
                 return false;
             };
-            &*item.id() != &*id
+            *item.id() != *id
         });
     }
     pub fn set_from_vec(&self, vec: Vec<DewYtItem>) {
@@ -177,9 +177,7 @@ impl DewYtItemList {
         list_store.splice(0, list_store.n_items(), &vec);
     }
 
-    pub fn get_vec<'a>(
-        &'a self,
-    ) -> impl IntoIterator<Item = DewYtItem> + 'a {
+    pub fn get_vec(&self) -> impl IntoIterator<Item = DewYtItem> + '_ {
         let list_store = &self.imp().list_store;
         list_store
             .into_iter()

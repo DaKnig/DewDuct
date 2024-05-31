@@ -25,7 +25,7 @@ impl DewCache {
         url: &str,
     ) -> Result<(), anyhow::Error> {
         DewCache::fetch_file(cache, fname, move |fname| {
-            Self::fetcher(fname, &url)
+            Self::fetcher(fname, url)
         })
         .await
     }

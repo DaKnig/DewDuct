@@ -77,13 +77,14 @@ mod imp {
         #[template_callback]
         async fn subscribe_clicked(&self, button: &gtk::Button) {
             let win = self.win();
+            let id = self.id.borrow().clone();
             let res: Result<(), _> = if !*self.is_subscribed.borrow() {
-                win.subscribe(self.id.borrow().clone()).await
+                win.subscribe(id).await
             } else {
-                win.unsubscribe(self.id.borrow().clone());
+                win.unsubscribe(id);
                 Ok(())
             };
-            if let Err(_) = res {
+            if res.is_err() {
                 button.add_css_class("error");
             } else {
                 button.remove_css_class("error");

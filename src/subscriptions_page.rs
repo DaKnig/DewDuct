@@ -108,13 +108,14 @@ mod imp {
             id: String,
         ) -> anyhow::Result<()> {
             let v = self.subs_list.get_vec();
-            if let Some(_) = v.into_iter().find(|vid: &DewYtItem| {
-                vid.imp().id.borrow().as_str() == &id
-            }) {
+            // if is subscribed already, do nothing
+            if v.into_iter()
+                .any(|vid| vid.imp().id.borrow().as_str() == id)
+            {
                 return Ok(());
             }
 
-            let item: _ =
+            let item =
                 self.async_invidious_client().channel(&id, None).await;
 
             match item {
@@ -123,7 +124,7 @@ mod imp {
                         a.title().cmp(&b.title())
                     });
                     self.store_state();
-                    return anyhow::Ok(());
+                    anyhow::Ok(())
                 }
                 Err(e) => {
                     let e_str =

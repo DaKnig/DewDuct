@@ -26,6 +26,7 @@ use gtk::glib;
 use gtk::{prelude::*, subclass::prelude::*};
 
 use std::cell::{Cell, Ref, RefCell};
+use std::rc::Rc;
 
 use invidious::channel::Channel;
 
@@ -86,7 +87,7 @@ mod imp_data {
         #[property(get, set)]
         pub length: Cell<u64>,
         // #[property(get, set)]
-        pub thumbnails: RefCell<Vec<Thumbnail>>,
+        pub thumbnails: RefCell<Rc<Vec<Thumbnail>>>,
         #[property(get, set)]
         pub views: Cell<u64>,
         #[property(get, set)]
@@ -134,11 +135,11 @@ glib::wrapper! {
 }
 
 impl DewYtItem {
-    pub fn thumbnails(&self) -> Ref<Vec<Thumbnail>> {
-        self.imp().thumbnails.borrow()
+    pub fn thumbnails(&self) -> Rc<Vec<Thumbnail>> {
+        self.imp().thumbnails.borrow().clone()
     }
     pub fn set_thumbnails(&self, thumbs: Vec<Thumbnail>) {
-        self.imp().thumbnails.replace(thumbs);
+        self.imp().thumbnails.replace(Rc::new(thumbs));
     }
 
     pub fn author_thumbnails(&self) -> Ref<Vec<Thumbnail>> {
@@ -331,7 +332,7 @@ impl From<&CommonVideo> for DewYtItem {
 
         ret.set_author_thumbnails(vec![]);
         let thumbnails: Vec<_> =
-            thumbnails.into_iter().map(|x| x.clone().into()).collect();
+            thumbnails.iter().map(|x| x.clone().into()).collect();
         ret.set_thumbnails(thumbnails);
         ret.set_kind(DewYtItemKind::Video);
 

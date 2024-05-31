@@ -111,7 +111,7 @@ impl DewYtItemRow {
                     .set_from_params(
                         item.title(),
                         item.subscribers(),
-                        &item.thumbnails(),
+                        item.thumbnails(),
                         item.id(),
                     )
                     .await?;

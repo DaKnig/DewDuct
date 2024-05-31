@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::ops::Deref;
 use std::{cell::RefCell, path::Path};
 
 #[allow(unused_imports)]
@@ -83,7 +84,7 @@ impl DewChannelRow {
         &self,
         name: String,
         subs: f32,
-        thumbnails: &[Thumbnail],
+        thumbnails: impl Deref<Target = Vec<Thumbnail>>,
         id: String,
     ) -> anyhow::Result<()> {
         self.imp().name.set_text(&name);
@@ -104,7 +105,10 @@ impl DewChannelRow {
             .or(thumbnails.iter().max_by_key(|thumb| thumb.width))
             .with_context(|| {
                 format!("error fetching channel {} thumbnail", &name)
-            })?;
+            })?
+            .clone();
+
+        drop(thumbnails);
 
         let mut thumbnail_fname = cache_dir(Path::new(&id));
         thumbnail_fname.push(&thumb.height.to_string());
