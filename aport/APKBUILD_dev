@@ -1,0 +1,36 @@
+# Contributor: DaKnig <zannyknig@disroot.org>
+# Maintainer: DaKnig <zannyknig@disroot.org>
+pkgname=dewduct
+pkgver=0.2.2
+pkgrel=7
+_pkgcommit=5d47a81172691b4196cf4970b77c1204fb838231
+pkgdesc="A privacy-focused and mobile-friendly YouTube player, a NewPipe clone for GNOME, in Rust and GTK, based on Invidious"
+source="$pkgname-$_pkgcommit.zip::https://github.com/DaKnig/DewDuct/archive/$_pkgcommit.zip"
+arch="all"
+license="GPL-3.0-or-later"
+depends="libadwaita mpv openssl yt-dlp"
+makedepends="mold cargo libadwaita-dev openssl-dev rust"
+url="https://github.com/DaKnig/DewDuct"
+builddir="$srcdir/DewDuct-$_pkgcommit"
+
+_appid=null.daknig.dewduct
+
+options="!check" # currently, no tests available.
+
+prepare() {
+        default_prepare
+}
+
+build() {
+	appstreamcli make-desktop-file data/"$_appid".metainfo.xml "$_appid".desktop
+	cargo build --release
+}
+
+package() {
+	install -D "$builddir"/target/release/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
+	install -D "$builddir"/data/"$_appid".metainfo.xml -t "$pkgdir"/usr/share/metainfo/
+	install -D "$_appid".desktop "$pkgdir"/usr/share/applications/"$_appid".desktop
+}
+sha512sums="
+8e031f84e83cd5fc7bd0e571f68e1287ffbbe8213bda6e1be63c7d28ef8347a4bc1774c4508f275aaca679626f080a943895f9c57eaf6652238375e733691510  dewduct-5d47a81172691b4196cf4970b77c1204fb838231.zip
+"

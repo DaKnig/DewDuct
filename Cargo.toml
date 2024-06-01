@@ -25,3 +25,6 @@ features = ["async", "isahc_async"]
 
 [build-dependencies]
 glib-build-tools = "0.19"
+
+[profile.release]
+debug = "limited"
