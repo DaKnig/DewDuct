@@ -29,6 +29,7 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
+use anyhow::Context;
 use futures::StreamExt;
 use invidious::ClientAsyncTrait;
 use lazy_static::lazy_static;
@@ -66,7 +67,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             glib::spawn_future_local(glib::clone!(@weak self as page =>
-			     async move {page.load_state().await}));
+                 async move {page.load_state().await}));
+            self.subs_list.get().connect_items_changed(glib::clone!(
+                 @weak self as page =>
+                 move |_| page.store_state()));
         }
     }
     impl WidgetImpl for DewSubscriptionsPage {}
@@ -89,7 +93,14 @@ mod imp {
         }
         fn store_state(&self) {
             let path = self.subs_file_path();
-            let file = std::fs::File::create(path).unwrap();
+            let file = std::fs::File::create(&path)
+                .with_context(|| {
+                    format!(
+                        "unable to create file {} to store state",
+                        &path.display()
+                    )
+                })
+                .unwrap();
             let subs_vec = self.subs_list.get_vec();
             let subscription_list_serialization = SubscriptionList {
                 subscriptions: subs_vec
@@ -98,6 +109,12 @@ mod imp {
                     .collect(),
             };
             serde_json::to_writer(file, &subscription_list_serialization)
+                .with_context(|| {
+                    format!(
+                        "unable to write to file {} to store state",
+                        &path.display()
+                    )
+                })
                 .unwrap();
         }
         pub fn del_subscription(&self, id: String) {
@@ -123,7 +140,6 @@ mod imp {
                     self.subs_list.insert_sorted(&item.into(), |a, b| {
                         a.title().cmp(&b.title())
                     });
-                    self.store_state();
                     anyhow::Ok(())
                 }
                 Err(e) => {
@@ -158,7 +174,6 @@ mod imp {
                     "invalid path selected"
                 ),
             }
-            self.store_state();
         }
         fn subs_file_path(&self) -> PathBuf {
             lazy_static! {
@@ -205,7 +220,7 @@ mod imp {
                             g_warning!(
                                 "DewSubscriptionPage",
                                 "problem with importing channel {}: \
-					can't use /user/ api!",
+                                 can't use /user/ api!",
                                 url
                             );
                         }
