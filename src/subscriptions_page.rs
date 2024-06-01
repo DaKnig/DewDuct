@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::fs::read;
+use std::fs::{read, File};
 use std::path::PathBuf;
 
 #[allow(unused_imports)]
@@ -93,7 +93,15 @@ mod imp {
         }
         fn store_state(&self) {
             let path = self.subs_file_path();
-            let file = std::fs::File::create(&path)
+            let file: File = File::create(&path)
+                .or_else(|e| {
+                    if let Some(parent) = path.parent() {
+                        std::fs::create_dir_all(parent)?;
+                        File::create(&path)
+                    } else {
+                        Err(e)
+                    }
+                })
                 .with_context(|| {
                     format!(
                         "unable to create file {} to store state",

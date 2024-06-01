@@ -114,22 +114,23 @@ impl DewChannelRow {
         thumbnail_fname.push(&thumb.height.to_string());
         thumbnail_fname.set_extension("jpg");
 
-        DewCache::fetch_remote(
+        let status = DewCache::fetch_remote(
             cache(),
             thumbnail_fname.clone(),
             &thumb.url,
         )
-        .await
-        .map_err(|err| {
-            g_warning!(
-                "DewChannelRow",
-                "could not fetch file {}: {err}",
-                thumbnail_fname.clone().display()
-            )
-        })
-        .unwrap();
-
-        let paintable = gdk::Texture::from_filename(thumbnail_fname)?;
+        .await;
+        let paintable: gdk::Texture = match status {
+            Ok(()) => gdk::Texture::from_filename(thumbnail_fname)?,
+            Err(err) => {
+                g_warning!(
+                    "DewChannelRow",
+                    "could not fetch file {}: {err}",
+                    thumbnail_fname.clone().display()
+                );
+                gdk::Texture::from_resource("/null/daknig/DewDuct/dummi_thumbnail.svg")
+            }
+        };
         self.imp().thumbnail.set_custom_image(Some(&paintable));
 
         Ok(())
