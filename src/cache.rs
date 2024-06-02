@@ -1,11 +1,11 @@
-// use invidious::video::Video;
-
 use std::fs::metadata;
 use std::future::Future;
 use std::path::{Path, PathBuf};
 
-use glib::g_warning;
+use glib::{g_debug, g_warning};
 use gtk::glib;
+
+use anyhow::Context;
 
 use crate::config;
 
@@ -24,10 +24,13 @@ impl DewCache {
         fname: PathBuf,
         url: &str,
     ) -> Result<(), anyhow::Error> {
+	g_warning!("DewCache", "trying to fetch url `{url}`");
+
         DewCache::fetch_file(cache, fname, move |fname| {
-            Self::fetcher(fname, url)
+            Self::fetcher(fname, &url)
         })
         .await
+        .with_context(|| format!("failed to fetch url `{url}`"))
     }
     fn fetcher(
         fname: &Path,
@@ -89,7 +92,7 @@ impl DewCache {
         let path = cache.dir().join(&fname);
         match metadata(&path) {
             Ok(m) if m.len() != 0 => {
-                g_warning!(
+                g_debug!(
                     "DewCache",
                     "opening cached file at {}",
                     &path.display()
