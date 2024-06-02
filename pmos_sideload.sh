@@ -9,7 +9,9 @@ then
 fi
 
 # clean dir
+echo removing apk files and APKBUILD...
 rm -rf ~/.local/var/pmbootstrap/cache_git/pmaports/testing/
+rm -f ~/.local/var/pmbootstrap/packages/edge/aarch64/dewduct*.apk
 # stay updated!
 echo agent setup...
 eval $(ssh-agent)
@@ -17,7 +19,6 @@ ssh-add
 
 echo pmbootstrap pulling...
 pmbootstrap pull
-git push
 
 mkdir -p ~/.local/var/pmbootstrap/cache_git/pmaports/testing/dewduct
 cp aport/APKBUILD_dev ~/.local/var/pmbootstrap/cache_git/pmaports/testing/dewduct/APKBUILD

@@ -90,7 +90,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.invidious_client.borrow_mut().instance =
-                "https://invidious.protokolla.fi".into();
+                "https://invidious.fdn.fr".into();
 
             self.search_bar.set_key_capture_widget(Some(&*self.obj()));
             self.search_bar

@@ -48,10 +48,19 @@ pub struct Thumbnail {
     pub height: u32,
 }
 
+fn normalize_thumbnail_url(s: String) -> String {
+    // sometimes links start with plain `//`. strip that.
+    if s.starts_with("https:") {
+        s
+    } else {
+        "https:".to_owned() + &s
+    }
+}
+
 impl From<invidious::CommonThumbnail> for Thumbnail {
     fn from(thumb: invidious::CommonThumbnail) -> Self {
         Self {
-            url: thumb.url,
+            url: normalize_thumbnail_url(thumb.url),
             width: thumb.width,
             height: thumb.height,
         }
@@ -61,7 +70,7 @@ impl From<invidious::CommonThumbnail> for Thumbnail {
 impl From<invidious::CommonImage> for Thumbnail {
     fn from(thumb: invidious::CommonImage) -> Self {
         Self {
-            url: thumb.url,
+            url: normalize_thumbnail_url(thumb.url),
             width: thumb.width,
             height: thumb.height,
         }

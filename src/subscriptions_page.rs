@@ -24,7 +24,7 @@ use std::path::PathBuf;
 #[allow(unused_imports)]
 use adw::{prelude::*, subclass::prelude::*};
 use gio::ListStore;
-use glib::{g_warning, user_data_dir};
+use glib::{g_debug, g_warning, user_data_dir};
 use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
@@ -162,8 +162,10 @@ mod imp {
             let json_filter = gtk::FileFilter::new();
             json_filter.add_suffix("json");
             let filters = gio::ListStore::from_iter([json_filter; 1]);
-            let dialog =
-                gtk::FileDialog::builder().filters(&filters).build();
+            let dialog = gtk::FileDialog::builder()
+                .filters(&filters)
+                .title("Import NewPipe data")
+                .build();
             let dialog_res = dialog.open_future(None::<&gtk::Window>).await;
             match dialog_res {
                 Ok(x) if x.path().is_some() => {
@@ -171,7 +173,7 @@ mod imp {
                     self.load_newpipe_subs_from_file(path).await;
                 }
                 Err(e) if e.matches(gtk::DialogError::Dismissed) => {
-                    g_warning!("DewSubscriptionsPage", "{}", e.message())
+                    g_debug!("DewSubscriptionsPage", "{}", e.message())
                 }
                 Err(e) => {
                     g_warning!("DewSubscriptionsPage", "{}", e.message())
