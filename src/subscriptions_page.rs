@@ -68,9 +68,6 @@ mod imp {
             self.parent_constructed();
             glib::spawn_future_local(glib::clone!(@weak self as page =>
                  async move {page.load_state().await}));
-            self.subs_list.get().connect_items_changed(glib::clone!(
-                 @weak self as page =>
-                 move |_| page.store_state()));
         }
     }
     impl WidgetImpl for DewSubscriptionsPage {}
@@ -127,6 +124,7 @@ mod imp {
         }
         pub fn del_subscription(&self, id: String) {
             self.subs_list.del_item_with_id(id);
+            self.store_state();
         }
         pub async fn add_subscription(
             &self,
@@ -148,7 +146,8 @@ mod imp {
                     self.subs_list.insert_sorted(&item.into(), |a, b| {
                         a.title().cmp(&b.title())
                     });
-                    anyhow::Ok(())
+                    self.store_state();
+                    Ok(())
                 }
                 Err(e) => {
                     let e_str =
@@ -269,6 +268,7 @@ mod imp {
             dew_yt_items.extend(subs);
             dew_yt_items.sort_unstable_by_key(|item| item.title());
             self.subs_list.set_from_vec(dew_yt_items);
+            self.store_state();
         }
     }
 
