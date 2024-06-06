@@ -29,6 +29,7 @@ build() {
 package() {
 	install -D "$builddir"/target/release/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
 	install -D "$builddir"/data/"$_appid".metainfo.xml -t "$pkgdir"/usr/share/metainfo/
+	install -D "$builddir"/data/icons -t "$pkgdir"/usr/share/
 	install -D "$_appid".desktop "$pkgdir"/usr/share/applications/"$_appid".desktop
 }
 sha512sums="
