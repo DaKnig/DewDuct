@@ -45,8 +45,7 @@ use gtk::{gio, glib};
 
 pub use util::*;
 
-#[tokio::main]
-async fn main() -> glib::ExitCode {
+fn main() -> glib::ExitCode {
     // Load resources
     gio::resources_register_include!("dewduct.gresource")
         .expect("Failed to register resources.");

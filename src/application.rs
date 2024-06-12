@@ -56,18 +56,29 @@ mod imp {
         fn activate(&self) {
             let application = self.obj();
             // Get the current window or create one if necessary
-            let window = if let Some(window) = application.active_window() {
-                window
-            } else {
-                let window = DewDuctWindow::new(&*application);
+            let window = application.active_window().unwrap_or_else(|| {
+                let tokio_rt = tokio::runtime::Builder::new_multi_thread()
+                    .enable_all()
+                    .thread_name("dewduct_worker")
+                    .build();
+                let tokio_rt = match tokio_rt {
+                    Err(err) => {
+                        g_warning!(
+                            "DewDuctApplication",
+                            "unable to initialize {err:#?}"
+                        );
+                        None
+                    }
+                    Ok(rt) => Some(rt),
+                };
+                let window = DewDuctWindow::new(&*application, tokio_rt);
                 window.upcast()
-            };
+            });
 
             g_warning!(
                 "DewApplication",
                 "instance used: {}",
                 window
-                    .clone()
                     .downcast_ref::<DewDuctWindow>()
                     .unwrap()
                     .invidious_client()

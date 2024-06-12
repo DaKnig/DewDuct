@@ -35,6 +35,7 @@ use invidious::ClientAsyncTrait;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
+use crate::window::DewDuctWindow;
 use crate::yt_item_list::*;
 
 mod imp {
@@ -87,6 +88,9 @@ mod imp {
                 .and_downcast_ref::<crate::window::DewDuctWindow>()
                 .unwrap()
                 .async_invidious_client()
+        }
+        fn window(&self) -> DewDuctWindow {
+            self.obj().root().and_downcast().unwrap()
         }
         fn store_state(&self) {
             let path = self.subs_file_path();
@@ -239,7 +243,9 @@ mod imp {
                 subs
             }
             let fetch_file = move || sync_import_subs(file);
-            let subs: Vec<String> = tokio::task::spawn_blocking(fetch_file)
+            let subs: Vec<String> = self
+                .window()
+                .spawn_blocking(fetch_file)
                 .await
                 .unwrap_or_else(|err| {
                     g_warning!(

@@ -28,7 +28,7 @@ use gtk::{prelude::*, subclass::prelude::*};
 
 use html_escape::decode_html_entities;
 use invidious::hidden::SearchItem;
-use invidious::ClientSyncTrait;
+use invidious::ClientAsyncTrait;
 use urlencoding::encode;
 
 use crate::yt_item_list::DewYtItemList;
@@ -81,6 +81,9 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewSearchPage {
+        fn window(&self) -> crate::window::DewDuctWindow {
+            self.obj().root().and_downcast().unwrap()
+        }
         #[template_callback]
         pub(crate) fn search_started(&self) {
             // glib::g_warning!("Dew", "search_started");
@@ -97,23 +100,25 @@ mod imp {
 
             // qeury for search results
             let query_transformed = format!("q={}", encode(&query));
-            let client = self.obj().invidious_client();
-            let search_results = tokio::task::spawn_blocking(move || {
-                match client.search(Some(&query_transformed)) {
-                    Ok(search) => search.items,
-                    Err(err) => {
-                        g_warning!(
-                            "Dew",
-                            "instance {}; no results: {:?}",
-                            &client.instance,
-                            err
-                        );
-                        vec![]
+            let client = self.obj().async_invidious_client();
+            let search_results = self
+                .window()
+                .spawn(async move {
+                    match client.search(Some(&query_transformed)).await {
+                        Ok(search) => search.items,
+                        Err(err) => {
+                            g_warning!(
+                                "Dew",
+                                "instance {}; no results: {:?}",
+                                &client.instance,
+                                err
+                            );
+                            vec![]
+                        }
                     }
-                }
-            })
-            .await
-            .unwrap_or(vec![]);
+                })
+                .await
+                .unwrap_or(vec![]);
 
             // if zero, show the "not found" page
             if search_results.is_empty() {
@@ -141,7 +146,7 @@ mod imp {
         #[template_callback]
         pub(crate) async fn search_changed(&self, entry: &SearchEntry) {
             // glib::g_warning!("Dew", "search_changed");
-            let client = self.obj().invidious_client();
+            let client = self.obj().async_invidious_client();
 
             // get the dang results, errors = no results
             let query = entry.text().to_string().to_owned();
@@ -151,30 +156,26 @@ mod imp {
 
             // encode to make utf8 work
             let query_transformed = format!("q={}", encode(&query));
-            let search_suggestions =
-                tokio::task::spawn_blocking(move || {
-                    match client
-                        .search_suggestions(Some(&query_transformed))
-                    {
-                        Ok(search) => {
-                            g_warning!(
-                                "DewSearch",
-                                "search.query = {}",
-                                decode_html_entities(&search.query)
-                            );
+            let search_suggestions = self.window().spawn(async move {
+                match client
+                    .search_suggestions(Some(&query_transformed))
+                    .await
+                {
+                    Ok(search) => {
+                        g_warning!(
+                            "DewSearch",
+                            "search.query = {}",
+                            decode_html_entities(&search.query)
+                        );
 
-                            search.suggestions
-                        }
-                        Err(err) => {
-                            g_warning!(
-                                "DewSearch",
-                                "no results: {:?}",
-                                err
-                            );
-                            vec![]
-                        }
+                        search.suggestions
                     }
-                });
+                    Err(err) => {
+                        g_warning!("DewSearch", "no results: {:?}", err);
+                        vec![]
+                    }
+                }
+            });
             let Ok(search_suggestions): Result<Vec<_>, _> =
                 search_suggestions.await
             else {
@@ -217,9 +218,9 @@ impl DewSearchPage {
     pub fn search_entry(&self) -> &SearchEntry {
         &self.imp().search_entry
     }
-    pub fn invidious_client(&self) -> invidious::ClientSync {
+    pub fn async_invidious_client(&self) -> invidious::ClientAsync {
         let window: crate::window::DewDuctWindow =
             self.root().and_downcast().unwrap();
-        window.invidious_client()
+        window.async_invidious_client()
     }
 }

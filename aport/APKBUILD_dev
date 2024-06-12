@@ -23,11 +23,11 @@ prepare() {
 
 build() {
 	appstreamcli make-desktop-file data/"$_appid".metainfo.xml "$_appid".desktop
-	cargo build --release
+	cargo build
 }
 
 package() {
-	install -D "$builddir"/target/release/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
+	install -D "$builddir"/target/debug/"$pkgname" "$pkgdir"/usr/bin/"$pkgname"
 	install -D "$builddir"/data/"$_appid".metainfo.xml -t "$pkgdir"/usr/share/metainfo/
 	install -D "$_appid".desktop "$pkgdir"/usr/share/applications/"$_appid".desktop
 }
