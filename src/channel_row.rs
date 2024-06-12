@@ -128,7 +128,9 @@ impl DewChannelRow {
                     "could not fetch file {}: {err}",
                     thumbnail_fname.clone().display()
                 );
-                gdk::Texture::from_resource("/null/daknig/DewDuct/dummi_thumbnail.svg")
+                gdk::Texture::from_resource(
+                    "/null/daknig/DewDuct/dummi_thumbnail.svg",
+                )
             }
         };
         self.imp().thumbnail.set_custom_image(Some(&paintable));

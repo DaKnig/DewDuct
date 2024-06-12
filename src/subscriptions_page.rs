@@ -206,9 +206,7 @@ mod imp {
             fn sync_import_subs(file: PathBuf) -> Vec<String> {
                 // - get info from subs file
                 let contents = read(file).unwrap_or_default();
-                let contents: &str =
-                    std::str::from_utf8(&contents).unwrap_or_default();
-                let subs: Vec<_> = serde_json::from_str(contents)
+                let subs: Vec<_> = serde_json::from_slice(&contents)
                     .unwrap_or_else(|_| {
                         g_warning!(
                             "DewSubscriptionsPage",

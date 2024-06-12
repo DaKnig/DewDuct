@@ -271,7 +271,7 @@ impl DewDuctWindow {
         let rt = self.imp().tokio_rt.borrow();
         rt.as_ref().unwrap().spawn_blocking(task)
     }
-    pub fn spawn<F>(&self, future: F) -> tokio::task::JoinHandle<F::Output>
+    pub(crate) fn spawn<F>(&self, future: F) -> tokio::task::JoinHandle<F::Output>
     where
         F: std::future::Future + Send + 'static,
         F::Output: Send + 'static,
