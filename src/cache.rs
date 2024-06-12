@@ -23,11 +23,11 @@ impl DewCache {
         cache: &Self,
         fname: PathBuf,
         url: &str,
-    ) -> Result<(), anyhow::Error> {
-	g_warning!("DewCache", "trying to fetch url `{url}`");
+    ) -> anyhow::Result<()> {
+        g_warning!("DewCache", "trying to fetch url `{url}`");
 
         DewCache::fetch_file(cache, fname, move |fname| {
-            Self::fetcher(fname, &url)
+            Self::fetcher(fname, url)
         })
         .await
         .with_context(|| format!("failed to fetch url `{url}`"))
@@ -49,8 +49,8 @@ impl DewCache {
             let target = url;
             let mut response = isahc::get_async(target).await?;
 
-            let content: &[u8] = &response.bytes().await?;
-            if content.is_empty() {
+            let contents: &[u8] = &response.bytes().await?;
+            if contents.is_empty() {
                 Err(Err::NoThumbnails {
                     id: fname
                         .file_name()
@@ -59,16 +59,15 @@ impl DewCache {
                         .into_string()
                         .unwrap(),
                 })?;
-            } else {
-                g_warning!(
-                    "DewThumbnail",
-                    "writing {} bytes to {}",
-                    content.len(),
-                    fname.display()
-                );
             }
+            g_warning!(
+                "DewThumbnail",
+                "writing {} bytes to {}",
+                contents.len(),
+                fname.display()
+            );
 
-            std::fs::write(&fname, content).with_context(|| {
+            std::fs::write(&fname, contents).with_context(|| {
                 format!("error writing to {}", fname.display())
             })?;
 
