@@ -27,9 +27,12 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious::{channel::Channel, ClientSyncTrait};
+use invidious::{channel::Channel, ClientAsyncTrait};
 
-use crate::yt_item_list::{DewYtItem, DewYtItemList};
+use crate::{
+    window::DewDuctWindow,
+    yt_item_list::{DewYtItem, DewYtItemList},
+};
 
 mod imp {
     use super::*;
@@ -100,21 +103,31 @@ impl DewChannelPage {
         self.imp().set_channel(channel)
     }
 
+    fn window(&self) -> DewDuctWindow {
+        self.root().and_downcast().unwrap()
+    }
+
     pub async fn set_channel_id(&self, id: &str) {
         let id = id.to_owned();
-        let invidious = self.invidious_client();
-        let Ok(channel) = tokio::task::spawn_blocking(move || {
-            invidious.channel(&id, None).map_err(|err| {
-                g_warning!("DewChannelPage", "cant load {id}: {err:#?}");
-                g_warning!(
-                    "DewChannelPage",
-                    "the instance used was {}",
-                    invidious.instance
-                );
+        let invidious = self.async_invidious_client();
+        let Ok(channel) = self
+            .window()
+            .spawn(async move {
+                invidious.channel(&id, None).await.map_err(|err| {
+                    g_warning!(
+                        "DewChannelPage",
+                        "cant load {id}: {err:#?}"
+                    );
+                    g_warning!(
+                        "DewChannelPage",
+                        "the instance used was {}",
+                        invidious.instance
+                    );
+                })
             })
-        })
-        .await
-        .unwrap() else {
+            .await
+            .unwrap()
+        else {
             // if we get fetch error
             return;
         };
@@ -122,10 +135,10 @@ impl DewChannelPage {
         self.set_channel(channel);
     }
 
-    pub fn invidious_client(&self) -> invidious::ClientSync {
+    pub fn async_invidious_client(&self) -> invidious::ClientAsync {
         let window: crate::window::DewDuctWindow =
             self.root().and_downcast().unwrap();
-        window.invidious_client()
+        window.async_invidious_client()
     }
 }
 

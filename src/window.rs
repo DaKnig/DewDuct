@@ -34,7 +34,8 @@ use crate::{
     video_page::DewVideoPage,
 };
 
-use invidious::{ClientSync, ClientSyncTrait};
+use invidious::{ClientAsyncTrait, ClientSync};
+use tokio::runtime::Runtime;
 
 mod imp {
     use super::*;
@@ -59,8 +60,10 @@ mod imp {
         search_bar: TemplateChild<gtk::SearchBar>,
         #[template_child]
         nav_view: TemplateChild<adw::NavigationView>,
-        last_visible_page: Rc<RefCell<Option<GString>>>,
-        pub(super) invidious_client: Rc<RefCell<ClientSync>>,
+        _last_visible_page: Rc<RefCell<Option<GString>>>,
+        pub(super) invidious_client: RefCell<ClientSync>,
+
+        pub(super) tokio_rt: RefCell<Option<Runtime>>,
     }
 
     #[glib::object_subclass]
@@ -153,19 +156,21 @@ mod imp {
             };
 
             let vid_page = &self.video_page;
-            let invidious = self.obj().invidious_client();
+            let invidious = self.obj().async_invidious_client();
 
-            let vid = tokio::task::spawn_blocking(move || {
-                invidious.video(&id, None).map_err(|err| {
-                    g_warning!("DewWindow", "cant load {id}: {err:#?}");
-                    g_warning!(
-                        "DewWindow",
-                        "the instance used was {}",
-                        invidious.instance
-                    );
+            let vid = self
+                .obj()
+                .spawn(async move {
+                    invidious.video(&id, None).await.map_err(|err| {
+                        g_warning!("DewWindow", "cant load {id}: {err:#?}");
+                        g_warning!(
+                            "DewWindow",
+                            "the instance used was {}",
+                            invidious.instance
+                        );
+                    })
                 })
-            })
-            .await;
+                .await;
 
             let Ok(Ok(vid)) = vid else { return };
 
@@ -192,6 +197,9 @@ mod imp {
         pub fn unsubscribe(&self, channel_id: String) {
             self.subscriptions_page.imp().del_subscription(channel_id)
         }
+        pub(super) fn set_tokio_rt(&self, tokio_rt: Option<Runtime>) {
+            self.tokio_rt.replace(tokio_rt);
+        }
     }
 }
 
@@ -202,10 +210,15 @@ glib::wrapper! {
 }
 
 impl DewDuctWindow {
-    pub fn new<P: IsA<gtk::Application>>(application: &P) -> Self {
-        glib::Object::builder()
+    pub fn new<P: IsA<gtk::Application>>(
+        application: &P,
+        tokio_rt: Option<Runtime>,
+    ) -> Self {
+        let obj: Self = glib::Object::builder()
             .property("application", application)
-            .build()
+            .build();
+        obj.imp().set_tokio_rt(tokio_rt);
+        obj
     }
     pub async fn play(self, action_name: String, param: Option<Variant>) {
         self.imp().play(action_name, param).await;
@@ -246,5 +259,24 @@ impl DewDuctWindow {
         f: impl Fn(&gio::ListStore) + 'static,
     ) -> glib::signal::SignalHandlerId {
         self.imp().connect_subs_changed(f)
+    }
+    pub(crate) fn spawn_blocking<F, R>(
+        &self,
+        task: F,
+    ) -> tokio::task::JoinHandle<R>
+    where
+        F: FnOnce() -> R + Send + 'static,
+        R: Send + 'static,
+    {
+        let rt = self.imp().tokio_rt.borrow();
+        rt.as_ref().unwrap().spawn_blocking(task)
+    }
+    pub fn spawn<F>(&self, future: F) -> tokio::task::JoinHandle<F::Output>
+    where
+        F: std::future::Future + Send + 'static,
+        F::Output: Send + 'static,
+    {
+        let rt = self.imp().tokio_rt.borrow();
+        rt.as_ref().unwrap().spawn(future)
     }
 }

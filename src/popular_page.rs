@@ -25,8 +25,9 @@ use gtk::{gio, glib};
 #[allow(unused_imports)]
 use gtk::{prelude::*, subclass::prelude::*};
 
-use invidious::ClientSyncTrait;
+use invidious::ClientAsyncTrait;
 
+use crate::window::DewDuctWindow;
 use crate::yt_item_list::*;
 
 mod imp {
@@ -74,22 +75,26 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl DewPopularPage {
-        fn invidious_client(&self) -> invidious::ClientSync {
+        fn async_invidious_client(&self) -> invidious::ClientAsync {
             self.obj()
                 .root()
                 .and_downcast_ref::<crate::window::DewDuctWindow>()
                 .unwrap()
-                .invidious_client()
+                .async_invidious_client()
+        }
+        fn window(&self) -> DewDuctWindow {
+            self.obj().root().and_downcast().unwrap()
         }
         #[template_callback]
         async fn update_vids(&self) {
-            let invidious = self.invidious_client();
+            let invidious = self.async_invidious_client();
 
             self.update_button.set_sensitive(false);
 
-            let Ok(Some(popular)) =
-                tokio::task::spawn_blocking(move || {
-                    match invidious.popular(None) {
+            let Ok(Some(popular)) = self
+                .window()
+                .spawn(async move {
+                    match invidious.popular(None).await {
                         Err(err) => {
                             g_warning!(
                                 "DewPopularPage",
