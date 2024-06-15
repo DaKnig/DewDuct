@@ -1,4 +1,4 @@
-use std::fs::metadata;
+use std::fs::{self, metadata};
 use std::future::Future;
 use std::path::{Path, PathBuf};
 
@@ -23,7 +23,7 @@ impl DewCache {
         cache: &Self,
         fname: PathBuf,
         url: &str,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<Vec<u8>> {
         g_warning!("DewCache", "trying to fetch url `{url}`");
 
         DewCache::fetch_file(cache, fname, move |fname| {
@@ -35,21 +35,17 @@ impl DewCache {
     fn fetcher(
         fname: &Path,
         url: &str,
-    ) -> impl std::future::Future<Output = anyhow::Result<()>> {
+    ) -> impl std::future::Future<Output = anyhow::Result<Vec<u8>>> {
         use anyhow::Context;
         use isahc::AsyncReadResponseExt;
 
         let fname = fname.to_owned();
         let url = url.to_owned();
         async move {
-            // can safely unwrap since I crafted the directory
-            let parent = fname.parent().unwrap();
-            std::fs::create_dir_all(parent)?;
-
             let target = url;
             let mut response = isahc::get_async(target).await?;
 
-            let contents: &[u8] = &response.bytes().await?;
+            let contents = response.bytes().await?;
             if contents.is_empty() {
                 Err(Err::NoThumbnails {
                     id: fname
@@ -67,13 +63,21 @@ impl DewCache {
                 fname.display()
             );
 
-            std::fs::write(&fname, contents).with_context(|| {
-                format!("error writing to {}", fname.display())
-            })?;
+            // if possible, write to cache
+            if let Some(parent) = fname.parent() {
+                // try your best, if can't, then no worries
+                let _ = fs::create_dir_all(parent);
+            }
 
+            fs::write(&fname, &contents)
+                .with_context(|| {
+                    format!("error writing to {}", fname.display())
+                })
+                .unwrap_or_else(|e| {
+                    g_warning!("DewThumbnail", "{}", e);
+                });
             // now it is time to load that jpg into the thumbnail
-
-            anyhow::Ok(())
+            anyhow::Ok(contents)
         }
     }
     /// cache: the cache with the directory where the info should be stored.
@@ -83,43 +87,43 @@ impl DewCache {
         cache: &Self,
         fname: PathBuf,
         fetcher: Fetcher,
-    ) -> Result<(), Err>
+    ) -> Result<Vec<u8>, Err>
     where
         Fetcher: Fn(&Path) -> Fut,
-        Fut: Future<Output = Result<(), Err>>,
+        Fut: Future<Output = Result<Vec<u8>, Err>>,
     {
         let path = cache.dir().join(&fname);
-        match metadata(&path) {
-            Ok(m) if m.len() != 0 => {
-                g_debug!(
-                    "DewCache",
-                    "opening cached file at {}",
-                    &path.display()
-                );
-                Ok(())
+        if metadata(&path).is_ok_and(|m| m.len() != 0) {
+            g_debug!(
+                "DewCache",
+                "opening cached file at {}",
+                &path.display()
+            );
+            if let Ok(contents) = fs::read(&path) {
+                return Ok(contents);
             }
-            _ => {
-                g_warning!(
-                    "DewCache",
-                    "fetching item to {}",
-                    &path.display()
-                );
-
-                let mut ret = fetcher(&fname).await;
-                for i in 0..3 {
-                    if ret.is_ok() {
-                        break;
-                    }
-                    g_warning!(
-                        "DewCache",
-                        "retrying {} now {i} times...",
-                        fname.display()
-                    );
-                    ret = fetcher(&fname).await;
-                }
-                ret
-            }
+            g_debug!(
+                "DewCache",
+                "unable to read cached file {}",
+                &path.display()
+            );
         }
+
+        g_warning!("DewCache", "fetching item to {}", &path.display());
+
+        let mut ret = fetcher(&fname).await;
+        for i in 0..3 {
+            if ret.is_ok() {
+                break;
+            }
+            g_warning!(
+                "DewCache",
+                "retrying {} now {i} times...",
+                fname.display()
+            );
+            ret = fetcher(&fname).await;
+        }
+        ret
     }
 }
 

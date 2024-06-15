@@ -120,8 +120,12 @@ impl DewChannelRow {
             &thumb.url,
         )
         .await;
+
         let paintable: gdk::Texture = match status {
-            Ok(()) => gdk::Texture::from_filename(thumbnail_fname)?,
+            Ok(data) => {
+                let content_bytes = glib::Bytes::from_owned(data);
+                gdk::Texture::from_bytes(&content_bytes)?
+            }
             Err(err) => {
                 g_warning!(
                     "DewChannelRow",
